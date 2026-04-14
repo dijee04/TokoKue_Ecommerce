@@ -20,8 +20,17 @@ ul { list-style: none; }
 .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
 /* TOPBAR */
-.topbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; }
-.logo { font-size: 2.2rem; font-weight: 800; color: var(--theme-dark); }
+.topbar { display: flex; justify-content: space-between; align-items: center; padding: 8px 20px; }
+/* DEAR SEANA LOGO STRUCTURE */
+.logo-container { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; width: fit-content; text-decoration: none; }
+.logo-sweet { font-family: 'Outfit', sans-serif; font-size: 0.55rem; font-weight: 800; letter-spacing: 3px; color: #C5A173; text-transform: uppercase; margin-bottom: -10px; position:relative; z-index: 2; margin-left: 20px; }
+.logo-group { display: flex; align-items: baseline; gap: 8px; text-decoration: none; position:relative; }
+.logo-dear { font-family: 'Titan One', cursive; font-size: 1.8rem; color: #E7B0D3; background: -webkit-linear-gradient(0deg, #E6C8DF, #D5E1C3 40%, #F5D3A2 80%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); letter-spacing: 1px; }
+.logo-seana { font-family: 'Dancing Script', cursive; font-size: 2.3rem; color: #DEAA3E; transform: translateY(4px); text-shadow: 1px 1px 2px rgba(0,0,0,0.15); }
+
+.footer-logo { margin-bottom: 20px; }
+.footer-logo .logo-dear { font-size: 1.8rem; }
+.footer-logo .logo-seana { font-size: 2.2rem; transform: translateY(4px); }
 .topbar-right { display: flex; align-items: center; gap: 30px; }
 .search-box { position: relative; }
 .search-box input { padding: 10px 15px 10px 40px; border: 1px solid var(--border-lite); border-radius: 20px; outline: none; width: 250px; background-color: #fff; }
@@ -42,10 +51,10 @@ ul { list-style: none; }
 
 /* HERO */
 .hero { 
-    background: linear-gradient(135deg, var(--theme-main) 0%, var(--accent-gold) 100%); 
-    border-bottom-left-radius: 60px; 
-    border-bottom-right-radius: 60px; 
-    padding: 60px 0; 
+    background: linear-gradient(135deg, var(--theme-main) 0%, var(--theme-light) 60%, var(--accent-gold) 100%); 
+    border-bottom-left-radius: 80px; 
+    border-bottom-right-radius: 80px; 
+    padding: 80px 0; 
     overflow: hidden; 
 }
 .hero-container { display: flex; align-items: center; justify-content: space-between; position: relative; flex-wrap: wrap-reverse; }
@@ -57,8 +66,8 @@ ul { list-style: none; }
 .float-1 { right: 80px; top: 0; }
 .float-2 { right: 40px; bottom: 20px; }
 .hero-text { flex: 1; color: var(--white); padding-left: 20px; text-align: left; max-width: 580px; }
-.hero-title { font-family: 'Outfit', sans-serif; font-size: 3.2rem; font-weight: 600; line-height: 1.25; margin-bottom: 12px; color: var(--white); text-shadow: 0 5px 15px rgba(0,0,0,0.05); letter-spacing: -0.5px; }
-.hero-subtitle { font-size: 1.15rem; font-weight: 300; line-height: 1.6; margin-bottom: 35px; color: rgba(255,255,255,0.9); }
+.hero-title { font-family: 'Outfit', sans-serif; font-size: 4.5rem; font-weight: 800; line-height: 1.1; margin-bottom: 20px; color: var(--white); text-shadow: 0 8px 30px rgba(0,0,0,0.1); letter-spacing: -1.5px; }
+.hero-subtitle { font-size: 1.25rem; font-weight: 400; line-height: 1.6; margin-bottom: 40px; color: rgba(255,255,255,0.95); }
 
 .hero-action { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
 .hero-btn { display: inline-block; background: var(--white); color: var(--theme-main); padding: 12px 35px; border-radius: 30px; font-weight: 700; font-size: 1rem; transition: 0.3s; box-shadow: 0 10px 25px rgba(0,0,0,0.1); border: none; cursor: pointer; }
@@ -78,7 +87,10 @@ ul { list-style: none; }
 .journey-text { flex: 1; max-width: 550px; }
 .journey-text h2 { font-family: 'Playfair Display', serif; font-size: 2.8rem; color: var(--theme-dark); margin-bottom: 25px; line-height: 1.25; }
 .journey-text p { font-size: 1.1rem; color: var(--text-muted); line-height: 1.9; margin-bottom: 20px; }
-
+.keunggulan-list { margin-top: 25px; display: flex; flex-direction: column; gap: 20px; justify-content: flex-start; }
+.keunggulan-list li { display: flex; align-items: flex-start; gap: 15px; }
+.keunggulan-list .icon-wrap { width: 40px; height: 40px; min-width: 40px; background-color: var(--white); color: var(--theme-main); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); font-size: 1.1rem; border: 1px solid var(--border-lite); }
+.keunggulan-list span { font-size: 1.05rem; color: var(--text-muted); line-height: 1.6; }
 .journey-img-box { flex: 1; height: 420px; background-color: #D6D2CE; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.06); }
 
 /* Scroll Animation Styles */
@@ -174,7 +186,7 @@ ul { list-style: none; }
 }
 
 @media (max-width: 768px) {
-    .hero-title { font-size: 2.5rem; }
+    .hero-title { font-size: 3rem; line-height: 1.15; letter-spacing: -1px; }
     .hero-text { padding-top: 40px; padding-left: 20px; }
     .main-image { position: relative; left: 0; width: 250px; height: 250px; }
     .small-image { width: 90px; height: 90px; }

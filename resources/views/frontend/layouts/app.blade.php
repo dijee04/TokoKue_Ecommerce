@@ -3,17 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anis Bakery - Keajaiban Rasa Dalam Setiap Sematan</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <title>Dear Seana - Keajaiban Rasa Dalam Setiap Sematan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Titan+One&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
-    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
-    <meta name="description" content="Anis Bakery menyediakan berbagai macam kue coklat, puding, dan roti premium.">
+    <link rel="stylesheet" href="{{ asset('assets/frontend/css/style.css') }}">
+    <meta name="description" content="Dear Seana menyediakan berbagai macam kue coklat, puding, dan roti premium.">
 </head>
 <body>
     <!-- Topbar -->
     <div class="topbar container">
-        <h1 class="logo">Anis Bakery</h1>
+        <div class="logo-container">
+            <div class="logo-sweet">SWEET & SAVORY</div>
+            <a href="/" class="logo-group">
+                <span class="logo-dear">DEAR</span>
+                <span class="logo-seana">Seana</span>
+            </a>
+        </div>
         <div class="topbar-right">
             <div class="search-box">
                 <i class="fas fa-search"></i>
@@ -37,7 +43,7 @@
                 <li><a href="#">Hampers Elegan</a></li>
                 <li><a href="#">Perayaan</a></li>
             </ul>
-            <a href="https://wa.me/6281234567890?text=Halo%20Anis%20Bakery,%20saya%20tertarik%20dengan%20koleksi%20kue%20Anda." target="_blank" class="btn-pesan" style="display:flex; align-items:center; gap:8px;"><i class="fab fa-whatsapp" style="font-size:1.1rem;"></i> Contact Us</a>
+            <a href="https://wa.me/6281234567890?text=Halo%20Dear%20Seana,%20saya%20tertarik%20dengan%20koleksi%20kue%20Anda." target="_blank" class="btn-pesan" style="display:flex; align-items:center; gap:8px;"><i class="fab fa-whatsapp" style="font-size:1.1rem;"></i> Contact Us</a>
         </div>
     </nav>
 
@@ -48,12 +54,15 @@
     <footer class="footer">
         <div class="footer-banner">
             <div class="container">
-                <h2>Anis Bakery – Pilihan Terpercaya untuk Setiap Perayaan Anda</h2>
+                <h2>Dear Seana – Pilihan Terpercaya untuk Setiap Perayaan Anda</h2>
             </div>
         </div>
         <div class="container footer-main">
             <div class="footer-col">
-                <h3 class="footer-logo">Anis Bakery</h3>
+                <h3 class="footer-logo logo-group">
+                    <span class="logo-dear">DEAR</span>
+                    <span class="logo-seana" style="color:var(--white);">Seana</span>
+                </h3>
                 <ul>
                     <li><a href="#">Cerita Kami</a></li>
                     <li><a href="#">Hubungi Kami</a></li>

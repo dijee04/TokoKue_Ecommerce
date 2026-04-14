@@ -1,11 +1,11 @@
-@extends('layouts.app')
+@extends('frontend.layouts.app')
 
 @section('content')
     <!-- Hero Section -->
     <section class="hero">
         <div class="container hero-container">
             <div class="hero-text">
-                <h2 class="hero-title">Setiap perayaan layak mendapatkan sentuhan yang manis.</h2>
+                <h2 class="hero-title">Nikmatnya Setiap Momen</h2>
                 <p class="hero-subtitle">Hadirkan senyuman di momen berharga Anda bersama mahakarya rasa dari Anis Bakery.</p>
                 
                 <div class="hero-action">
@@ -69,8 +69,8 @@
                 <div class="journey-img-box">
                 </div>
                 <div class="journey-text">
-                    <h2>Dapur Rumah Penuh Cinta</h2>
-                    <p>Berawal dari kegemaran menyajikan hidangan manis untuk keluarga di dapur rumah yang sederhana, Anis Bakery tumbuh dari sebuah mimpi kecil. Kami percaya bahwa setiap adonan yang diuleni dengan kasih sayang akan menghasilkan rasa yang jauh melampaui teknik semata.</p>
+                    <h2>Tentang Kami</h2>
+                    <p>Sejak 2017, Dear Seana hadir dengan berbagai hidangan manis dan gurih yang memanjakan lidah. Kami menggunakan bahan berkualitas dan resep istimewa untuk memberikan pengalaman kuliner yang memuaskan. Setiap sajian kami dibuat dengan penuh cinta, untuk Anda yang mencari kenikmatan dalam setiap gigitan. Terima kasih telah menjadi bagian dari perjalanan kami!</p>
                 </div>
             </div>
         </section>
@@ -79,8 +79,8 @@
         <section class="journey-section bg-lite fade-in-on-scroll">
             <div class="container journey-grid">
                 <div class="journey-text">
-                    <h2>Handcrafted dengan Bahan Premium</h2>
-                    <p>Kualitas adalah janji kami. Kami hanya menggunakan bahan-bahan pilihan — mentega organik, cokelat terbaik, dan buah-buahan segar — untuk memastikan setiap tekstur dan rasa mencapai standar kesempurnaan artisanal yang Anda layak dapatkan.</p>
+                    <h2>Visi</h2>
+                    <p style="font-style: italic; font-size: 1.3rem;">“ Menjadi toko kue dan roti terdepan yang membawa kebahagiaan dan kelezatan ke setiap rumah, menyempurnakan setiap momen dengan cita rasa terbaik. ”</p>
                 </div>
                 <div class="journey-img-box">
                 </div>
@@ -93,8 +93,35 @@
                 <div class="journey-img-box">
                 </div>
                 <div class="journey-text">
-                    <h2>Setiap Perayaan Layak Mendapatkan Sentuhan Manis</h2>
-                    <p>Misi kami adalah menjadi bagian dari momen berharga Anda. Baik itu ulang tahun, pernikahan, atau sekadar apresiasi diri di sore hari, Anis Bakery hadir untuk melengkapi kebahagiaan Anda dengan keajaiban rasa yang tak terlupakan.</p>
+                    <h2>Misi</h2>
+                    <p>• Menghadirkan produk berkualitas tinggi dengan bahan-bahan alami dan tanpa pengawet.</p>
+                    <p>• Memberikan pengalaman pelanggan yang hangat dan personal, seperti keluarga.</p>
+                </div>
+            </div>
+        </section>
+        <!-- Part 4 -->
+        <section class="journey-section bg-lite fade-in-on-scroll">
+            <div class="container journey-grid">
+                <div class="journey-text">
+                    <h2>Keunggulan</h2>
+                    <p>Kami berkomitmen untuk menyajikan produk kue dan roti yang terbaik dengan mengutamakan kualitas di setiap proses pembuatannya. Berikut adalah beberapa keunggulan yang membedakan produk kami:</p>
+                    
+                    <ul class="keunggulan-list">
+                        <li>
+                            <div class="icon-wrap"><i class="fas fa-leaf"></i></div>
+                            <span>Menggunakan bahan-bahan alami terbaik, tanpa tambahan pengawet, untuk menjamin rasa dan kesehatan dalam setiap gigitan.</span>
+                        </li>
+                        <li>
+                            <div class="icon-wrap"><i class="fas fa-star"></i></div>
+                            <span>Setiap produk dibuat dari resep-resep khusus yang merupakan kombinasi rasa tradisional dan modern, menciptakan cita rasa yang otentik dan tak terlupakan.</span>
+                        </li>
+                        <li>
+                            <div class="icon-wrap"><i class="fas fa-fire-burner"></i></div>
+                            <span>Kami memanggang setiap hari untuk memastikan produk yang disajikan selalu segar dan lezat ketika sampai di tangan Anda.</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="journey-img-box">
                 </div>
             </div>
         </section>
