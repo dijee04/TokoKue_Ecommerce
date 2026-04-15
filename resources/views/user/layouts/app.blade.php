@@ -46,51 +46,24 @@
         @yield('content')
     </main>
 
-    <footer class="footer">
-        <div class="footer-banner">
-            <div class="container">
-                <h2>Dear Seana – Pilihan Terpercaya untuk Setiap Perayaan Anda</h2>
-            </div>
+    <footer class="footer-crumbl">
+        <div class="footer-socials">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-tiktok"></i></a>
+            <a href="#"><i class="fab fa-x-twitter"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            <a href="#"><i class="fab fa-pinterest-p"></i></a>
         </div>
-        <div class="container footer-main">
-            <div class="footer-col">
-                <h3 class="footer-logo logo-group">
-                    <span class="logo-dear">
-                        <span style="color: #D5BCCC;">D</span>
-                        <span style="color: #C1D0AA;">e</span>
-                        <span style="color: #EBE5B5;">a</span>
-                        <span style="color: #E8BC85;">r</span>
-                    </span>
-                    <span class="logo-seana">Seana</span>
-                </h3>
-                <ul>
-                    <li><a href="#">Cerita Kami</a></li>
-                    <li><a href="#">Hubungi Kami</a></li>
-                    <li><a href="#">Lokasi Toko</a></li>
-                    <li><a href="#">Peluang Karir</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h3>Pusat Bantuan</h3>
-                <ul>
-                    <li><a href="#">Pertanyaan Umum (FAQ)</a></li>
-                    <li><a href="#">Kebijakan Pembatalan</a></li>
-                    <li><a href="#">Kebijakan Privasi</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h3>Informasi Promo</h3>
-                <ul>
-                    <li><a href="#">Syarat & Ketentuan</a></li>
-                    <li><a href="#">Penawaran Spesial</a></li>
-                    <li><a href="#">Unduh Aplikasi Ponsel</a></li>
-                </ul>
-            </div>
-            <div class="footer-col newsletter">
-                <h3>Dapatkan Kabar Terbaru</h3>
-                <div class="subscribe-box">
-                    <input type="email" placeholder="Alamat Email Anda">
-                    <button>LANGGANAN</button>
+        <div class="footer-bottom">
+            <h1 class="giant-logo">Dear Seana</h1>
+            <div class="footer-legal">
+                <p>&copy; 2026 semua hak dilindungi undang-undang. | Data peta &copy; Kontributor OpenStreetMap</p>
+                <div class="legal-links">
+                    <a href="#">Kebijakan privasi</a> | 
+                    <a href="#">Syarat dan Ketentuan</a> | 
+                    <a href="#">Syarat dan Ketentuan Kartu Hadiah/Voucher</a>
                 </div>
             </div>
         </div>
