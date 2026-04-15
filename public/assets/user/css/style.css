@@ -23,10 +23,11 @@ ul { list-style: none; }
 .topbar { display: flex; justify-content: space-between; align-items: center; padding: 8px 20px; }
 /* DEAR SEANA LOGO STRUCTURE */
 .logo-container { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; width: fit-content; text-decoration: none; }
-.logo-sweet { font-family: 'Outfit', sans-serif; font-size: 0.55rem; font-weight: 800; letter-spacing: 3px; color: #C5A173; text-transform: uppercase; margin-bottom: -10px; position:relative; z-index: 2; margin-left: 20px; }
-.logo-group { display: flex; align-items: baseline; gap: 8px; text-decoration: none; position:relative; }
-.logo-dear { font-family: 'Titan One', cursive; font-size: 1.8rem; color: #E7B0D3; background: -webkit-linear-gradient(0deg, #E6C8DF, #D5E1C3 40%, #F5D3A2 80%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 1px 1px 2px rgba(0,0,0,0.1); letter-spacing: 1px; }
-.logo-seana { font-family: 'Dancing Script', cursive; font-size: 2.3rem; color: #DEAA3E; transform: translateY(4px); text-shadow: 1px 1px 2px rgba(0,0,0,0.15); }
+.logo-sweet { font-family: 'Outfit', sans-serif; font-size: 0.55rem; font-weight: 800; letter-spacing: 3px; color: #C5A173; text-transform: uppercase; margin-bottom: -8px; position:relative; z-index: 2; padding-left: 4px; }
+.logo-group { display: flex; align-items: baseline; gap: 6px; text-decoration: none; position:relative; }
+.logo-dear { font-family: 'Titan One', cursive; font-size: 1.6rem; color: #E7B0D3; letter-spacing: 1px; display: flex; align-items: baseline; }
+.logo-dear span { text-shadow: 1px 1px 3px rgba(0,0,0,0.1); }
+.logo-seana { font-family: 'Dancing Script', cursive; font-size: 2.1rem; color: #DEAA3E; transform: translateY(4px); text-shadow: 1px 1px 2px rgba(0,0,0,0.15); font-weight: 700; margin-left: -5px; }
 
 .footer-logo { margin-bottom: 20px; }
 .footer-logo .logo-dear { font-size: 1.8rem; }
@@ -183,59 +184,47 @@ ul { list-style: none; }
 
 @media (max-width: 900px) {
     .features-grid { grid-template-columns: repeat(2, 1fr); }
-    .promise-layout { flex-direction: column; gap: 30px; }
 }
 
 @media (max-width: 768px) {
-    /* Header / Topbar adjustments */
-    .topbar { flex-direction: column; gap: 20px; padding: 15px 20px; }
-    .topbar-right { flex-direction: column; gap: 15px !important; align-items: center; width: 100%; }
-    .nav-links { display: flex !important; flex-wrap: wrap; justify-content: center; gap: 15px !important; width: 100%; }
+    /* Header Responsive */
+    .topbar { flex-direction: column; gap: 15px; padding: 15px; text-align: center; }
+    .topbar-right { gap: 15px; flex-direction: column; width: 100%; }
+    .nav-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; width: 100%; }
+    .nav-links a { font-size: 0.9rem; }
     
-    /* Hero adjustments */
-    .hero { padding: 50px 0; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; }
-    .hero-container { flex-direction: column-reverse; align-items: center; text-align: center; gap: 40px; }
-    .hero-text { padding: 0 10px; max-width: 100%; display: flex; flex-direction: column; align-items: center; }
-    .hero-title { font-size: 2.8rem; line-height: 1.15; letter-spacing: -1px; }
-    .hero-subtitle { margin-bottom: 30px; }
+    /* Hero Responsive */
+    .hero { padding: 40px 0; border-bottom-left-radius: 40px; border-bottom-right-radius: 40px; }
+    .hero-container { flex-direction: column-reverse; gap: 30px; text-align: center; }
+    .hero-text { padding: 0 15px; max-width: 100%; }
+    .hero-title { font-size: 2.5rem; letter-spacing: -1px; }
     .hero-action { justify-content: center; }
-    
-    .hero-images { min-height: 320px; width: 100%; display: flex; justify-content: center; }
-    .main-image { position: relative; left: 0; width: 280px; height: 280px; }
-    .small-image { width: 90px; height: 90px; }
-    .float-1 { right: 10%; top: -10px; }
-    .float-2 { right: 5%; bottom: 10px; }
+    .hero-images { width: 100%; min-height: 300px; }
+    .main-image { width: 220px; height: 220px; }
+    .small-image { width: 80px; height: 80px; }
+    .float-1 { right: 10px; top: 0; }
+    .float-2 { left: 10px; bottom: 10px; right: auto; }
 
-    /* Category adjustments */
-    .menu-kategori { justify-content: center; padding: 0 10px; margin-top: -20px; }
-    .menu-kategori-left { text-align: center; margin-bottom: 10px; width: 100%; display: flex; flex-direction: column; align-items: center; }
-    
-    /* Journey Section */
-    .journey-text h2 { font-size: 2.2rem; }
-    .journey-text p { font-size: 1rem; }
-    
-    /* Bestseller wrapper spacing */
-    .section-title-wrap { flex-direction: column; justify-content: center; text-align: center; gap: 15px; }
-    .bestsellers { margin-top: 50px; margin-bottom: 50px; }
+    /* Journey Responsive */
+    .journey-grid, .journey-grid.reverse { flex-direction: column; text-align: center; gap: 30px; }
+    .journey-text { margin: 0 auto; padding: 0 15px; }
+    .journey-img-box { width: 100%; height: 300px; margin: 0 15px; }
 
-    /* Promise & Ticket */
-    .promise-section { margin-top: 50px; margin-bottom: 50px; }
-    .promise-header { text-align: center; }
-    .features-box { padding: 25px 20px; }
-    .promo-ticket { flex-direction: column; text-align: center; gap: 15px; padding: 30px 20px; }
-    .ticket-graph { display: none; /* Hide ticket icon to save space */ }
+    /* Footer Responsive */
+    .footer-main { flex-direction: column; text-align: center; gap: 40px; padding: 30px 15px; }
+    .footer-col { width: 100%; align-items: center; display: flex; flex-direction: column; }
     
-    /* Footer */
-    .footer-main { flex-direction: column; align-items: center; text-align: center; padding: 40px 20px; gap: 40px; }
-    .footer-col { width: 100%; display: flex; flex-direction: column; align-items: center; }
-    .footer-logo { justify-content: center; }
+    /* Promis / Features */
+    .promise-layout { flex-direction: column; padding: 0 15px; }
+    .promise-right.gallery-grid { grid-template-columns: 1fr 1fr; }
 }
 
 @media (max-width: 480px) {
-    .features-grid { grid-template-columns: 1fr 1fr; }
-    .cat-card { width: 100px; height: 100px; }
-    .cat-icon { font-size: 1.8rem; }
-    .hero-title { font-size: 2.2rem; }
-    .main-image { width: 220px; height: 220px; }
-    .float-1, .float-2 { width: 70px; height: 70px; }
+    .features-grid { grid-template-columns: 1fr; }
+    .nav-links { gap: 10px; }
+    .nav-links a { font-size: 0.85rem; }
+    .hero-title { font-size: 2rem; }
+    .logo-dear { font-size: 1.4rem; }
+    .logo-seana { font-size: 1.8rem; }
+    .main-image { width: 180px; height: 180px; }
 }
