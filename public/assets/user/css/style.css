@@ -104,6 +104,70 @@ ul { list-style: none; }
     .journey-img-box { width: 100%; height: 350px; }
 }
 
+/* KEUNGGULAN SECTION */
+.keunggulan-header { text-align: center; max-width: 700px; margin: 0 auto 60px; }
+.keunggulan-header h2 { font-family: 'Playfair Display', serif; font-size: 2.8rem; color: var(--theme-dark); margin-bottom: 20px; line-height: 1.25; }
+.keunggulan-header p { font-size: 1.1rem; color: var(--text-muted); line-height: 1.9; }
+
+.keunggulan-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
+
+.keunggulan-card {
+    background: var(--white);
+    border-radius: 24px;
+    padding: 40px 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    border: 1px solid var(--border-lite);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.04);
+    transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+}
+.keunggulan-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 45px rgba(242, 138, 161, 0.18);
+    border-color: var(--theme-main);
+}
+
+.keunggulan-icon {
+    width: 62px;
+    height: 62px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--theme-light), var(--accent-wheat));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--theme-dark);
+    box-shadow: 0 6px 18px rgba(242, 138, 161, 0.25);
+    transition: background 0.35s, transform 0.35s;
+}
+.keunggulan-card:hover .keunggulan-icon {
+    background: linear-gradient(135deg, var(--theme-main), var(--accent-gold));
+    color: var(--white);
+    transform: rotate(-8deg) scale(1.1);
+}
+
+.keunggulan-card-text h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    color: var(--theme-dark);
+    margin-bottom: 10px;
+}
+.keunggulan-card-text p {
+    font-size: 1rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+}
+
+@media (max-width: 900px) {
+    .keunggulan-cards { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 600px) {
+    .keunggulan-cards { grid-template-columns: 1fr; }
+    .keunggulan-header h2 { font-size: 2.2rem; }
+}
+
 /* MENU CATEGORY */
 .menu-kategori { display: flex; align-items: center; justify-content: space-between; margin-top: -30px; position: relative; z-index: 10; padding: 0 20px; flex-wrap: wrap; gap: 20px; }
 .menu-kategori-left { background: var(--white); padding: 25px 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
