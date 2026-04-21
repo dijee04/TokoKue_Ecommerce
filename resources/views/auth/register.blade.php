@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Masuk — Dear Seana</title>
+    <title>Daftar — Dear Seana</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500&display=swap"
         rel="stylesheet" />
@@ -536,11 +536,22 @@
     <!-- ── Right Panel ── -->
     <div class="panel-right">
         <div class="form-wrapper">
-            <form method="POST" action="{{ route('login') }}">
+            <form method="POST" action="{{ route('register') }}">
                 @csrf
                 <div class="form-header">
-                <h1>Selamat Datang 🌸</h1>
-                <p>Masuk ke akun Anda untuk memesan kue impian</p>
+                <h1>Daftar Akun 🌸</h1>
+                <p>Buat akun baru untuk memesan kue impian</p>
+            </div>
+
+            <div class="field">
+                <label for="name">Nama Lengkap</label>
+                <div class="input-wrap">
+                    <span class="input-icon">👤</span>
+                    <input type="text" id="name" name="name" value="{{ old('name') }}" placeholder="Nama Lengkap Anda" required autofocus />
+                </div>
+                @error('name')
+                    <span style="color: #ef4444; font-size: 0.8rem; display: block; margin-top: 0.25rem;">{{ $message }}</span>
+                @enderror
             </div>
 
             <div class="field">
@@ -569,18 +580,17 @@
                 @enderror
             </div>
 
-            <div class="row-opts">
-                <label class="remember">
-                    <input type="checkbox" id="remember" />
-                    <span class="check-box"></span>
-                    Ingat saya
-                </label>
-                <a href="#" class="forgot">Lupa kata sandi?</a>
+            <div class="field">
+                <label for="password_confirmation">Konfirmasi Kata Sandi</label>
+                <div class="input-wrap">
+                    <span class="input-icon">🔒</span>
+                    <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Ulangi kata sandi" required />
+                </div>
             </div>
 
-            <button type="submit" class="btn-login">Masuk</button>
+            <button type="submit" class="btn-login" style="margin-top: 1.5rem;">Daftar</button>
 
-            <div class="divider">atau masuk dengan</div>
+            <div class="divider">atau daftar dengan</div>
 
             <div class="socials">
                 <button class="btn-social">
@@ -592,7 +602,7 @@
             </div>
 
             <div class="signup-cta">
-                Belum punya akun? <a href="{{ route('register') }}">Daftar sekarang</a>
+                Sudah punya akun? <a href="{{ route('login') }}">Masuk sekarang</a>
             </div>
             </form>
 

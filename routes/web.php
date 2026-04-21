@@ -10,6 +10,9 @@ Route::get('/our-story', [HomeController::class, 'ourStory'])->name('our_story')
 Route::get('/katering', [HomeController::class, 'katering'])->name('katering');
 Route::get('/login', [AuthController::class, 'loginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
+
+Route::get('/register', [AuthController::class, 'registerForm'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
 Route::get('/dashboard', function () {
     return "Halaman Dashboard Toko Kue";
 })->middleware('auth');

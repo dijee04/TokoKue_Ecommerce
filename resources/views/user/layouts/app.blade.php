@@ -29,16 +29,30 @@
                     <span class="logo-seana">Seana</span>
                 </a>
             </div>
-            <div class="topbar-right" style="gap: 2rem;">
+            <div class="topbar-right" style="gap: 2rem; align-items: center; display: flex;">
                 <ul class="nav-links">
                     <li><a href="{{ route('beranda') }}">Home</a></li>
                     <li><a href="{{ route('menu') }}">Menu</a></li>
                     <li><a href="{{ route('our_story') }}">Our Story</a></li>
                     <li><a href="{{ route('katering') }}">Katering</a></li>
                 </ul>
+                @guest
                 <a href="/login" target="_blank" class="btn-pesan"
                     style="display:flex; align-items:center; gap:8px;"><i class="fab fa-whatsapp"
                         style="font-size:1.1rem;"></i> Pesan Sekarang</a>
+                @endguest
+                @auth
+                <div class="user-menu" style="display: flex; align-items: center; gap: 1rem;">
+                    <div style="display: flex; align-items: center; gap: 8px; color: #4a4a4a; font-weight: 500;">
+                        <i class="fas fa-user-circle" style="font-size: 1.8rem; color: #E8BC85;"></i>
+                        <span>{{ explode(' ', Auth::user()->name)[0] }}</span>
+                    </div>
+                    <form method="POST" action="/logout" style="margin: 0;">
+                        @csrf
+                        <button type="submit" class="btn-pesan" style="background: #e74c3c; padding: 0.5rem 1rem;"><i class="fas fa-sign-out-alt"></i> Keluar</button>
+                    </form>
+                </div>
+                @endauth
             </div>
         </div>
 
