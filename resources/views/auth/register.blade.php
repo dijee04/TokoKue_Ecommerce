@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Masuk — Dear Seana</title>
+    <title>Daftar — Dear Seana</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500&display=swap"
         rel="stylesheet" />
@@ -536,41 +536,61 @@
     <!-- ── Right Panel ── -->
     <div class="panel-right">
         <div class="form-wrapper">
+            <form method="POST" action="{{ route('register') }}">
+                @csrf
+                <div class="form-header">
+                <h1>Daftar Akun 🌸</h1>
+                <p>Buat akun baru untuk memesan kue impian</p>
+            </div>
 
-            <div class="form-header">
-                <h1>Selamat Datang 🌸</h1>
-                <p>Masuk ke akun Anda untuk memesan kue impian</p>
+            <div class="field">
+                <label for="name">Nama Lengkap</label>
+                <div class="input-wrap">
+                    <span class="input-icon">👤</span>
+                    <input type="text" id="name" name="name" value="{{ old('name') }}" placeholder="Nama Lengkap Anda" required autofocus />
+                </div>
+                @error('name')
+                    <span style="color: #ef4444; font-size: 0.8rem; display: block; margin-top: 0.25rem;">{{ $message }}</span>
+                @enderror
             </div>
 
             <div class="field">
                 <label for="email">Email</label>
                 <div class="input-wrap">
                     <span class="input-icon">✉️</span>
-                    <input type="email" id="email" placeholder="nama@email.com" autocomplete="email" />
+                    <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder="nama@email.com" autocomplete="email" required />
                 </div>
+                @error('email')
+                    <span style="color: #ef4444; font-size: 0.8rem; display: block; margin-top: 0.25rem;">{{ $message }}</span>
+                @enderror
+                @if (session('error'))
+                    <span style="color: #ef4444; font-size: 0.8rem; display: block; margin-top: 0.25rem;">{{ session('error') }}</span>
+                @endif
             </div>
 
             <div class="field">
                 <label for="password">Kata Sandi</label>
                 <div class="input-wrap">
                     <span class="input-icon">🔒</span>
-                    <input type="password" id="password" placeholder="Masukkan kata sandi" />
+                    <input type="password" id="password" name="password" placeholder="Masukkan kata sandi" required />
                     <span class="show-pwd" onclick="togglePwd()">👁</span>
+                </div>
+                @error('password')
+                    <span style="color: #ef4444; font-size: 0.8rem; display: block; margin-top: 0.25rem;">{{ $message }}</span>
+                @enderror
+            </div>
+
+            <div class="field">
+                <label for="password_confirmation">Konfirmasi Kata Sandi</label>
+                <div class="input-wrap">
+                    <span class="input-icon">🔒</span>
+                    <input type="password" id="password_confirmation" name="password_confirmation" placeholder="Ulangi kata sandi" required />
                 </div>
             </div>
 
-            <div class="row-opts">
-                <label class="remember">
-                    <input type="checkbox" id="remember" />
-                    <span class="check-box"></span>
-                    Ingat saya
-                </label>
-                <a href="#" class="forgot">Lupa kata sandi?</a>
-            </div>
+            <button type="submit" class="btn-login" style="margin-top: 1.5rem;">Daftar</button>
 
-            <button class="btn-login" onclick="handleLogin()">Masuk</button>
-
-            <div class="divider">atau masuk dengan</div>
+            <div class="divider">atau daftar dengan</div>
 
             <div class="socials">
                 <a href="{{ route('google.login') }}" class="btn-social" style="text-decoration: none;">
@@ -582,8 +602,9 @@
             </div>
 
             <div class="signup-cta">
-                Belum punya akun? <a href="#">Daftar sekarang</a>
+                Sudah punya akun? <a href="{{ route('login') }}">Masuk sekarang</a>
             </div>
+            </form>
 
         </div>
     </div>
@@ -594,37 +615,6 @@
             p.type = p.type === 'password' ? 'text' : 'password';
         }
 
-        function handleLogin() {
-            const email = document.getElementById('email').value.trim();
-            const pass = document.getElementById('password').value;
-            if (!email || !pass) {
-                shake();
-                return;
-            }
-            const btn = document.querySelector('.btn-login');
-            btn.textContent = '✓ Berhasil Masuk!';
-            btn.style.background = 'linear-gradient(135deg,#a8d8b0,#5db87a)';
-            btn.style.boxShadow = '0 6px 20px rgba(80,180,100,0.35)';
-        }
-
-        function shake() {
-            const fw = document.querySelector('.form-wrapper');
-            fw.style.animation = 'none';
-            fw.offsetHeight; // reflow
-            fw.style.animation = 'shake 0.4s ease';
-        }
-
-        const styleEl = document.createElement('style');
-        styleEl.textContent = `
-      @keyframes shake {
-        0%,100%{transform:translateX(0)}
-        20%{transform:translateX(-8px)}
-        40%{transform:translateX(8px)}
-        60%{transform:translateX(-5px)}
-        80%{transform:translateX(5px)}
-      }
-    `;
-        document.head.appendChild(styleEl);
     </script>
 </body>
 
