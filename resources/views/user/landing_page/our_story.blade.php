@@ -40,6 +40,45 @@
             </div>
         </section>
 
+        <!-- Part 4 - Keunggulan -->
+        <section class="journey-section bg-lite fade-in-on-scroll">
+            <div class="container">
+                <div class="keunggulan-header">
+                    <h2>Keunggulan</h2>
+                    <p>Kami berkomitmen untuk menyajikan produk kue dan roti yang terbaik dengan mengutamakan kualitas di setiap proses pembuatannya. Berikut adalah beberapa keunggulan yang membedakan produk kami:</p>
+                </div>
+                <div class="keunggulan-cards">
+                    <div class="keunggulan-card fade-in-on-scroll">
+                        <div class="keunggulan-icon">
+                            <i class="fas fa-leaf"></i>
+                        </div>
+                        <div class="keunggulan-card-text">
+                            <h3>Bahan Alami Berkualitas</h3>
+                            <p>Menggunakan bahan-bahan alami terbaik, tanpa tambahan pengawet, untuk menjamin rasa dan kesehatan dalam setiap gigitan.</p>
+                        </div>
+                    </div>
+                    <div class="keunggulan-card fade-in-on-scroll">
+                        <div class="keunggulan-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="keunggulan-card-text">
+                            <h3>Resep Istimewa</h3>
+                            <p>Setiap produk dibuat dari resep-resep khusus yang merupakan kombinasi rasa tradisional dan modern, menciptakan cita rasa yang otentik dan tak terlupakan.</p>
+                        </div>
+                    </div>
+                    <div class="keunggulan-card fade-in-on-scroll">
+                        <div class="keunggulan-icon">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <div class="keunggulan-card-text">
+                            <h3>Selalu Segar Setiap Hari</h3>
+                            <p>Kami memanggang setiap hari untuk memastikan produk yang disajikan selalu segar dan lezat ketika sampai di tangan Anda.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
     </div>
 @endsection
 
