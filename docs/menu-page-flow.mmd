@@ -1,0 +1,45 @@
+%%{init: {'theme': 'base', 'themeCSS': '.nodeLabel, .edgeLabel, .cluster-label { font-size: 24px !important; }'}}%%
+flowchart TD
+    A[User membuka halaman Menu] --> B[Blade me-render header menu]
+    B --> C{Variabel $produks tersedia dan tidak kosong?}
+
+    C -- Ya --> D[Gunakan data $produks dari controller atau database]
+    C -- Tidak --> E[Gunakan fallback data manual dengan collect]
+
+    D --> F[Filter produk menjadi Birthday Cake]
+    E --> F
+
+    F --> G[Filter produk menjadi Cookies]
+    G --> H[Filter produk menjadi Pastry and Croissant]
+    H --> I[Gabungkan id produk yang sudah terpakai]
+    I --> J[Ambil sisa produk sebagai Menu Lain]
+    J --> K[Bentuk groupedMenus]
+
+    K --> L[Render category tabs untuk kategori yang tidak kosong]
+    L --> M[Loop setiap kategori]
+    M --> N{Kategori punya item?}
+
+    N -- Tidak --> O[Lewati section]
+    N -- Ya --> P[Render section kategori]
+
+    P --> Q[Loop setiap produk]
+    Q --> R{Gambar produk tersedia?}
+
+    R -- Path lokal --> S[Buat URL dengan asset assets or img_produk]
+    R -- URL HTTP --> T[Gunakan URL gambar asli]
+    R -- Tidak ada --> U[Gunakan placeholder picsum]
+
+    S --> V[Render card produk]
+    T --> V
+    U --> V
+
+    V --> W[Tampilkan nama, deskripsi, harga, tombol Pesan Sekarang]
+    W --> X{Masih ada produk lain?}
+    X -- Ya --> Q
+    X -- Tidak --> Y{Masih ada kategori lain?}
+
+    Y -- Ya --> M
+    Y -- Tidak --> Z[CSS responsive dan hover effect diterapkan]
+    Z --> AA[JavaScript membaca section dan category tab]
+    AA --> AB[Saat scroll active tab diperbarui]
+    AB --> AC[User dapat klik tab untuk smooth scroll ke kategori]
