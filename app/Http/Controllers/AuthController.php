@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Str;
 use App\Models\User;
 
 class AuthController extends Controller
@@ -58,5 +60,45 @@ class AuthController extends Controller
         Auth::login($user);
 
         return redirect('/');
+    }
+
+    // Redirect to Google
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    // Handle Google Callback
+    public function handleGoogleCallback()
+    {
+        try {
+            $googleUser = Socialite::driver('google')->user();
+            
+            $user = User::where('email', $googleUser->getEmail())->first();
+
+            if ($user) {
+                // If user exists, update their google_id if it's not set
+                if (!$user->google_id) {
+                    $user->update([
+                        'google_id' => $googleUser->getId()
+                    ]);
+                }
+                Auth::login($user);
+            } else {
+                // If user doesn't exist, create a new one
+                $user = User::create([
+                    'name' => $googleUser->getName(),
+                    'email' => $googleUser->getEmail(),
+                    'google_id' => $googleUser->getId(),
+                    'password' => Hash::make(Str::random(24)) // Generate random password
+                ]);
+
+                Auth::login($user);
+            }
+
+            return redirect('/');
+        } catch (\Exception $e) {
+            return redirect('/login')->with('error', 'Terjadi kesalahan saat login dengan Google.');
+        }
     }
 }

@@ -583,9 +583,9 @@
             <div class="divider">atau masuk dengan</div>
 
             <div class="socials">
-                <button class="btn-social">
+                <a href="{{ route('google.login') }}" class="btn-social" style="text-decoration: none;">
                     <span class="s-icon">🔵</span> Google
-                </button>
+                </a>
                 <button class="btn-social">
                     <span class="s-icon">📘</span> Facebook
                 </button>
