@@ -1,6 +1,9 @@
 @extends('user.layouts.app')
 
 @section('content')
+    <!-- Midtrans Snap JS -->
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('services.midtrans.client_key') }}"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Menu Header dengan gambar latar belakang -->
     <section class="menu-header" style="background: linear-gradient(135deg, rgba(252,228,236,0.85), rgba(248,187,208,0.85)), url('https://i.pinimg.com/1200x/61/43/a2/6143a2c8975f04a2ed426936e99fb025.jpg'); background-size: cover; background-position: center; background-repeat: no-repeat; padding: 60px 20px; text-align: center;">
         <div class="container">
@@ -289,35 +292,7 @@
                 <!-- Dynamic options will be inserted here -->
             </div>
             
-            <!-- SECTION METODE PEMBAYARAN - UNTUK PESAN SEKARANG -->
-            <div id="paymentSection" class="payment-section" style="display: none; margin: 0 20px 20px 20px;">
-                <div class="payment-methods" style="padding: 15px; background: #fff5f0; border-radius: 15px;">
-                    <div class="payment-title" style="font-weight: 600; color: #6d4c41; margin-bottom: 12px; font-size: 14px; display: flex; align-items: center; gap: 8px;">
-                        <span>💳</span> Pilih Metode Pembayaran
-                    </div>
-                    <div class="payment-options" id="paymentOptions" style="display: flex; gap: 12px; flex-wrap: wrap;">
-                        <div class="payment-option selected" data-payment="bank" style="flex: 1; min-width: 100px; padding: 10px; border: 2px solid #f06292; border-radius: 12px; background: #fce4ec; cursor: pointer; text-align: center;">
-                            <span class="payment-icon" style="font-size: 24px; display: block; margin-bottom: 5px;">🏦</span>
-                            <span class="payment-name" style="font-size: 12px; font-weight: 600; color: #6d4c41;">Transfer Bank</span>
-                        </div>
-                        <div class="payment-option" data-payment="dana" style="flex: 1; min-width: 100px; padding: 10px; border: 2px solid #f0d0d0; border-radius: 12px; background: white; cursor: pointer; text-align: center;">
-                            <span class="payment-icon" style="font-size: 24px; display: block; margin-bottom: 5px;">💙</span>
-                            <span class="payment-name" style="font-size: 12px; font-weight: 600; color: #6d4c41;">DANA</span>
-                        </div>
-                        <div class="payment-option" data-payment="gopay" style="flex: 1; min-width: 100px; padding: 10px; border: 2px solid #f0d0d0; border-radius: 12px; background: white; cursor: pointer; text-align: center;">
-                            <span class="payment-icon" style="font-size: 24px; display: block; margin-bottom: 5px;">💚</span>
-                            <span class="payment-name" style="font-size: 12px; font-weight: 600; color: #6d4c41;">GoPay</span>
-                        </div>
-                    </div>
-                    <div id="paymentDetails" class="payment-details" style="margin-top: 12px; padding: 12px; background: #fff; border-radius: 12px; border: 1px solid #f0e0d0; font-size: 12px;">
-                        <p>📋 Transfer ke rekening berikut:</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">🏦 Bank BCA</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">🔢 1234567890</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">👤 a.n. Sweet & Savory Seana</p>
-                        <p style="margin-top: 8px; font-size: 11px; color: #999;">⚠️ Konfirmasi pembayaran via WhatsApp setelah transfer</p>
-                    </div>
-                </div>
-            </div>
+            <!-- SECTION METODE PEMBAYARAN - DIHAPUS -->
             
             <div class="modal-footer" style="padding: 15px 20px 20px; border-top: 1px solid #f0e0d0; background: #FFF8F0; border-radius: 0 0 25px 25px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
@@ -326,7 +301,7 @@
                 </div>
                 <div style="display: flex; gap: 12px;">
                     <button id="cancelOrderBtn" style="flex: 1; padding: 12px; border-radius: 40px; border: 1px solid #f0c0d0; background: white; color: #f06292; font-weight: 600; cursor: pointer;">Batal</button>
-                    <button id="confirmOrderBtn" style="flex: 1; padding: 12px; border-radius: 40px; border: none; background: linear-gradient(135deg, #25D366, #128C7E); color: white; font-weight: 600; cursor: pointer;">💬 Pesan Sekarang via WA</button>
+                    <button id="confirmOrderBtn" style="flex: 1; padding: 12px; border-radius: 40px; border: none; background: linear-gradient(135deg, #25D366, #128C7E); color: white; font-weight: 600; cursor: pointer;">💳 Lanjut Pembayaran</button>
                 </div>
             </div>
         </div>
@@ -390,26 +365,8 @@
         // Nomor WhatsApp tujuan
         const WA_PHONE_NUMBER = '6281234567890';
         
-        // Nomor rekening dan payment info
-        const PAYMENT_INFO = {
-            bank: {
-                name: 'Bank BCA',
-                accountNumber: '1234567890',
-                accountName: 'Sweet & Savory Seana'
-            },
-            dana: {
-                number: '081234567890',
-                name: 'Sweet & Savory'
-            },
-            gopay: {
-                number: '081234567890',
-                name: 'Sweet & Savory'
-            }
-        };
-        
         // Cart array to store items
         let cart = [];
-        let selectedPaymentMethod = 'bank';
         
         document.addEventListener('DOMContentLoaded', function() {
             // Active tab on scroll
@@ -515,35 +472,7 @@
                 }
             }
             
-            // Fungsi untuk update payment details
-            function updatePaymentDetails(method) {
-                const paymentDetailsDiv = document.getElementById('cartPaymentDetails');
-                if (!paymentDetailsDiv) return;
-                
-                if (method === 'bank') {
-                    paymentDetailsDiv.innerHTML = `
-                        <p>📋 Transfer ke rekening berikut:</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">🏦 ${PAYMENT_INFO.bank.name}</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">🔢 ${PAYMENT_INFO.bank.accountNumber}</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">👤 a.n. ${PAYMENT_INFO.bank.accountName}</p>
-                        <p style="margin-top: 8px; font-size: 11px; color: #999;">⚠️ Konfirmasi pembayaran via WhatsApp setelah transfer</p>
-                    `;
-                } else if (method === 'dana') {
-                    paymentDetailsDiv.innerHTML = `
-                        <p>📱 Kirim ke nomor DANA:</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">💙 ${PAYMENT_INFO.dana.number}</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">👤 a.n. ${PAYMENT_INFO.dana.name}</p>
-                        <p style="margin-top: 8px; font-size: 11px; color: #999;">⚠️ Konfirmasi pembayaran via WhatsApp setelah transfer</p>
-                    `;
-                } else if (method === 'gopay') {
-                    paymentDetailsDiv.innerHTML = `
-                        <p>📱 Kirim ke nomor GoPay:</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">💚 ${PAYMENT_INFO.gopay.number}</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">👤 a.n. ${PAYMENT_INFO.gopay.name}</p>
-                        <p style="margin-top: 8px; font-size: 11px; color: #999;">⚠️ Konfirmasi pembayaran via WhatsApp setelah transfer</p>
-                    `;
-                }
-            }
+            // Payment details functions removed as they are no longer needed for Midtrans integration.
             
             function showCartModal() {
                 if (cart.length === 0) {
@@ -586,57 +515,8 @@
                     `;
                 });
                 
-                // TAMBAHKAN METODE PEMBAYARAN DI CART MODAL
+                // Metod pembayaran manual dihapus untuk Midtrans
                 cartHtml += `
-                            </div>
-                            <div class="payment-methods" style="margin: 0 20px 20px 20px; padding: 15px; background: #fff5f0; border-radius: 15px;">
-                                <div class="payment-title" style="font-weight: 600; color: #6d4c41; margin-bottom: 12px; font-size: 14px; display: flex; align-items: center; gap: 8px;">
-                                    <span>💳</span> Pilih Metode Pembayaran
-                                </div>
-                                <div class="payment-options" id="cartPaymentOptions" style="display: flex; gap: 12px; flex-wrap: wrap;">
-                                    <div class="payment-option ${selectedPaymentMethod === 'bank' ? 'selected' : ''}" data-payment="bank" style="flex: 1; min-width: 100px; padding: 10px; border: 2px solid ${selectedPaymentMethod === 'bank' ? '#f06292' : '#f0d0d0'}; border-radius: 12px; background: ${selectedPaymentMethod === 'bank' ? '#fce4ec' : 'white'}; cursor: pointer; text-align: center;">
-                                        <span class="payment-icon" style="font-size: 24px; display: block; margin-bottom: 5px;">🏦</span>
-                                        <span class="payment-name" style="font-size: 12px; font-weight: 600; color: #6d4c41;">Transfer Bank</span>
-                                    </div>
-                                    <div class="payment-option ${selectedPaymentMethod === 'dana' ? 'selected' : ''}" data-payment="dana" style="flex: 1; min-width: 100px; padding: 10px; border: 2px solid ${selectedPaymentMethod === 'dana' ? '#f06292' : '#f0d0d0'}; border-radius: 12px; background: ${selectedPaymentMethod === 'dana' ? '#fce4ec' : 'white'}; cursor: pointer; text-align: center;">
-                                        <span class="payment-icon" style="font-size: 24px; display: block; margin-bottom: 5px;">💙</span>
-                                        <span class="payment-name" style="font-size: 12px; font-weight: 600; color: #6d4c41;">DANA</span>
-                                    </div>
-                                    <div class="payment-option ${selectedPaymentMethod === 'gopay' ? 'selected' : ''}" data-payment="gopay" style="flex: 1; min-width: 100px; padding: 10px; border: 2px solid ${selectedPaymentMethod === 'gopay' ? '#f06292' : '#f0d0d0'}; border-radius: 12px; background: ${selectedPaymentMethod === 'gopay' ? '#fce4ec' : 'white'}; cursor: pointer; text-align: center;">
-                                        <span class="payment-icon" style="font-size: 24px; display: block; margin-bottom: 5px;">💚</span>
-                                        <span class="payment-name" style="font-size: 12px; font-weight: 600; color: #6d4c41;">GoPay</span>
-                                    </div>
-                                </div>
-                                <div id="cartPaymentDetails" class="payment-details" style="margin-top: 12px; padding: 12px; background: #fff; border-radius: 12px; border: 1px solid #f0e0d0; font-size: 12px;">
-                `;
-                
-                // Add payment details based on selected method
-                if (selectedPaymentMethod === 'bank') {
-                    cartHtml += `
-                        <p>📋 Transfer ke rekening berikut:</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">🏦 ${PAYMENT_INFO.bank.name}</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">🔢 ${PAYMENT_INFO.bank.accountNumber}</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">👤 a.n. ${PAYMENT_INFO.bank.accountName}</p>
-                        <p style="margin-top: 8px; font-size: 11px; color: #999;">⚠️ Konfirmasi pembayaran via WhatsApp setelah transfer</p>
-                    `;
-                } else if (selectedPaymentMethod === 'dana') {
-                    cartHtml += `
-                        <p>📱 Kirim ke nomor DANA:</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">💙 ${PAYMENT_INFO.dana.number}</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">👤 a.n. ${PAYMENT_INFO.dana.name}</p>
-                        <p style="margin-top: 8px; font-size: 11px; color: #999;">⚠️ Konfirmasi pembayaran via WhatsApp setelah transfer</p>
-                    `;
-                } else if (selectedPaymentMethod === 'gopay') {
-                    cartHtml += `
-                        <p>📱 Kirim ke nomor GoPay:</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">💚 ${PAYMENT_INFO.gopay.number}</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">👤 a.n. ${PAYMENT_INFO.gopay.name}</p>
-                        <p style="margin-top: 8px; font-size: 11px; color: #999;">⚠️ Konfirmasi pembayaran via WhatsApp setelah transfer</p>
-                    `;
-                }
-                
-                cartHtml += `
-                                </div>
                             </div>
                             <div class="modal-footer" style="padding: 15px 20px 20px; border-top: 1px solid #f0e0d0; background: #FFF8F0; border-radius: 0 0 25px 25px;">
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
@@ -663,25 +543,7 @@
                 const clearBtn = document.getElementById('clearCartBtn');
                 const checkoutBtn = document.getElementById('checkoutCartBtn');
                 
-                // Payment option click handlers untuk cart modal
-                const cartPaymentOptions = document.querySelectorAll('#cartPaymentOptions .payment-option');
-                cartPaymentOptions.forEach(option => {
-                    option.addEventListener('click', () => {
-                        const paymentMethod = option.dataset.payment;
-                        selectedPaymentMethod = paymentMethod;
-                        
-                        cartPaymentOptions.forEach(opt => {
-                            opt.style.borderColor = '#f0d0d0';
-                            opt.style.background = 'white';
-                            opt.classList.remove('selected');
-                        });
-                        option.style.borderColor = '#f06292';
-                        option.style.background = '#fce4ec';
-                        option.classList.add('selected');
-                        
-                        updatePaymentDetails(paymentMethod);
-                    });
-                });
+                // Handlers untuk pilihan pembayaran lama dihapus
                 
                 closeBtn.addEventListener('click', () => {
                     cartModal.remove();
@@ -771,63 +633,97 @@
                 return (basePrice + extraPrice) * item.quantity;
             }
             
-            function getPaymentMethodText(method) {
-                switch(method) {
-                    case 'bank': return '🏦 Transfer Bank';
-                    case 'dana': return '💙 DANA';
-                    case 'gopay': return '💚 GoPay';
-                    default: return '🏦 Transfer Bank';
-                }
-            }
+            // Fungsi pembantu pembayaran lama dihapus
             
-            function getPaymentDetailsText(method) {
-                switch(method) {
-                    case 'bank':
-                        return `${PAYMENT_INFO.bank.name} - ${PAYMENT_INFO.bank.accountNumber} a.n. ${PAYMENT_INFO.bank.accountName}`;
-                    case 'dana':
-                        return `DANA - ${PAYMENT_INFO.dana.number} a.n. ${PAYMENT_INFO.dana.name}`;
-                    case 'gopay':
-                        return `GoPay - ${PAYMENT_INFO.gopay.number} a.n. ${PAYMENT_INFO.gopay.name}`;
-                    default:
-                        return `${PAYMENT_INFO.bank.name} - ${PAYMENT_INFO.bank.accountNumber} a.n. ${PAYMENT_INFO.bank.accountName}`;
-                }
+            function checkoutMidtrans(items, total, messageWA) {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                showToastMessage('Sedang memproses pembayaran...');
+                
+                fetch('/checkout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        items: items,
+                        total: total
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.snapToken) {
+                        window.snap.pay(data.snapToken, {
+                            onSuccess: function(result) {
+                                showToastMessage('Pembayaran berhasil!');
+                                // Bersihkan keranjang
+                                cart = [];
+                                localStorage.removeItem('sweetSavoryCart');
+                                updateCartBadge();
+                                const cartModal = document.getElementById('cartModal');
+                                if(cartModal) cartModal.remove();
+                                
+                                const waLink = `https://api.whatsapp.com/send/?phone=${WA_PHONE_NUMBER}&text=${messageWA}&type=phone_number&app_absent=0`;
+                                window.open(waLink, '_blank');
+                            },
+                            onPending: function(result) {
+                                showToastMessage('Menunggu pembayaran...');
+                                const waLink = `https://api.whatsapp.com/send/?phone=${WA_PHONE_NUMBER}&text=${messageWA}&type=phone_number&app_absent=0`;
+                                window.open(waLink, '_blank');
+                            },
+                            onError: function(result) {
+                                showToastMessage('Pembayaran gagal.');
+                            },
+                            onClose: function() {
+                                showToastMessage('Anda menutup popup pembayaran.');
+                            }
+                        });
+                    } else {
+                        showToastMessage('Gagal mendapatkan token pembayaran.');
+                        console.error(data);
+                    }
+                })
+                .catch(err => {
+                    showToastMessage('Terjadi kesalahan koneksi.');
+                    console.error(err);
+                });
             }
-            
+
             function sendCartToWhatsAppWithPayment() {
                 if (cart.length === 0) {
                     showToastMessage('Keranjang kosong');
                     return;
                 }
                 
-                let message = 'Halo Dear Seana,%0A%0A*PESANAN BARU DARI KERANJANG*%0A%0A';
                 let grandTotal = 0;
+                let itemsList = [];
+                let messageWA = 'Halo Dear Seana,%0A%0A*PESANAN BARU DARI KERANJANG*%0A%0A';
                 
                 cart.forEach((item, idx) => {
                     let selectionsText = '';
                     for (const [key, value] of Object.entries(item.selections)) {
                         selectionsText += `   • ${key}: ${value}\n`;
                     }
-                    message += `*${idx+1}. ${item.name}*%0A`;
-                    message += `   📦 Jumlah: ${item.quantity}%0A`;
+                    messageWA += `*${idx+1}. ${item.name}*%0A`;
+                    messageWA += `   📦 Jumlah: ${item.quantity}%0A`;
                     if (selectionsText) {
-                        message += `   📋 Pilihan:%0A${selectionsText}`;
+                        messageWA += `   📋 Pilihan:%0A${selectionsText}`;
                     }
-                    message += `   💰 Subtotal: ${formatRupiah(item.total_price)}%0A%0A`;
+                    messageWA += `   💰 Subtotal: ${formatRupiah(item.total_price)}%0A%0A`;
                     grandTotal += item.total_price;
+                    
+                    itemsList.push({
+                        id: item.id,
+                        price: item.total_price / item.quantity,
+                        quantity: item.quantity,
+                        name: item.name
+                    });
                 });
                 
-                message += `*TOTAL: ${formatRupiah(grandTotal)}*%0A%0A`;
-                message += `*METODE PEMBAYARAN:* ${getPaymentMethodText(selectedPaymentMethod)}%0A`;
-                message += `*DETAIL PEMBAYARAN:* ${getPaymentDetailsText(selectedPaymentMethod)}%0A%0A`;
-                message += `📌 *CARA PEMBAYARAN:*%0A`;
-                message += `1. Transfer sesuai nominal total belanja%0A`;
-                message += `2. Konfirmasi pembayaran dengan mengirim bukti transfer%0A`;
-                message += `3. Pesanan akan diproses setelah pembayaran dikonfirmasi%0A%0A`;
-                message += `Terima kasih! 🙏`;
+                messageWA += `*TOTAL: ${formatRupiah(grandTotal)}*%0A%0A`;
+                messageWA += `Terima kasih! 🙏`;
                 
-                const waLink = `https://api.whatsapp.com/send/?phone=${WA_PHONE_NUMBER}&text=${message}&type=phone_number&app_absent=0`;
-                window.open(waLink, '_blank');
-                showToastMessage(`📱 Mengirim pesanan ke WhatsApp...`);
+                checkoutMidtrans(itemsList, grandTotal, messageWA);
             }
             
             function formatRupiah(angka) {
@@ -919,54 +815,9 @@
                 }
             }
             
-            function updateOrderPaymentDetails(method) {
-                const paymentDetailsDiv = document.getElementById('paymentDetails');
-                if (!paymentDetailsDiv) return;
-                
-                if (method === 'bank') {
-                    paymentDetailsDiv.innerHTML = `
-                        <p>📋 Transfer ke rekening berikut:</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">🏦 ${PAYMENT_INFO.bank.name}</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">🔢 ${PAYMENT_INFO.bank.accountNumber}</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">👤 a.n. ${PAYMENT_INFO.bank.accountName}</p>
-                        <p style="margin-top: 8px; font-size: 11px; color: #999;">⚠️ Konfirmasi pembayaran via WhatsApp setelah transfer</p>
-                    `;
-                } else if (method === 'dana') {
-                    paymentDetailsDiv.innerHTML = `
-                        <p>📱 Kirim ke nomor DANA:</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">💙 ${PAYMENT_INFO.dana.number}</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">👤 a.n. ${PAYMENT_INFO.dana.name}</p>
-                        <p style="margin-top: 8px; font-size: 11px; color: #999;">⚠️ Konfirmasi pembayaran via WhatsApp setelah transfer</p>
-                    `;
-                } else if (method === 'gopay') {
-                    paymentDetailsDiv.innerHTML = `
-                        <p>📱 Kirim ke nomor GoPay:</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">💚 ${PAYMENT_INFO.gopay.number}</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">👤 a.n. ${PAYMENT_INFO.gopay.name}</p>
-                        <p style="margin-top: 8px; font-size: 11px; color: #999;">⚠️ Konfirmasi pembayaran via WhatsApp setelah transfer</p>
-                    `;
-                }
-            }
+            // Fungsi detail pembayaran order dihapus
             
-            function initOrderPaymentHandlers() {
-                const paymentOptions = document.querySelectorAll('#paymentOptions .payment-option');
-                paymentOptions.forEach(option => {
-                    option.removeEventListener('click', () => {});
-                    option.addEventListener('click', () => {
-                        const paymentMethod = option.dataset.payment;
-                        selectedPaymentMethod = paymentMethod;
-                        paymentOptions.forEach(opt => {
-                            opt.style.borderColor = '#f0d0d0';
-                            opt.style.background = 'white';
-                            opt.classList.remove('selected');
-                        });
-                        option.style.borderColor = '#f06292';
-                        option.style.background = '#fce4ec';
-                        option.classList.add('selected');
-                        updateOrderPaymentDetails(paymentMethod);
-                    });
-                });
-            }
+            // Handlers pembayaran order dihapus
             
             function buildModalContent(product, actionType = 'order') {
                 currentProduct = product;
@@ -978,10 +829,8 @@
                 modalDesc.textContent = product.deskripsi || 'Nikmati kelezatan produk ini';
                 
                 if (actionType === 'order') {
-                    paymentSection.style.display = 'block';
-                    confirmBtn.innerHTML = '💬 Pesan Sekarang via WA';
+                    confirmBtn.innerHTML = '💳 Lanjut Pembayaran';
                 } else {
-                    paymentSection.style.display = 'none';
                     confirmBtn.innerHTML = '🛒 Tambah ke Keranjang';
                 }
                 
@@ -1099,7 +948,7 @@
                 modal.style.display = 'flex';
                 document.body.style.overflow = 'hidden';
                 if (actionType === 'order') {
-                    setTimeout(initOrderPaymentHandlers, 50);
+                    // initOrderPaymentHandlers removed
                 }
             }
             
@@ -1125,24 +974,16 @@
                     }
                 }
                 
-                let paymentText = '';
-                let paymentDetailText = '';
-                if (selectedPaymentMethod === 'bank') {
-                    paymentText = '🏦 Transfer Bank';
-                    paymentDetailText = `${PAYMENT_INFO.bank.name} - ${PAYMENT_INFO.bank.accountNumber} a.n. ${PAYMENT_INFO.bank.accountName}`;
-                } else if (selectedPaymentMethod === 'dana') {
-                    paymentText = '💙 DANA';
-                    paymentDetailText = `${PAYMENT_INFO.dana.number} a.n. ${PAYMENT_INFO.dana.name}`;
-                } else {
-                    paymentText = '💚 GoPay';
-                    paymentDetailText = `${PAYMENT_INFO.gopay.number} a.n. ${PAYMENT_INFO.gopay.name}`;
-                }
+                let itemsList = [{
+                    id: currentProduct.id,
+                    price: total / currentQuantity,
+                    quantity: currentQuantity,
+                    name: productName
+                }];
                 
-                const message = `Halo Dear Seana,%0A%0A*PESANAN BARU*%0A%0A🍰 *${productName}*%0A📦 Jumlah: ${currentQuantity}%0A${selectionsText}%0A💰 *Total: ${formatRupiah(total)}*%0A%0A*METODE PEMBAYARAN:* ${paymentText}%0A*DETAIL:* ${paymentDetailText}%0A%0A📌 *CARA PEMBAYARAN:*%0A1. Transfer sesuai nominal total belanja%0A2. Konfirmasi pembayaran dengan mengirim bukti transfer%0A3. Pesanan akan diproses setelah pembayaran dikonfirmasi%0A%0ATerima kasih! 🙏`;
+                const messageWA = `Halo Dear Seana,%0A%0A*PESANAN BARU*%0A%0A🍰 *${productName}*%0A📦 Jumlah: ${currentQuantity}%0A${selectionsText}%0A💰 *Total: ${formatRupiah(total)}*%0A%0ATerima kasih! 🙏`;
                 
-                const waLink = `https://api.whatsapp.com/send/?phone=${WA_PHONE_NUMBER}&text=${message}&type=phone_number&app_absent=0`;
-                window.open(waLink, '_blank');
-                showToastMessage(`📱 Mengirim pesanan ke WhatsApp...`);
+                checkoutMidtrans(itemsList, total, messageWA);
                 closeModal();
             }
             

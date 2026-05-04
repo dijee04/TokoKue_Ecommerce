@@ -8,6 +8,7 @@ Route::get('/', [HomeController::class, 'index'])->name('beranda');
 Route::get('/menu', [HomeController::class, 'menu'])->name('menu');
 Route::get('/our-story', [HomeController::class, 'ourStory'])->name('our_story');
 Route::get('/katering', [HomeController::class, 'katering'])->name('katering');
+Route::post('/checkout', [\App\Http\Controllers\User\CheckoutController::class, 'process'])->name('checkout.process');
 
 // Route Admin
 Route::prefix('admin')->name('admin.')->group(function () {
