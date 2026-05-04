@@ -1,6 +1,9 @@
 @extends('user.layouts.app')
 
 @section('content')
+    <!-- Midtrans Snap JS -->
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('services.midtrans.client_key') }}"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Menu Header dengan efek partikel dan parallax 3D -->
     <section class="menu-header" style="background: linear-gradient(135deg, rgba(252,228,236,0.92), rgba(248,187,208,0.92)), url('https://i.pinimg.com/1200x/61/43/a2/6143a2c8975f04a2ed426936e99fb025.jpg'); background-size: cover; background-position: center; background-attachment: fixed; padding: 100px 20px; text-align: center; position: relative; overflow: hidden;">
         <!-- Efek partikel animasi -->
@@ -1162,6 +1165,7 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 message += '*📋 DETAIL PESANAN:*%0A';
                 message += '━━━━━━━━━━━━━━━%0A%0A';
                 let grandTotal = 0;
+                let itemsList = [];
                 
                 cart.forEach((item, idx) => {
                     let selectionsText = '';
@@ -1175,21 +1179,20 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                     }
                     message += `   💰 Subtotal: ${formatRupiah(item.total_price)}%0A%0A`;
                     grandTotal += item.total_price;
+                    
+                    itemsList.push({
+                        id: item.id,
+                        price: item.total_price / item.quantity,
+                        quantity: item.quantity,
+                        name: item.name
+                    });
                 });
                 
                 message += `━━━━━━━━━━━━━━━%0A`;
                 message += `*💰 TOTAL: ${formatRupiah(grandTotal)}*%0A%0A`;
-                message += `*💳 METODE PEMBAYARAN:* ${getPaymentMethodText(selectedPaymentMethod)}%0A`;
-                message += `*📱 DETAIL PEMBAYARAN:* ${getPaymentDetailsText(selectedPaymentMethod)}%0A%0A`;
-                message += `*📌 CARA PEMBAYARAN:*%0A`;
-                message += `1️⃣ Transfer sesuai nominal total belanja%0A`;
-                message += `2️⃣ Konfirmasi pembayaran dengan mengirim bukti transfer%0A`;
-                message += `3️⃣ Pesanan akan diproses setelah pembayaran dikonfirmasi%0A%0A`;
                 message += `✨ Terima kasih telah berbelanja di Sweet & Savory! ✨`;
                 
-                const waLink = `https://api.whatsapp.com/send/?phone=${WA_PHONE_NUMBER}&text=${message}&type=phone_number&app_absent=0`;
-                window.open(waLink, '_blank');
-                showToastMessage(`📱 Mengirim pesanan ke WhatsApp...`);
+                checkoutMidtrans(itemsList, grandTotal, message);
             }
             
             function formatRupiah(angka) {
@@ -1485,25 +1488,71 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                     }
                 }
                 
-                let paymentText = '';
-                let paymentDetailText = '';
-                if (selectedPaymentMethod === 'bank') {
-                    paymentText = '🏦 Transfer Bank';
-                    paymentDetailText = `${PAYMENT_INFO.bank.name} - ${PAYMENT_INFO.bank.accountNumber} a.n. ${PAYMENT_INFO.bank.accountName}`;
-                } else if (selectedPaymentMethod === 'dana') {
-                    paymentText = '💙 DANA';
-                    paymentDetailText = `${PAYMENT_INFO.dana.number} a.n. ${PAYMENT_INFO.dana.name}`;
-                } else {
-                    paymentText = '💚 GoPay';
-                    paymentDetailText = `${PAYMENT_INFO.gopay.number} a.n. ${PAYMENT_INFO.gopay.name}`;
-                }
+                let itemsList = [{
+                    id: currentProduct.id,
+                    price: total / currentQuantity,
+                    quantity: currentQuantity,
+                    name: productName
+                }];
                 
-                const message = `🍰 *SWEET & SAVORY* 🍰%0A%0AHalo Dear Seana,%0A%0A*PESANAN BARU*%0A%0A✨ *${productName}*%0A📦 Jumlah: ${currentQuantity}%0A${selectionsText}%0A💰 *Total: ${formatRupiah(total)}*%0A%0A*METODE PEMBAYARAN:* ${paymentText}%0A*DETAIL:* ${paymentDetailText}%0A%0A📌 *CARA PEMBAYARAN:*%0A1️⃣ Transfer sesuai nominal total belanja%0A2️⃣ Konfirmasi pembayaran dengan mengirim bukti transfer%0A3️⃣ Pesanan akan diproses setelah pembayaran dikonfirmasi%0A%0ATerima kasih! 🙏`;
+                const messageWA = `🍰 *SWEET & SAVORY* 🍰%0A%0AHalo Dear Seana,%0A%0A*PESANAN BARU*%0A%0A✨ *${productName}*%0A📦 Jumlah: ${currentQuantity}%0A${selectionsText}%0A💰 *Total: ${formatRupiah(total)}*%0A%0ATerima kasih! 🙏`;
                 
-                const waLink = `https://api.whatsapp.com/send/?phone=${WA_PHONE_NUMBER}&text=${message}&type=phone_number&app_absent=0`;
-                window.open(waLink, '_blank');
-                showToastMessage(`📱 Mengirim pesanan ke WhatsApp...`);
+                checkoutMidtrans(itemsList, total, messageWA);
                 closeModal();
+            }
+
+            function checkoutMidtrans(items, total, messageWA) {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                showToastMessage('⏳ Sedang memproses pembayaran...');
+                
+                fetch('/checkout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    body: JSON.stringify({
+                        items: items,
+                        total: total
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.snapToken) {
+                        window.snap.pay(data.snapToken, {
+                            onSuccess: function(result) {
+                                showToastMessage('✅ Pembayaran berhasil!');
+                                // Bersihkan keranjang
+                                cart = [];
+                                localStorage.removeItem('sweetSavoryCart');
+                                updateCartBadge();
+                                const cartModal = document.getElementById('cartModal');
+                                if(cartModal) cartModal.remove();
+                                
+                                const waLink = `https://api.whatsapp.com/send/?phone=${WA_PHONE_NUMBER}&text=${messageWA}&type=phone_number&app_absent=0`;
+                                window.open(waLink, '_blank');
+                            },
+                            onPending: function(result) {
+                                showToastMessage('⏳ Menunggu pembayaran...');
+                                const waLink = `https://api.whatsapp.com/send/?phone=${WA_PHONE_NUMBER}&text=${messageWA}&type=phone_number&app_absent=0`;
+                                window.open(waLink, '_blank');
+                            },
+                            onError: function(result) {
+                                showToastMessage('❌ Pembayaran gagal.');
+                            },
+                            onClose: function() {
+                                showToastMessage('ℹ️ Anda menutup popup pembayaran.');
+                            }
+                        });
+                    } else {
+                        showToastMessage('❌ Gagal mendapatkan token pembayaran.');
+                        console.error(data);
+                    }
+                })
+                .catch(err => {
+                    showToastMessage('❌ Terjadi kesalahan koneksi.');
+                    console.error(err);
+                });
             }
             
             // Tombol Masukkan Keranjang
