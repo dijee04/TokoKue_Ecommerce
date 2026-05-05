@@ -95,7 +95,7 @@
             ]
         ],
         
-        // Chocolate Cake (dengan gambar varian)
+        // Chocolate Cake 
         (object) [
             'id' => 8,
             'nama_produk' => 'Chocolate Cake',
@@ -108,7 +108,7 @@
                 (object) ['type' => 'radio', 'label' => 'Ukuran', 'key' => 'size', 'choices' => ['Small (250g)', 'Medium (500g) +30k', 'Large (1kg) +80k']]
             ],
             'variant_images' => [
-                'Dark Chocolate' => 'Kue/chocolate_cake_dark.png',
+                'Dark Chocolate' => 'Kue/chocolate_cake.png',
                 'Milk Chocolate' => 'Kue/chocolate_cake_milk.png',
                 'White Chocolate' => 'Kue/chocolate_cake_white.png'
             ]
