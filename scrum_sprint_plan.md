@@ -1,66 +1,93 @@
-# Perencanaan Scrum & Backlog Produk: Sistem E-Commerce Toko Kue
+# Perencanaan Scrum & Backlog Produk: E-Commerce Anis Bakery (Versi Terpadu)
+
+Dokumen ini merupakan pembaruan dari perencanaan sebelumnya, dengan menggabungkan evaluasi **UI/UX terbaru** dan fitur canggih **SPK SAW (Personalisasi)** ke dalam alur kerja pengembangan yang komprehensif.
 
 ## 1. Visi Produk
-Membangun platform e-commerce toko kue yang memiliki tampilan elegan dan premium, memberikan kemudahan bagi pelanggan dalam memilih dan memesan kue, serta menyediakan dasbor manajemen yang komprehensif untuk pengelola toko.
-
-## 2. Backlog Produk (Product Backlog)
-Ini adalah daftar fitur utama yang harus dibangun, dipecah menjadi beberapa "Epik" (Epic) dan "Cerita Pengguna" (User Story).
-
-### Epik 1: Tampilan Antarmuka (UI/UX) & Beranda
-- **Cerita Pengguna 1.1:** Sebagai pengunjung, saya ingin melihat halaman utama dengan desain menawan (termasuk Hero Section dan bagian Keunggulan Toko), agar saya merasa yakin dengan kualitas premium toko ini.
-- **Cerita Pengguna 1.2:** Sebagai pengunjung, saya ingin website merespons dengan baik saat dibuka di perangkat pita seluler atau komputer (responsif).
-
-### Epik 2: Manajemen Pengguna & Pendaftaran
-- **Cerita Pengguna 2.1:** Sebagai pelanggan, saya dapat mendaftar dan masuk ke dalam sistem, agar saya bisa melacak riwayat pesanan saya.
-- **Cerita Pengguna 2.2:** Sebagai pengelola toko (Admin), saya bisa masuk secara khusus ke dalam portal Dasbor Admin untuk mengontrol keseluruhan toko.
-
-### Epik 3: Katalog Produk
-- **Cerita Pengguna 3.1:** Sebagai pengunjung, saya bisa melihat daftar seluruh produk dan menyaringnya berdasarkan Kategori (misal: Roti, Kue Kering, Kue Ulang Tahun).
-- **Cerita Pengguna 3.2:** Sebagai Admin, saya bisa menambah, mengubah, atau menghapus data produk (termasuk foto produk, harga, stok, dan deskripsi).
-
-### Epik 4: Pemesanan & Keranjang Belanja (Checkout)
-- **Cerita Pengguna 4.1:** Sebagai pelanggan, saya bisa memasukkan produk ke dalam Keranjang Belanja dan menyesuaikan jumlah kuantitas pesanan.
-- **Cerita Pengguna 4.2:** Sebagai pelanggan, saya bisa memproses pesanan (menuju halaman Checkout), mengisi alamat pengiriman, dan mengetahui rincian total pembayaran.
-
-### Epik 5: Manajemen Pesanan
-- **Cerita Pengguna 5.1:** Sebagai pelanggan, saya ingin bisa melihat riwayat pesanan dan status paket pesanan saya pada dasbor akun saya.
-- **Cerita Pengguna 5.2:** Sebagai Admin, saya bisa merubah status pesanan pelanggan (contoh: 'Diproses', 'Dikirim', 'Selesai'), agar sistem pencatatan inventaris tetap selaras.
+Membangun platform e-commerce toko kue yang tidak hanya memiliki tampilan visual premium, tetapi juga ditopang oleh sistem *backend* yang tangguh (keranjang basis data, autentikasi) dan diperkaya dengan kecerdasan buatan (Sistem Pendukung Keputusan / SAW) untuk memberikan rekomendasi produk yang sangat personal bagi setiap pelanggan.
 
 ---
 
-## 3. Perencanaan Sprint (Sprint Planning) 
+## 2. Backlog Produk (Product Backlog)
 
-Berikut adalah rincian tugas untuk 2 Sprint pertama (dengan asumsi setiap Sprint memiliki durasi 2 Minggu).
+### Epik 1: Autentikasi & Hak Akses (Prioritas Utama)
+- **Cerita Pengguna 1.1:** Sebagai pelanggan, saya bisa mendaftar akun dan *login* dengan aman agar data keranjang dan riwayat pesanan saya tidak hilang.
+- **Cerita Pengguna 1.2:** Sebagai Admin, saya memiliki hak akses (*Role*) khusus untuk masuk ke Dasbor Admin yang dilindungi dari akses publik.
 
-### Sprint 1
-**Sasaran Sprint (Sprint Goal):** Menyelesaikan fondasi struktur awal, pangkalan data (database), UI bagian depan (Beranda), dan kerangka manajemen produk.
+### Epik 2: Tampilan Antarmuka (UI/UX) & Optimalisasi
+- **Cerita Pengguna 2.1:** Sebagai pengembang, saya memisahkan CSS/JS yang menumpuk di `home.blade.php` ke file aset terpisah agar halaman memuat lebih cepat (Optimalisasi UX).
+- **Cerita Pengguna 2.2:** Sebagai pengunjung, saya bisa mengklik gambar kue dan masuk ke **Halaman Rincian Produk Khusus** (bukan hanya *pop-up modal*) untuk melihat deskripsi lengkap dan kemudahan berbagi tautan (SEO-friendly).
 
-| ID Tugas | Target Cerita | Deskripsi Tugas & Kriteria Penerimaan | Evaluasi Upaya (Story Points) |
-|---|---|---|:---:|
-| **TG-101** | CP 1.1 | **Mendesain UI Beranda:** Menerapkan HTML/CSS modern (menggunakan Laravel Blade) untuk halaman utama beserta komponen Hero dan fitur 'Keunggulan Toko'. | 5 |
-| **TG-102** | CP 2.1 & 2.2 | **Pengaturan Autentikasi:** Membuat rute pendaftaran pelanggan, rute login, dan menyetel lapisan perlindungan (Middleware) khusus Admin. | 3 |
-| **TG-103** | CP 3.2 | **Basis Data Produk:** Membuat Model, Migration, dan Seeder untuk entitas `Kategori` dan `Produk`. | 3 |
-| **TG-104** | CP 3.2 | **Dasbor Admin (Produk):** Menyiapkan antarmuka formulir (Admin) untuk proses Tambah, Ubah, Hapus (CRUD) pada katalog produk. | 8 |
-| **TG-105** | CP 3.1 | **Menampilkan Katalog Depan:** Menghubungkan logika Controller dengan basis data untuk memunculkan daftar produk teratas pada halaman depan pelanggan. | 5 |
+### Epik 3: Manajemen Katalog & Admin (CRUD)
+- **Cerita Pengguna 3.1:** Sebagai Admin, saya bisa menambah, mengubah, dan menghapus data Kue beserta fotonya melalui Dasbor Admin.
+- **Cerita Pengguna 3.2:** Sebagai Admin, saya bisa mengisi variabel kriteria tambahan untuk sistem SAW (Harga, Diskon/Promo, Rating) secara langsung saat menambahkan produk baru.
+
+### Epik 4: Pemesanan & Transaksi Resmi
+- **Cerita Pengguna 4.1:** Sebagai pelanggan yang sudah *login*, keranjang belanja saya akan tersimpan ke **Basis Data (Database)**, sehingga saya tidak kehilangan barang belanjaan ketika berpindah perangkat.
+- **Cerita Pengguna 4.2:** Sebagai pelanggan, saya bisa memproses *Checkout*, mengisi alamat, dan data tersebut akan tersimpan ke tabel Pesanan di sisi Admin.
+
+### Epik 5: Sistem Personalisasi Cerdas (SPK SAW)
+- **Cerita Pengguna 5.1:** Sebagai pelanggan, saya bisa mengatur "Preferensi Rasa & Budget" di halaman profil saya (Skenario Input Eksplisit).
+- **Cerita Pengguna 5.2:** Sebagai pengunjung, saya akan melihat seksi "Rekomendasi Spesial Untukmu" di Beranda yang isinya diurutkan secara unik untuk saya, dihitung secara seketika (*real-time*) oleh algoritma *Simple Additive Weighting* (SAW).
+
+---
+
+## 3. Perencanaan Sprint Terbaru (Sprint Planning) 
+
+Berikut adalah rincian tugas terpadu yang memadukan penyelesaian masalah sistem dasar dan inovasi SPK SAW.
+
+### 🏃‍♂️ Sprint 1: Fondasi Sistem & Keamanan (Fokus Backend)
+**Sasaran Sprint:** Menyiapkan struktur keamanan pengguna dan kerangka basis data yang siap menampung fitur *E-Commerce* maupun variabel SPK SAW.
+
+| ID Tugas | Deskripsi Tugas & Kriteria Penerimaan | Evaluasi Upaya |
+|---|---|:---:|
+| **TG-101** | **Instalasi Autentikasi:** Memasang Laravel Breeze/UI untuk menyediakan fitur Login, Register, dan Profil Pengguna. | 5 |
+| **TG-102** | **Hak Akses Admin:** Menambahkan kolom `role` di tabel `users` dan membuat *Middleware* khusus Admin. | 3 |
+| **TG-103** | **Struktur Data SPK & Produk:** Mengubah tabel `produks` agar memiliki kolom untuk SAW (`rating_avg`, `terjual`, `is_promo`). Serta membuat tabel `user_preferences`. | 5 |
 
 <br>
 
-### Sprint 2
-**Sasaran Sprint (Sprint Goal):** Menyelesaikan siklus proses pembelian oleh pengguna, mencakup keranjang belanja hingga konfirmasi pesanan (checkout).
+### 🏃‍♂️ Sprint 2: UI/UX & Manajemen Katalog 
+**Sasaran Sprint:** Memperbaiki pengalaman pengguna di sisi visual serta melengkapi fasilitas Admin untuk mengelola jualan.
 
-| ID Tugas | Target Cerita | Deskripsi Tugas & Kriteria Penerimaan | Evaluasi Upaya (Story Points) |
-|---|---|---|:---:|
-| **TG-201** | CP 4.1 | **Fitur Keranjang Belanja:** Membangun antarmuka Keranjang dan menjalankan fungsi simpan pesanan sementara (menggunakan metode sesi/ session agar berjalan mulus). | 5 |
-| **TG-202** | CP 4.2 | **Halaman Pembayaran (Checkout):** Menampilkan rincian pesanan dan total harga, serta membuat formulir data tujuan pelanggan. | 8 |
-| **TG-203** | CP 4.2 | **Logika Transaksi (Backend):** Membuat logika untuk menyimpan data Transaksi secara permanen ke pangkalan data pesanan sesudah formulir checkout disahkan. | 5 |
-| **TG-204** | CP 5.2 | **Dasbor Admin (Pesanan):** Membuat halaman tabel di dalam Dasbor Admin untuk melihat semua pesanan yang masuk dan mengganti status pesanan tersebut. | 5 |
-| **TG-205** | CP 5.1 | **Riwayat Pelanggan:** Membuat antarmuka portal untuk Pelanggan (sisi klien) guna melacak riwayat pesanan dari masa lalu. | 3 |
+| ID Tugas | Deskripsi Tugas & Kriteria Penerimaan | Evaluasi Upaya |
+|---|---|:---:|
+| **TG-201** | **Refactoring CSS/JS:** Memindahkan skrip keranjang *LocalStorage* dan animasi CSS di Beranda ke dalam struktur yang lebih bersih (`app.js` & `app.css`). | 3 |
+| **TG-202** | **Halaman Rincian Produk:** Membuat tampilan spesifik untuk URL `/produk/{id}` agar kue bisa dieksplorasi secara mendalam. | 5 |
+| **TG-203** | **Dasbor Produk Admin (CRUD):** Membangun form bagi Admin untuk mengelola (Tambah/Ubah/Hapus) produk secara dinamis. Menghubungkan Beranda dengan data asli ini. | 8 |
+
+<br>
+
+### 🏃‍♂️ Sprint 3: Mesin Keranjang & Transaksi Resmi
+**Sasaran Sprint:** Mengganti sistem keranjang *dummy* dengan sistem transaksi *e-commerce* sungguhan.
+
+| ID Tugas | Deskripsi Tugas & Kriteria Penerimaan | Evaluasi Upaya |
+|---|---|:---:|
+| **TG-301** | **Keranjang Basis Data:** Membuat sistem `Cart` yang mengikat data pesanan ke `user_id` yang sedang *login*. | 8 |
+| **TG-302** | **Logika Transaksi (Checkout):** Membuat tabel `pesanans` dan `detail_pesanans`, serta logika konfirmasi dari Keranjang ke Nota Pesanan. | 8 |
+| **TG-303** | **Manajemen Pesanan Admin:** Membuat tabel di Dasbor Admin untuk melihat daftar orang yang sudah *checkout* dan mengubah status pengiriman. | 5 |
+
+<br>
+
+### 🏃‍♂️ Sprint 4: Mesin Kecerdasan Personalisasi (SPK SAW)
+**Sasaran Sprint:** Membuat situs web menjadi "pintar" dengan mengimplementasikan algoritma pengambilan keputusan.
+
+| ID Tugas | Deskripsi Tugas & Kriteria Penerimaan | Evaluasi Upaya |
+|---|---|:---:|
+| **TG-401** | **Form Preferensi Pengguna:** Membuat UI di halaman Profil Pelanggan untuk menyetel bobot preferensi (Misal: Kualitas vs Harga). | 3 |
+| **TG-402** | **Backend Logic SAW (`SawService.php`):** Menulis rumus matematika SAW (Matriks Keputusan, Normalisasi, Perkalian Bobot) yang memproses seluruh produk. | 13 |
+| **TG-403** | **Integrasi Visual SAW:** Me-render hasil `SawService.php` ke seksi "Rekomendasi Spesial Untukmu" di `home.blade.php` | 5 |
+
+<br>
+
+### 🏃‍♂️ Sprint 5: Validasi & Sentuhan Akhir
+**Sasaran Sprint:** Uji coba (*Quality Assurance*) untuk menjamin semua fungsi berjalan bebas kutu (*bug-free*) dan nilai perhitungannya akurat.
+
+| ID Tugas | Deskripsi Tugas & Kriteria Penerimaan | Evaluasi Upaya |
+|---|---|:---:|
+| **TG-501** | **Uji Perhitungan Manual:** Validasi perhitungan SAW Laravel dengan simulasi di Microsoft Excel. | 3 |
+| **TG-502** | **Riwayat Pesanan Pelanggan:** Menampilkan portal riwayat belanja bagi pembeli (*User Dashboard*). | 3 |
 
 ***
 
-### Saran Tambahan Pelaksanaan Scrum
-
-Untuk memastikan metodologi ini berjalan lancar di tim pengembangan Anda, Anda dapat melakukan kegiatan berikut secara rutin:
-1. **Scrum Harian (Daily Scrum):** Lakukan pertemuan singkat (maksimal 15 menit) setiap pagi untuk membahas: "Apa yang dikerjakan kemarin, apa masalahnya, dan apa yang dikerjakan hari ini."
-2. **Ulasan Sprint (Sprint Review):** Di setiap akhir masa Sprint, adakan ulasan untuk menunjukkan demo fungsionalitas fitur kepada para pemangku kepentingan (stakeholders).
-3. **Retrospektif Sprint (Sprint Retrospective):** Berdiskusi terkait proses alur kerja apa saja yang sudah berjalan bagus dan bagian mana yang perlu diperbaiki untuk melancarkan eksekusi pada Sprint berikutnya.
+### Langkah Pertama yang Disarankan:
+Fokuslah pada **Sprint 1 (TG-101 & TG-102)**. Kita wajib mengamankan akun dan pembeda antara pelanggan/admin sebelum fitur transaksi dan SAW bisa dijalankan secara logis.
