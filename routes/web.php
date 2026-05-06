@@ -24,6 +24,15 @@ Route::get('/dashboard', function () {
 })->middleware('auth');
 Route::post('/logout', [AuthController::class, 'logout']);
 
+// Route Keranjang
+Route::middleware('auth')->prefix('keranjang')->group(function () {
+    Route::get('/', [\App\Http\Controllers\KeranjangController::class, 'index']);
+    Route::post('/', [\App\Http\Controllers\KeranjangController::class, 'store']);
+    Route::put('/{id}', [\App\Http\Controllers\KeranjangController::class, 'update']);
+    Route::delete('/{id}', [\App\Http\Controllers\KeranjangController::class, 'destroy']);
+    Route::delete('/clear', [\App\Http\Controllers\KeranjangController::class, 'clear']);
+});
+
 // Route Admin
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');

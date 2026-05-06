@@ -805,31 +805,36 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
             
             // ========== CART FUNCTIONS ==========
             function addToCart(product, selections, quantity) {
-                const cartItem = {
-                    id: product.id,
-                    name: product.nama_produk,
-                    base_price: product.harga,
-                    selections: { ...selections },
-                    quantity: quantity,
-                    total_price: calculateTotalPrice(product, selections, quantity)
-                };
+                const total_price = calculateTotalPrice(product, selections, quantity);
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
                 
-                const existingIndex = cart.findIndex(item => 
-                    item.id === cartItem.id && 
-                    JSON.stringify(item.selections) === JSON.stringify(cartItem.selections)
-                );
-                
-                if (existingIndex !== -1) {
-                    cart[existingIndex].quantity += quantity;
-                    cart[existingIndex].total_price = calculateTotalPrice(product, cart[existingIndex].selections, cart[existingIndex].quantity);
-                } else {
-                    cart.push(cartItem);
-                }
-                
-                localStorage.setItem('sweetSavoryCart', JSON.stringify(cart));
-                showToastMessage('🛒 Ditambahkan ke keranjang! ✨');
-                updateCartBadge();
-                animateCart();
+                fetch('/keranjang', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken,
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        produk_id: product.id,
+                        jumlah: quantity,
+                        opsi: selections,
+                        total_harga: total_price
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.redirect) {
+                        window.location.href = data.redirect;
+                        return;
+                    }
+                    if (data.success) {
+                        showToastMessage('🛒 Ditambahkan ke keranjang! ✨');
+                        loadCartFromDatabase();
+                        animateCart();
+                    }
+                })
+                .catch(err => console.log('Error add to cart', err));
             }
             
             function animateCart() {
@@ -1050,12 +1055,7 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 });
                 
                 clearBtn.addEventListener('click', () => {
-                    cart = [];
-                    localStorage.removeItem('sweetSavoryCart');
-                    updateCartBadge();
-                    cartModal.remove();
-                    document.body.style.overflow = '';
-                    showToastMessage('🗑️ Keranjang telah dikosongkan');
+                    clearCartDatabase();
                 });
                 
                 checkoutBtn.addEventListener('click', () => {
@@ -1068,22 +1068,11 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                     btn.addEventListener('click', (e) => {
                         const index = parseInt(btn.dataset.index);
                         if (cart[index].quantity > 1) {
-                            cart[index].quantity--;
-                            cart[index].total_price = calculateTotalPriceForCartItem(cart[index]);
-                            localStorage.setItem('sweetSavoryCart', JSON.stringify(cart));
-                            updateCartBadge();
-                            showCartModal();
+                            const newQty = cart[index].quantity - 1;
+                            const newTotal = calculateTotalPriceForCartItem({...cart[index], quantity: newQty});
+                            updateCartItem(cart[index].cart_id, newQty, newTotal);
                         } else {
-                            cart.splice(index, 1);
-                            localStorage.setItem('sweetSavoryCart', JSON.stringify(cart));
-                            updateCartBadge();
-                            if (cart.length === 0) {
-                                cartModal.remove();
-                                document.body.style.overflow = '';
-                                showToastMessage('✨ Keranjang kosong');
-                            } else {
-                                showCartModal();
-                            }
+                            removeCartItem(cart[index].cart_id);
                         }
                     });
                 });
@@ -1091,27 +1080,16 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 document.querySelectorAll('.cart-qty-plus').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         const index = parseInt(btn.dataset.index);
-                        cart[index].quantity++;
-                        cart[index].total_price = calculateTotalPriceForCartItem(cart[index]);
-                        localStorage.setItem('sweetSavoryCart', JSON.stringify(cart));
-                        updateCartBadge();
-                        showCartModal();
+                        const newQty = cart[index].quantity + 1;
+                        const newTotal = calculateTotalPriceForCartItem({...cart[index], quantity: newQty});
+                        updateCartItem(cart[index].cart_id, newQty, newTotal);
                     });
                 });
                 
                 document.querySelectorAll('.cart-remove').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         const index = parseInt(btn.dataset.index);
-                        cart.splice(index, 1);
-                        localStorage.setItem('sweetSavoryCart', JSON.stringify(cart));
-                        updateCartBadge();
-                        if (cart.length === 0) {
-                            cartModal.remove();
-                            document.body.style.overflow = '';
-                            showToastMessage('✨ Keranjang kosong');
-                        } else {
-                            showCartModal();
-                        }
+                        removeCartItem(cart[index].cart_id);
                     });
                 });
                 
@@ -1199,15 +1177,81 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 return 'Rp ' + new Intl.NumberFormat('id-ID').format(angka);
             }
             
-            function loadCartFromStorage() {
-                const savedCart = localStorage.getItem('sweetSavoryCart');
-                if (savedCart) {
-                    cart = JSON.parse(savedCart);
+            function loadCartFromDatabase() {
+                return fetch('/keranjang', {
+                    headers: { 'Accept': 'application/json' }
+                })
+                .then(response => {
+                    if (response.status === 401) {
+                        return [];
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if(!data || data.error) {
+                        cart = [];
+                        return;
+                    }
+                    cart = data.map(item => ({
+                        id: item.produk_id,
+                        cart_id: item.id,
+                        name: item.produk.nama_produk,
+                        base_price: item.produk.harga,
+                        selections: item.opsi || {},
+                        quantity: item.jumlah,
+                        total_price: item.total_harga
+                    }));
                     updateCartBadge();
-                }
+                })
+                .catch(err => console.log('Error loading cart', err));
+            }
+
+            function updateCartItem(id, jumlah, total_harga) {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                fetch('/keranjang/' + id, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
+                    body: JSON.stringify({ jumlah: jumlah, total_harga: total_harga })
+                }).then(() => {
+                    loadCartFromDatabase().then(() => showCartModal());
+                });
+            }
+
+            function removeCartItem(id) {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                fetch('/keranjang/' + id, {
+                    method: 'DELETE',
+                    headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' }
+                }).then(() => {
+                    loadCartFromDatabase().then(() => {
+                        if (cart.length === 0) {
+                            const cartModal = document.getElementById('cartModal');
+                            if (cartModal) cartModal.remove();
+                            document.body.style.overflow = '';
+                            showToastMessage('✨ Keranjang kosong');
+                        } else {
+                            showCartModal();
+                        }
+                    });
+                });
+            }
+
+            function clearCartDatabase() {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                fetch('/keranjang/clear', {
+                    method: 'DELETE',
+                    headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' }
+                }).then(() => {
+                    cart = [];
+                    updateCartBadge();
+                    const cartModal = document.getElementById('cartModal');
+                    if(cartModal) cartModal.remove();
+                    document.body.style.overflow = '';
+                    showToastMessage('🗑️ Keranjang telah dikosongkan');
+                });
             }
             
-            loadCartFromStorage();
+            loadCartFromDatabase();
             
             const floatingCart = document.querySelector('.floating-cart');
             if (floatingCart) {
@@ -1522,12 +1566,8 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                         window.snap.pay(data.snapToken, {
                             onSuccess: function(result) {
                                 showToastMessage('✅ Pembayaran berhasil!');
-                                // Bersihkan keranjang
-                                cart = [];
-                                localStorage.removeItem('sweetSavoryCart');
-                                updateCartBadge();
-                                const cartModal = document.getElementById('cartModal');
-                                if(cartModal) cartModal.remove();
+                                // Bersihkan keranjang di database
+                                clearCartDatabase();
                                 
                                 const waLink = `https://api.whatsapp.com/send/?phone=${WA_PHONE_NUMBER}&text=${messageWA}&type=phone_number&app_absent=0`;
                                 window.open(waLink, '_blank');
