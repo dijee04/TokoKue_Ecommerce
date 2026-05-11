@@ -96,34 +96,23 @@
 
             <!-- Gallery Grid - 4 FOTO YANG BISA DIKLIK -->
             <div class="promise-right gallery-grid" style="flex: 1; display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
-                <div class="gal-item" data-product="Cheesecake Coklat" data-price="Rp 55.000" data-desc="Cheesecake lembut dengan lapisan coklat premium." data-img="{{ asset('assets/img_produk/Kue/Cheesecake_coklat.png') }}">
-                    <img src="{{ asset('assets/img_produk/Kue/Cheesecake_coklat.png') }}" alt="Cheesecake Coklat" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;">
+                @foreach($produks->take(4) as $produk)
+                @php
+                    // Check if image is from storage or assets
+                    if ($produk->gambar && (str_starts_with($produk->gambar, 'Kue/') || str_starts_with($produk->gambar, 'Cookies/'))) {
+                        $imgUrl = asset('assets/img_produk/' . $produk->gambar);
+                    } else {
+                        $imgUrl = $produk->gambar ? asset('storage/' . $produk->gambar) : 'https://picsum.photos/seed/'.$produk->id.'/300/300';
+                    }
+                @endphp
+                <div class="gal-item" data-product="{{ $produk->nama_produk }}" data-price="Rp {{ number_format($produk->harga, 0, ',', '.') }}" data-desc="{{ $produk->deskripsi }}" data-img="{{ $imgUrl }}">
+                    <img src="{{ $imgUrl }}" alt="{{ $produk->nama_produk }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;">
                     <div class="overlay-info">
-                        <span>🍰 Cheesecake Coklat</span>
-                        <span>Rp 55.000</span>
+                        <span>🍰 {{ $produk->nama_produk }}</span>
+                        <span>Rp {{ number_format($produk->harga, 0, ',', '.') }}</span>
                     </div>
                 </div>
-                <div class="gal-item" data-product="Brownis Almond" data-price="Rp 35.000" data-desc="Brownis dengan taburan almond renyah." data-img="{{ asset('assets/img_produk/Cookies/Brownis_3.png') }}">
-                    <img src="{{ asset('assets/img_produk/Cookies/Brownis_3.png') }}" alt="Brownis Almond" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;">
-                    <div class="overlay-info">
-                        <span>🍪 Brownis Almond</span>
-                        <span>Rp 35.000</span>
-                    </div>
-                </div>
-                <div class="gal-item" data-product="Birthday Tart" data-price="Rp 175.000" data-desc="Tart spesial dengan topping buah segar." data-img="{{ asset('assets/img_produk/Kue/birthday_tart.png') }}">
-                    <img src="{{ asset('assets/img_produk/Kue/birthday_tart.png') }}" alt="Birthday Tart" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;">
-                    <div class="overlay-info">
-                        <span>🎂 Birthday Tart</span>
-                        <span>Rp 175.000</span>
-                    </div>
-                </div>
-                <div class="gal-item" data-product="Mini BB Cheesecake" data-price="Rp 45.000" data-desc="Cheesecake mini dengan rasa berry bliss." data-img="{{ asset('assets/img_produk/Kue/Mini_BBCheesecake.png') }}">
-                    <img src="{{ asset('assets/img_produk/Kue/Mini_BBCheesecake.png') }}" alt="Mini BB Cheesecake" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;">
-                    <div class="overlay-info">
-                        <span>🧀 Mini BB Cheesecake</span>
-                        <span>Rp 45.000</span>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </section>
@@ -410,34 +399,22 @@
     <script>
         // Data produk untuk gallery
         const galleryProducts = [
+            @foreach($produks->take(4) as $produk)
+            @php
+                if ($produk->gambar && (str_starts_with($produk->gambar, 'Kue/') || str_starts_with($produk->gambar, 'Cookies/'))) {
+                    $imgUrl = asset('assets/img_produk/' . $produk->gambar);
+                } else {
+                    $imgUrl = $produk->gambar ? asset('storage/' . $produk->gambar) : 'https://picsum.photos/seed/'.$produk->id.'/300/300';
+                }
+            @endphp
             {
-                name: 'Cheesecake Coklat',
-                price: 55000,
-                priceFormatted: 'Rp 55.000',
-                desc: 'Cheesecake lembut dengan lapisan coklat premium. Cocok untuk pencinta coklat!',
-                img: '{{ asset("assets/img_produk/Kue/Cheesecake_coklat.png") }}'
+                name: '{{ addslashes($produk->nama_produk) }}',
+                price: {{ $produk->harga }},
+                priceFormatted: 'Rp {{ number_format($produk->harga, 0, ',', '.') }}',
+                desc: '{{ addslashes($produk->deskripsi ?: "Produk spesial dari Anis Bakery") }}',
+                img: '{{ $imgUrl }}'
             },
-            {
-                name: 'Brownis Almond',
-                price: 35000,
-                priceFormatted: 'Rp 35.000',
-                desc: 'Brownis dengan taburan almond renyah di atasnya. Manis dan gurih!',
-                img: '{{ asset("assets/img_produk/Cookies/Brownis_3.png") }}'
-            },
-            {
-                name: 'Birthday Tart',
-                price: 175000,
-                priceFormatted: 'Rp 175.000',
-                desc: 'Tart spesial dengan topping buah segar. Cocok untuk acara ulang tahun!',
-                img: '{{ asset("assets/img_produk/Kue/birthday_tart.png") }}'
-            },
-            {
-                name: 'Mini BB Cheesecake',
-                price: 45000,
-                priceFormatted: 'Rp 45.000',
-                desc: 'Cheesecake mini dengan rasa berry bliss. Pas untuk camilan!',
-                img: '{{ asset("assets/img_produk/Kue/Mini_BBCheesecake.png") }}'
-            }
+            @endforeach
         ];
         
         let currentModalProduct = null;

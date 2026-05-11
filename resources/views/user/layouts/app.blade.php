@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dear Seana - Keajaiban Rasa Dalam Setiap Sematan</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Titan+One&family=Dancing+Script:wght@700&display=swap"
         rel="stylesheet">
@@ -36,7 +37,7 @@
                 <li><a href="{{ route('our_story') }}">Our Story</a></li>
                 <li><a href="{{ route('katering') }}">Katering</a></li>
             </ul>
-            <a href="https://wa.me/6281234567890?text=Halo%20Dear%20Seana,%20saya%20tertarik%20dengan%20koleksi%20kue%20Anda."
+            <a href="https://wa.me/{{ $global_setting->wa_number ?? '6281234567890' }}?text=Halo%20Dear%20Seana,%20saya%20tertarik%20dengan%20koleksi%20kue%20Anda."
                 target="_blank" class="btn-pesan" style="display:flex; align-items:center; gap:8px;"><i
                     class="fab fa-whatsapp" style="font-size:1.1rem;"></i> Pesan Sekarang</a>
         </div>

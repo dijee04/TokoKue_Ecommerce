@@ -27,167 +27,17 @@
 
     @php
         // Inisialisasi koleksi produk dari database
-        if(!isset($produks) || $produks->isEmpty()) {
-            $produks = collect([
-            (object) [
-            'id' => 3,
-            'nama_produk' => 'Brownis Almond',
-            'deskripsi' => 'Brownis dengan taburan almond renyah.',
-            'harga' => 35000,
-            'gambar' => 'Kue/Brownis_3.png',
-            'kategori' => (object) ['nama_kategori' => 'Cake'],
-            'options' => [
-                (object) ['type' => 'radio', 'label' => 'Varian', 'key' => 'variant', 'choices' => ['Original Almond', 'Dark Chocolate Almond', 'Caramel Almond']],
-                (object) ['type' => 'radio', 'label' => 'Ukuran', 'key' => 'size', 'choices' => ['Regular (250g)', 'Jumbo (500g) +15k', 'Family (1kg) +35k']]
-            ],
-            'variant_images' => [
-                'Original Almond' => 'Kue/Brownis_1.png',
-                'Dark Chocolate Almond' => 'Kue/Brownis_2.png',
-                'Caramel Almond' => 'Kue/Brownis_4.png'
-            ]
-        ],
-        
-        // Cheesecake Coklat
-        (object) [
-            'id' => 5,
-            'nama_produk' => 'Cheesecake Coklat',
-            'deskripsi' => 'Cheesecake lembut dengan lapisan coklat.',
-            'harga' => 55000,
-            'gambar' => 'Kue/Cheesecake_coklat.png',
-            'kategori' => (object) ['nama_kategori' => 'Cake'],
-            'options' => [
-                (object) ['type' => 'radio', 'label' => 'Topping', 'key' => 'topping', 'choices' => ['Classic Coklat', 'Matcha Coklat', 'Berry Burst']],
-                (object) ['type' => 'radio', 'label' => 'Porsi', 'key' => 'portion', 'choices' => ['Slice (1 potong)', 'Whole Cake (6-8 potong) +70k', 'Mini Set (3 pcs) +30k']]
-            ],
-             'variant_images' => [
-                'cheesecake Almond' => 'Kue/almond_original.png',
-                'Dark Chocolate ' => 'Kue/cheesecake_dark.png',
-                'Caramel Almond' => 'Kue/cheesecake_caramel.png'
-            ]
-        ],
-        
-        
-        // Cheesecake Lotus
-        (object) [
-            'id' => 6,
-            'nama_produk' => 'Cheesecake Lotus',
-            'deskripsi' => 'Cheesecake dengan biskuit lotus biscoff.',
-            'harga' => 75000,
-            'gambar' => 'Kue/Cheesecake_lotus.png',
-            'kategori' => (object) ['nama_kategori' => 'Cake'],
-            'options' => [
-                (object) ['type' => 'radio', 'label' => 'Varian Lotus', 'key' => 'lotusVar', 'choices' => ['Lotus Biscoff Original', 'Lotus Caramel Swirl', 'Lotus White Choco']],
-                (object) ['type' => 'radio', 'label' => 'Level Keju', 'key' => 'cheeseLevel', 'choices' => ['Regular Creamy', 'Extra Cheesy +12k', 'Super Premium +25k']]
-            ]
-        ],
-        
-        // Birthday Tart
-        (object) [
-            'id' => 7,
-            'nama_produk' => 'Birthday Tart',
-            'deskripsi' => 'Tart spesial dengan topping buah segar.',
-            'harga' => 175000,
-            'gambar' => 'Kue/birthday_tart.png',
-            'kategori' => (object) ['nama_kategori' => 'Cake'],
-            'options' => [
-                (object) ['type' => 'radio', 'label' => 'Ukuran', 'key' => 'size', 'choices' => ['Regular (20cm)', 'Large (25cm) +50k', 'Jumbo (30cm) +100k']],
-                (object) ['type' => 'radio', 'label' => 'Topping Tambahan', 'key' => 'extraTopping', 'choices' => ['Standar', 'Extra Fruit +15k', 'Extra Coklat +10k']]
-            ]
-        ],
-        
-        // Chocolate Cake (dengan gambar varian)
-        (object) [
-            'id' => 8,
-            'nama_produk' => 'Chocolate Cake',
-            'deskripsi' => 'Kue cokelat premium dengan ganache lembut.',
-            'harga' => 150000,
-            'gambar' => 'Kue/chocolate_cake.png',
-            'kategori' => (object) ['nama_kategori' => 'Cake'],
-            'options' => [
-                (object) ['type' => 'radio', 'label' => 'Varian', 'key' => 'variant', 'choices' => ['Dark Chocolate', 'Milk Chocolate', 'White Chocolate']],
-                (object) ['type' => 'radio', 'label' => 'Ukuran', 'key' => 'size', 'choices' => ['Small (250g)', 'Medium (500g) +30k', 'Large (1kg) +80k']]
-            ],
-            'variant_images' => [
-                'Dark Chocolate' => 'Kue/chocolate_cake_dark.png',
-                'Milk Chocolate' => 'Kue/chocolate_cake_milk.png',
-                'White Chocolate' => 'Kue/chocolate_cake_white.png'
-            ]
-        ],
-        
-        // Vanilla Chocolate
-        (object) [
-            'id' => 9,
-            'nama_produk' => 'Vanilla Chocolate',
-            'deskripsi' => 'Kue spesial dengan topping buah segar.',
-            'harga' => 175000,
-            'gambar' => 'Kue/vanilla_chocolate_cupcake.png',
-            'kategori' => (object) ['nama_kategori' => 'Cake'],
-            'options' => [
-                (object) ['type' => 'radio', 'label' => 'Topping', 'key' => 'topping', 'choices' => ['Sprinkles', 'Chocolate Chip +5k', 'Fruit +10k']]
-            ]
-        ],
-        
-        // Palm Cheese
-        (object) [
-            'id' => 11,
-            'nama_produk' => 'Palm Cheese',
-            'deskripsi' => 'Cookies dengan keju yang gurih.',
-            'harga' => 45000,
-            'gambar' => 'Cookies/Palm_cheese.png',
-            'kategori' => (object) ['nama_kategori' => 'Kue Kering'],
-            'options' => [
-                (object) ['type' => 'radio', 'label' => 'Kemasan', 'key' => 'packaging', 'choices' => ['Toples Kecil (250g)', 'Toples Besar (500g) +15k', 'Paket Hemat (750g) +25k']]
-            ]
-        ],
-        
-        // Nuttela Cookies
-        (object) [
-            'id' => 13,
-            'nama_produk' => 'Nuttela Cookies',
-            'deskripsi' => 'Cookies dengan Nutella filling.',
-            'harga' => 45000,
-            'gambar' => 'Cookies/Nutella_Cookies.png',
-            'kategori' => (object) ['nama_kategori' => 'Kue Kering'],
-            'options' => [
-                (object) ['type' => 'radio', 'label' => 'Kemasan', 'key' => 'packaging', 'choices' => ['Toples Kecil (250g)', 'Toples Besar (500g) +15k', 'Paket Hemat (750g) +25k']]
-            ]
-        ],
-        
-        
-        // Puding Cake
-        (object) [
-            'id' => 14,
-            'nama_produk' => 'Puding Cake',
-            'deskripsi' => 'Perpaduan puding dan cake yang lezat.',
-            'harga' => 25000,
-            'gambar' => 'Kue/Pudingcake_1.png',
-            'kategori' => (object) ['nama_kategori' => 'Cake'],
-            'options' => [
-                (object) ['type' => 'radio', 'label' => 'Rasa', 'key' => 'flavor', 'choices' => ['Coklat', 'Vanilla', 'Matcha +5k']]
-            ]
-        ],
-        
-        // Florentine Cookies
-        (object) [
-            'id' => 15,
-            'nama_produk' => 'Florentine Cookies',
-            'deskripsi' => 'Cookies aneka kacang.',
-            'harga' => 25000,
-            'gambar' => 'Cookies/Florentine_Cookies.png',
-            'kategori' => (object) ['nama_kategori' => 'Kue Kering'],
-            'options' => [
-                (object) ['type' => 'radio', 'label' => 'Kemasan', 'key' => 'packaging', 'choices' => ['Toples Kecil (250g)', 'Toples Besar (500g) +15k']]
-            ]
-        ],
-    ]);
-}
+        // Tidak ada inisialisasi hardcode, menggunakan $produks dari controller
 
         // Kategori:Cake
         $birthdayCakes = collect($produks)->filter(function ($produk) {
             $kategori = strtolower($produk->kategori->nama_kategori ?? '');
             $namaProduk = strtolower($produk->nama_produk ?? '');
             return str_contains($kategori, 'cake')
+                || str_contains($kategori, 'ulang tahun')
+                || str_contains($kategori, 'dessert')
                 || str_contains($namaProduk, 'tart')
+                || str_contains($namaProduk, 'cake')
                 || str_contains($namaProduk, 'puding');
         });
 
@@ -264,7 +114,11 @@
                             @foreach($items as $index => $produk)
                                 @php
                                     if($produk->gambar && !str_starts_with($produk->gambar, 'http')) {
-                                        $imageUrl = asset('assets/img_produk/' . ltrim($produk->gambar, '/'));
+                                        if (str_starts_with($produk->gambar, 'Kue/') || str_starts_with($produk->gambar, 'Cookies/')) {
+                                            $imageUrl = asset('assets/img_produk/' . ltrim($produk->gambar, '/'));
+                                        } else {
+                                            $imageUrl = asset('storage/' . $produk->gambar);
+                                        }
                                     } elseif($produk->gambar && str_starts_with($produk->gambar, 'http')) {
                                         $imageUrl = $produk->gambar;
                                     } else {
@@ -712,22 +566,22 @@
 
     <script>
         // Nomor WhatsApp tujuan
-        const WA_PHONE_NUMBER = '6281234567890';
+        const WA_PHONE_NUMBER = '{{ $global_setting->wa_number ?? "6281234567890" }}';
         
         // Nomor rekening dan payment info
         const PAYMENT_INFO = {
             bank: {
-                name: 'Bank BCA',
-                accountNumber: '1234567890',
-                accountName: 'Sweet & Savory Seana'
+                name: '{{ $global_setting->bank_name ?? "Bank BCA" }}',
+                accountNumber: '{{ $global_setting->bank_account ?? "1234567890" }}',
+                accountName: '{{ $global_setting->bank_owner ?? "Sweet & Savory Seana" }}'
             },
             dana: {
-                number: '081234567890',
-                name: 'Sweet & Savory'
+                number: '{{ $global_setting->dana_number ?? "081234567890" }}',
+                name: '{{ $global_setting->dana_owner ?? "Sweet & Savory" }}'
             },
             gopay: {
-                number: '081234567890',
-                name: 'Sweet & Savory'
+                number: '{{ $global_setting->gopay_number ?? "081234567890" }}',
+                name: '{{ $global_setting->gopay_owner ?? "Sweet & Savory" }}'
             }
         };
         
@@ -883,11 +737,23 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 }
             }
             
+            let savedCustName = '';
+            let savedCustPhone = '';
+            let savedCustAddress = '';
+
             function showCartModal() {
                 if (cart.length === 0) {
                     showToastMessage('✨ Keranjang belanja masih kosong');
                     return;
                 }
+                
+                // Preserve inputs if they exist
+                const custNameInput = document.getElementById('custName');
+                if (custNameInput) savedCustName = custNameInput.value;
+                const custPhoneInput = document.getElementById('custPhone');
+                if (custPhoneInput) savedCustPhone = custPhoneInput.value;
+                const custAddressInput = document.getElementById('custAddress');
+                if (custAddressInput) savedCustAddress = custAddressInput.value;
                 
                 let grandTotal = 0;
                 let cartHtml = `
@@ -925,6 +791,16 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 });
                 
                 cartHtml += `
+                            </div>
+                            <div class="customer-details" style="margin: 0 24px 24px 24px; padding: 22px; background: white; border-radius: 32px; border: 1px solid #ffe0d0;">
+                                <div style="font-weight: 800; color: #6d4c41; margin-bottom: 16px; font-size: 16px; display: flex; align-items: center; gap: 10px;">
+                                    <span>👤</span> Informasi Pengiriman
+                                </div>
+                                <div style="display: flex; flex-direction: column; gap: 12px;">
+                                    <input type="text" id="custName" value="${savedCustName}" placeholder="Nama Lengkap" style="padding: 12px 16px; border-radius: 12px; border: 1px solid #f0d0d0; outline: none; font-family: inherit;">
+                                    <input type="text" id="custPhone" value="${savedCustPhone}" placeholder="Nomor WhatsApp (Contoh: 0812...)" style="padding: 12px 16px; border-radius: 12px; border: 1px solid #f0d0d0; outline: none; font-family: inherit;">
+                                    <textarea id="custAddress" placeholder="Alamat Pengiriman Lengkap" rows="3" style="padding: 12px 16px; border-radius: 12px; border: 1px solid #f0d0d0; outline: none; font-family: inherit; resize: none;">${savedCustAddress}</textarea>
+                                </div>
                             </div>
                             <div class="payment-methods" style="margin: 0 24px 24px 24px; padding: 22px; background: linear-gradient(135deg, #fff5f0, #fff0e8); border-radius: 32px;">
                                 <div class="payment-title" style="font-weight: 800; color: #6d4c41; margin-bottom: 16px; font-size: 16px; display: flex; align-items: center; gap: 10px;">
@@ -1151,17 +1027,72 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 }
             }
             
-            function sendCartToWhatsAppWithPayment() {
+            async function sendCartToWhatsAppWithPayment() {
                 if (cart.length === 0) {
                     showToastMessage('Keranjang kosong');
                     return;
                 }
                 
+                const custNameInput = document.getElementById('custName');
+                const custPhoneInput = document.getElementById('custPhone');
+                const custAddressInput = document.getElementById('custAddress');
+                
+                if (!custNameInput || !custNameInput.value.trim()) {
+                    alert('Mohon isi Nama Lengkap Anda.');
+                    return;
+                }
+                if (!custPhoneInput || !custPhoneInput.value.trim()) {
+                    alert('Mohon isi Nomor WhatsApp Anda.');
+                    return;
+                }
+                if (!custAddressInput || !custAddressInput.value.trim()) {
+                    alert('Mohon isi Alamat Pengiriman Anda.');
+                    return;
+                }
+                
+                const namaPelanggan = custNameInput.value.trim();
+                const noWaPelanggan = custPhoneInput.value.trim();
+                const alamatPelanggan = custAddressInput.value.trim();
+                
+                let grandTotal = 0;
+                cart.forEach((item) => grandTotal += item.total_price);
+                
+                const payload = {
+                    nama_pelanggan: namaPelanggan,
+                    no_wa: noWaPelanggan,
+                    alamat: alamatPelanggan,
+                    metode_pembayaran: selectedPaymentMethod,
+                    items: JSON.stringify(cart),
+                    total_harga: grandTotal
+                };
+                
+                try {
+                    const response = await fetch("{{ route('user.checkout') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    const result = await response.json();
+                    if (!result.success) {
+                        alert("Gagal memproses pesanan ke database: " + result.message);
+                        return;
+                    }
+                } catch(e) {
+                    alert("Terjadi kesalahan jaringan saat menyimpan pesanan.");
+                    return;
+                }
+
                 let message = '🍰 *SWEET & SAVORY* 🍰%0A%0A';
                 message += 'Halo Dear Seana,%0A%0A';
+                message += `*👤 NAMA:* ${namaPelanggan}%0A`;
+                message += `*📱 NO WA:* ${noWaPelanggan}%0A`;
+                message += `*📍 ALAMAT:* ${alamatPelanggan}%0A%0A`;
                 message += '*📋 DETAIL PESANAN:*%0A';
                 message += '━━━━━━━━━━━━━━━%0A%0A';
-                let grandTotal = 0;
                 
                 cart.forEach((item, idx) => {
                     let selectionsText = '';
@@ -1174,7 +1105,6 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                         message += `   📋 Pilihan:%0A${selectionsText}`;
                     }
                     message += `   💰 Subtotal: ${formatRupiah(item.total_price)}%0A%0A`;
-                    grandTotal += item.total_price;
                 });
                 
                 message += `━━━━━━━━━━━━━━━%0A`;
@@ -1186,6 +1116,14 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 message += `2️⃣ Konfirmasi pembayaran dengan mengirim bukti transfer%0A`;
                 message += `3️⃣ Pesanan akan diproses setelah pembayaran dikonfirmasi%0A%0A`;
                 message += `✨ Terima kasih telah berbelanja di Sweet & Savory! ✨`;
+                
+                // Clear cart after success
+                cart = [];
+                localStorage.removeItem('sweetSavoryCart');
+                savedCustName = '';
+                savedCustPhone = '';
+                savedCustAddress = '';
+                updateCartBadge();
                 
                 const waLink = `https://api.whatsapp.com/send/?phone=${WA_PHONE_NUMBER}&text=${message}&type=phone_number&app_absent=0`;
                 window.open(waLink, '_blank');

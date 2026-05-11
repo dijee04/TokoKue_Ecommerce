@@ -1,23 +1,59 @@
 @extends('admin.layouts.app')
 
 @section('content')
-    <div style="background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-        <h1 style="margin-top: 0; color: #83513E;">Ringkasan Toko</h1>
-        <p>Selamat datang di panel kontrol admin. Dari sini Anda bisa mengelola produk, melihat pesanan baru, dan mengatur konten website.</p>
-        
-        <div style="display: flex; gap: 20px; margin-top: 30px;">
-            <div style="flex: 1; background: #FFF4F2; padding: 20px; border-radius: 8px; border-left: 5px solid #F28AA1;">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Ringkasan Toko</h1>
+            <p style="color: var(--text-muted); margin-top: 5px;">Pantau performa penjualan dan produk Anda hari ini.</p>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card" style="border-left: 4px solid var(--accent-color);">
+            <div class="stat-icon" style="background: rgba(240, 98, 146, 0.1); color: var(--accent-color);">
+                <i class="fas fa-box-open"></i>
+            </div>
+            <div class="stat-info">
                 <h3>Total Produk</h3>
-                <h2 style="font-size: 2rem; margin: 10px 0;">24</h2>
+                <div class="stat-value">{{ $totalProduk }}</div>
             </div>
-            <div style="flex: 1; background: #F5F9FF; padding: 20px; border-radius: 8px; border-left: 5px solid #4A90E2;">
+        </div>
+
+        <div class="stat-card" style="border-left: 4px solid var(--info);">
+            <div class="stat-icon" style="background: var(--info-bg); color: var(--info);">
+                <i class="fas fa-shopping-bag"></i>
+            </div>
+            <div class="stat-info">
                 <h3>Pesanan Baru</h3>
-                <h2 style="font-size: 2rem; margin: 10px 0;">5</h2>
+                <div class="stat-value">{{ $pesananBaru }}</div>
             </div>
-            <div style="flex: 1; background: #F9F7F5; padding: 20px; border-radius: 8px; border-left: 5px solid #83513E;">
-                <h3>Pendapatan</h3>
-                <h2 style="font-size: 2rem; margin: 10px 0;">Rp 4.5M</h2>
+        </div>
+
+        <div class="stat-card" style="border-left: 4px solid var(--success);">
+            <div class="stat-icon" style="background: var(--success-bg); color: var(--success);">
+                <i class="fas fa-wallet"></i>
             </div>
+            <div class="stat-info">
+                <h3>Total Pendapatan</h3>
+                <div class="stat-value" style="font-size: 24px;">Rp {{ number_format($pendapatan, 0, ',', '.') }}</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3 style="margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
+            <i class="fas fa-lightbulb" style="color: var(--warning); margin-right: 8px;"></i> Pintasan Cepat
+        </h3>
+        <div class="grid-3">
+            <a href="{{ route('admin.produk.create') }}" class="btn btn-primary" style="padding: 15px;">
+                <i class="fas fa-plus"></i> Tambah Produk Baru
+            </a>
+            <a href="{{ route('admin.order.index') }}" class="btn btn-info" style="padding: 15px; background: var(--info); color: white;">
+                <i class="fas fa-list"></i> Lihat Daftar Pesanan
+            </a>
+            <a href="{{ route('admin.setting.index') }}" class="btn" style="padding: 15px; background: #e0e0e0; color: #333;">
+                <i class="fas fa-cog"></i> Pengaturan Toko
+            </a>
         </div>
     </div>
 @endsection
