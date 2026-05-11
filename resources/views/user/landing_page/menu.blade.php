@@ -26,6 +26,7 @@
     </section>
 
     @php
+        // ... kode selanjutnya tetap sama seperti sebelumnya ...
         // Inisialisasi koleksi produk dari database
         // Tidak ada inisialisasi hardcode, menggunakan $produks dari controller
 
@@ -588,6 +589,10 @@
         // Cart array to store items
         let cart = [];
         let selectedPaymentMethod = 'bank';
+        let currentProduct = null;
+        let currentSelections = {};
+        let currentQuantity = 1;
+        let currentAction = 'order';
         
         document.addEventListener('DOMContentLoaded', function() {
             // ========== ANCHOR NAVIGATION DARI HOME ==========
@@ -764,7 +769,50 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                                 <button class="cart-modal-close" style="position: absolute; right: 28px; top: 24px; background: rgba(255,255,255,0.95); border: none; font-size: 28px; cursor: pointer; color: #6d4c41; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s;">&times;</button>
                             </div>
                             <div class="modal-body" style="padding: 28px;" id="cartModalBody">
-                `;
+                const paymentDetailsDiv = document.getElementById('cartPaymentDetails');
+                if (!paymentDetailsDiv) return;
+                
+                if (method === 'bank') {
+                    paymentDetailsDiv.innerHTML = `
+                        <p>📋 Transfer ke rekening berikut:</p>
+                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">🏦 ${PAYMENT_INFO.bank.name}</p>
+                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">🔢 ${PAYMENT_INFO.bank.accountNumber}</p>
+                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">👤 a.n. ${PAYMENT_INFO.bank.accountName}</p>
+                        <p style="margin-top: 8px; font-size: 11px; color: #999;">⚠️ Konfirmasi pembayaran via WhatsApp setelah transfer</p>
+                    `;
+                } else if (method === 'dana') {
+                    paymentDetailsDiv.innerHTML = `
+                        <p>📱 Kirim ke nomor DANA:</p>
+                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">💙 ${PAYMENT_INFO.dana.number}</p>
+                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">👤 a.n. ${PAYMENT_INFO.dana.name}</p>
+                        <p style="margin-top: 8px; font-size: 11px; color: #999;">⚠️ Konfirmasi pembayaran via WhatsApp setelah transfer</p>
+                    `;
+                } else if (method === 'gopay') {
+                    paymentDetailsDiv.innerHTML = `
+                        <p>📱 Kirim ke nomor GoPay:</p>
+                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">💚 ${PAYMENT_INFO.gopay.number}</p>
+                        <p class="bank-account" style="font-family: monospace; font-size: 14px; font-weight: bold; color: #f06292;">👤 a.n. ${PAYMENT_INFO.gopay.name}</p>
+                        <p style="margin-top: 8px; font-size: 11px; color: #999;">⚠️ Konfirmasi pembayaran via WhatsApp setelah transfer</p>
+                    `;
+                }
+            }
+            
+            function showCartModal() {
+                if (cart.length === 0) {
+                    showToastMessage('Keranjang belanja masih kosong');
+                    return;
+                }
+                
+                let grandTotal = 0;
+                let cartHtml = `
+                    <div id="cartModal" class="order-modal" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 1001; align-items: center; justify-content: center;">
+                        <div class="modal-content" style="background: #FFF8F0; border-radius: 25px; max-width: 650px; width: 90%; max-height: 85vh; overflow-y: auto;">
+                            <div class="modal-header" style="background: linear-gradient(135deg, #fce4ec, #f8bbd0); padding: 20px; border-radius: 25px 25px 0 0; position: sticky; top: 0;">
+                                <h3 style="color: #6d4c41; margin: 0; font-size: 22px;">🛒 Keranjang Belanja</h3>
+                                <button class="cart-modal-close" style="position: absolute; right: 20px; top: 20px; background: none; border: none; font-size: 28px; cursor: pointer; color: #6d4c41;">&times;</button>
+                            </div>
+                            <div class="modal-body" style="padding: 20px;" id="cartModalBody">
+
                 
                 cart.forEach((item, index) => {
                     const itemTotal = item.total_price;
@@ -821,33 +869,11 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                                     </div>
                                 </div>
                                 <div id="cartPaymentDetails" class="payment-details" style="margin-top: 18px; padding: 16px; background: white; border-radius: 24px; border: 1px solid #ffe0d0; font-size: 13px;">
-                `;
-                
-                if (selectedPaymentMethod === 'bank') {
-                    cartHtml += `
-                        <p>📋 Transfer ke rekening berikut:</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 15px; font-weight: bold; color: #f06292;">🏦 ${PAYMENT_INFO.bank.name}</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 15px; font-weight: bold; color: #f06292;">🔢 ${PAYMENT_INFO.bank.accountNumber}</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 15px; font-weight: bold; color: #f06292;">👤 a.n. ${PAYMENT_INFO.bank.accountName}</p>
-                        <p style="margin-top: 10px; font-size: 11px; color: #999;">⚠️ Konfirmasi pembayaran via WhatsApp setelah transfer</p>
-                    `;
-                } else if (selectedPaymentMethod === 'dana') {
-                    cartHtml += `
-                        <p>📱 Kirim ke nomor DANA:</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 15px; font-weight; bold; color: #f06292;">💙 ${PAYMENT_INFO.dana.number}</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 15px; font-weight: bold; color: #f06292;">👤 a.n. ${PAYMENT_INFO.dana.name}</p>
-                        <p style="margin-top: 10px; font-size: 11px; color: #999;">⚠️ Konfirmasi pembayaran via WhatsApp setelah transfer</p>
-                    `;
-                } else if (selectedPaymentMethod === 'gopay') {
-                    cartHtml += `
-                        <p>📱 Kirim ke nomor GoPay:</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 15px; font-weight: bold; color: #f06292;">💚 ${PAYMENT_INFO.gopay.number}</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 15px; font-weight: bold; color: #f06292;">👤 a.n. ${PAYMENT_INFO.gopay.name}</p>
-                        <p style="margin-top: 10px; font-size: 11px; color: #999;">⚠️ Konfirmasi pembayaran via WhatsApp setelah transfer</p>
-                    `;
-                }
-                
-                cartHtml += `
+                                    <p>📋 Transfer ke rekening berikut:</p>
+                                    <p class="bank-account" style="font-family: monospace; font-size: 15px; font-weight: bold; color: #f06292;">🏦 ${PAYMENT_INFO.bank.name}</p>
+                                    <p class="bank-account" style="font-family: monospace; font-size: 15px; font-weight: bold; color: #f06292;">🔢 ${PAYMENT_INFO.bank.accountNumber}</p>
+                                    <p class="bank-account" style="font-family: monospace; font-size: 15px; font-weight: bold; color: #f06292;">👤 a.n. ${PAYMENT_INFO.bank.accountName}</p>
+                                    <p style="margin-top: 10px; font-size: 11px; color: #999;">⚠️ Konfirmasi pembayaran via WhatsApp setelah transfer</p>
                                 </div>
                             </div>
                             <div class="modal-footer" style="padding: 24px 28px 28px; border-top: 1px solid #ffe0d0; background: rgba(255,248,240,0.95); border-radius: 0 0 48px 48px;">
@@ -858,6 +884,8 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                                 <div style="display: flex; gap: 16px;">
                                     <button id="clearCartBtn" style="flex: 1; padding: 16px; border-radius: 60px; border: 2px solid #f0c0d0; background: white; color: #e57373; font-weight: 800; cursor: pointer; transition: all 0.3s;">Kosongkan</button>
                                     <button id="checkoutCartBtn" style="flex: 1; padding: 16px; border-radius: 60px; border: none; background: linear-gradient(135deg, #25D366, #128C7E); color: white; font-weight: 800; cursor: pointer; transition: all 0.3s; box-shadow: 0 6px 20px rgba(37,211,102,0.35);">📱 Proses Pesanan</button>
+                                </div>
+                            </div>
                                 </div>
                             </div>
                         </div>
@@ -875,18 +903,15 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 const clearBtn = document.getElementById('clearCartBtn');
                 const checkoutBtn = document.getElementById('checkoutCartBtn');
                 
+
+
                 const cartPaymentOptions = document.querySelectorAll('#cartPaymentOptions .payment-option');
                 cartPaymentOptions.forEach(option => {
                     option.addEventListener('click', () => {
                         const paymentMethod = option.dataset.payment;
                         selectedPaymentMethod = paymentMethod;
                         
-                        cartPaymentOptions.forEach(opt => {
-                            opt.style.borderColor = '#f0d0d0';
-                            opt.style.background = 'white';
                         });
-                        option.style.borderColor = '#f06292';
-                        option.style.background = '#fce4ec';
                         
                         const paymentDetailsDiv = document.getElementById('cartPaymentDetails');
                         if (paymentDetailsDiv) {
