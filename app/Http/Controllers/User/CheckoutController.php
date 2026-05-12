@@ -3,56 +3,58 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
-use Midtrans\Config;
-use Midtrans\Snap;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class CheckoutController extends Controller
 {
-    public function process(Request $request)
+    public function store(Request $request)
     {
-        // Konfigurasi Midtrans
-        Config::$serverKey = config('services.midtrans.server_key');
-        Config::$isProduction = config('services.midtrans.is_production');
-        Config::$isSanitized = true;
-        Config::$is3ds = true;
-
-        $items = $request->input('items', []);
-        $total = $request->input('total', 0);
-        $customerDetails = $request->input('customer', [
-            'first_name' => 'Guest',
-            'email' => 'guest@example.com',
-            'phone' => '081234567890',
+        $request->validate([
+            'nama_pelanggan' => 'required|string|max:255',
+            'no_wa' => 'required|string|max:20',
+            'alamat' => 'required|string',
+            'metode_pembayaran' => 'required|string',
+            'items' => 'required|json',
+            'total_harga' => 'required|numeric'
         ]);
 
-        $orderId = 'TRX-' . time() . '-' . Str::random(5);
-
-        // Map items for midtrans
-        $itemDetails = [];
-        foreach ($items as $item) {
-            $itemDetails[] = [
-                'id'       => $item['id'],
-                'price'    => $item['price'],
-                'quantity' => $item['quantity'],
-                'name'     => substr($item['name'], 0, 50) // Midtrans limits item name length
-            ];
+        $items = json_decode($request->items, true);
+        if (empty($items)) {
+            return response()->json(['success' => false, 'message' => 'Keranjang kosong']);
         }
 
-        $params = [
-            'transaction_details' => [
-                'order_id' => $orderId,
-                'gross_amount' => $total,
-            ],
-            'item_details' => $itemDetails,
-            'customer_details' => $customerDetails,
-        ];
-
         try {
-            $snapToken = Snap::getSnapToken($params);
-            return response()->json(['snapToken' => $snapToken, 'orderId' => $orderId]);
+            DB::beginTransaction();
+
+            $order = Order::create([
+                'nama_pelanggan' => $request->nama_pelanggan,
+                'no_wa' => $request->no_wa,
+                'alamat' => $request->alamat,
+                'metode_pembayaran' => $request->metode_pembayaran,
+                'total_harga' => $request->total_harga,
+                'status' => 'baru'
+            ]);
+
+            foreach ($items as $item) {
+                // Karena struktur cart frontend mungkin menggunakan 'base_price' atau 'total_price', kita beri fallback
+                $unitPrice = $item['price'] ?? $item['base_price'] ?? ($item['total_price'] / max(1, $item['quantity']));
+
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'produk_id' => $item['id'],
+                    'jumlah' => $item['quantity'],
+                    'harga_satuan' => $unitPrice
+                ]);
+            }
+
+            DB::commit();
+            return response()->json(['success' => true, 'order_id' => $order->id]);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            DB::rollBack();
+            return response()->json(['success' => false, 'message' => $e->getMessage()]);
         }
     }
 }

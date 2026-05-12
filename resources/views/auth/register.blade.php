@@ -45,7 +45,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 3rem;
+            padding: 0;
             overflow: hidden;
         }
 
@@ -194,25 +194,44 @@
             align-items: center;
             justify-content: center;
             padding: 3rem 4rem;
-            background: var(--white);
+            background: var(--cream);
             position: relative;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(249, 214, 224, 0.3) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(232, 132, 154, 0.2) 0%, transparent 20%);
         }
 
         .panel-right::before {
-            content: '';
+            content: '🌸';
             position: absolute;
-            left: 0;
-            top: 15%;
-            bottom: 15%;
-            width: 3px;
-            background: linear-gradient(to bottom, transparent, var(--rose), transparent);
-            border-radius: 4px;
+            top: 20px;
+            right: 30px;
+            font-size: 2rem;
+            opacity: 0.2;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .panel-right::after {
+            content: '🧁';
+            position: absolute;
+            bottom: 40px;
+            left: 30px;
+            font-size: 1.8rem;
+            opacity: 0.15;
+            animation: float 5s ease-in-out infinite reverse;
         }
 
         .form-wrapper {
             width: 100%;
-            max-width: 380px;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 15px 35px rgba(58, 28, 37, 0.08);
             animation: slide-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+            z-index: 5;
         }
 
         @keyframes slide-up {
@@ -504,32 +523,83 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    <style>
+        /* Swiper Custom */
+        .swiper {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .swiper-slide {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f7c5d5;
+        }
+        .swiper-slide img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.7);
+        }
+        .slide-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(232, 132, 154, 0.4), rgba(60, 20, 30, 0.4));
+            z-index: 1;
+        }
+        .slide-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            color: white;
+            padding: 2rem;
+        }
+    </style>
 </head>
 
 <body>
 
     <!-- ── Left Panel ── -->
-    <div class="panel-left">
-        <div class="deco-ring r1"></div>
-        <div class="deco-ring r2"></div>
-        <div class="deco-ring r3"></div>
-
-        <!-- Scattered sprinkles -->
-        <div class="sprinkle" style="width:8px;height:8px;top:18%;left:20%;animation-delay:0s"></div>
-        <div class="sprinkle" style="width:5px;height:5px;top:30%;left:72%;animation-delay:0.8s"></div>
-        <div class="sprinkle" style="width:10px;height:10px;top:65%;left:15%;animation-delay:1.5s"></div>
-        <div class="sprinkle" style="width:6px;height:6px;top:72%;left:78%;animation-delay:0.4s"></div>
-        <div class="sprinkle" style="width:7px;height:7px;top:12%;left:60%;animation-delay:2s"></div>
-        <div class="sprinkle" style="width:4px;height:4px;top:80%;left:45%;animation-delay:1s"></div>
-
-        <div class="brand-icon">🎂</div>
-        <div class="brand-name">Dear<br>Seana</div>
-        <div class="brand-tagline">Kue Manis · Sejak 2020</div>
-
-        <div class="dots">
-            <div class="dot active"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
+    <div class="panel-left" style="padding: 0;">
+        <div class="swiper mySwiper">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+                    <img src="{{ asset('assets/auth/img/slide1.png') }}" alt="Cake 1">
+                    <div class="slide-overlay"></div>
+                    <div class="slide-content">
+                        <div class="brand-icon">🎂</div>
+                        <div class="brand-name">Dear Seana</div>
+                        <div class="brand-tagline">Kue Manis · Sejak 2020</div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <img src="{{ asset('assets/auth/img/slide2.png') }}" alt="Cake 2">
+                    <div class="slide-overlay"></div>
+                    <div class="slide-content">
+                        <div class="brand-icon">🍓</div>
+                        <div class="brand-name">Cita Rasa Premium</div>
+                        <div class="brand-tagline">Hanya Bahan Terbaik</div>
+                    </div>
+                </div>
+                <div class="swiper-slide">
+                    <img src="{{ asset('assets/auth/img/slide3.png') }}" alt="Cake 3">
+                    <div class="slide-overlay"></div>
+                    <div class="slide-content">
+                        <div class="brand-icon">✨</div>
+                        <div class="brand-name">Momen Spesial</div>
+                        <div class="brand-tagline">Sempurnakan Hari Anda</div>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-pagination"></div>
         </div>
     </div>
 
@@ -609,7 +679,24 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
     <script>
+        const swiper = new Swiper(".mySwiper", {
+            loop: true,
+            autoplay: {
+                delay: 4000,
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
+            effect: "fade",
+            fadeEffect: {
+                crossFade: true
+            }
+        });
+
         function togglePwd() {
             const p = document.getElementById('password');
             p.type = p.type === 'password' ? 'text' : 'password';
