@@ -710,9 +710,9 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 }
             }
             
-            let savedCustName = '{{ auth()->check() ? auth()->user()->name : '' }}';
-            let savedCustPhone = '{{ auth()->check() ? auth()->user()->no_wa : '' }}';
-            let savedCustAddress = '{{ auth()->check() ? auth()->user()->alamat : '' }}';
+            let savedCustName = {!! json_encode(auth()->check() ? auth()->user()->name : '') !!};
+            let savedCustPhone = {!! json_encode(auth()->check() ? auth()->user()->no_wa : '') !!};
+            let savedCustAddress = {!! json_encode(auth()->check() ? auth()->user()->alamat : '') !!};
 
             function showCartModal() {
                 if (cart.length === 0) {
