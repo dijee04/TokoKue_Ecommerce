@@ -69,7 +69,7 @@
         });
 
         $groupedMenus = [
-            'Birthday Cake' => $birthdayCakes,
+            'Cake' => $birthdayCakes,
             'Cookies' => $cookies,
             'Pastries' => $pastries,
             'Menu Lain' => $menuLain,

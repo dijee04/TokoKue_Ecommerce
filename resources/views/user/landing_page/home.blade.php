@@ -41,10 +41,10 @@
                 <!-- TAB KATEGORI - KLASIK & KUE KERING -->
                 <div class="category-tabs-wrapper" style="display: flex; gap: 15px; margin-top: 10px;">
                     <button class="category-tab-btn active" data-category="klasik" style="padding: 12px 28px; background: linear-gradient(135deg, #f06292, #ec407a); color: white; border: none; border-radius: 50px; font-weight: 800; font-size: 16px; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 12px rgba(240,98,146,0.3);">
-                        🍰 BIRTHDAY CAKE
+                        🍰 CAKE
                     </button>
                     <button class="category-tab-btn" data-category="kuekering" style="padding: 12px 28px; background: linear-gradient(135deg, #fff5f0, #ffe8f0); color: #6d4c41; border: 2px solid #fce4ec; border-radius: 50px; font-weight: 800; font-size: 16px; cursor: pointer; transition: all 0.3s;">
-                        🍪 KUE KERING
+                        🍪 COOKIES
                     </button>
                 </div>
             </div>
@@ -54,9 +54,9 @@
                 <div id="previewProduk" style="background: linear-gradient(135deg, #fff5f0, #ffe8f0); border-radius: 30px; padding: 25px; text-align: center;">
                     <div id="previewContent">
                         <div style="font-size: 60px; margin-bottom: 15px;">🍰</div>
-                        <h3 style="color: #6d4c41; font-size: 24px; margin-bottom: 10px; font-weight: 800;">BIRTHDAY CAKE</h3>
-                        <p style="color: #8d6e63; margin-bottom: 20px;">Brownis, Cheesecake, Birthday Tart, dan berbagai pilihan kue klasik lainnya.</p>
-                        <a href="{{ url('/menu') }}#birthday-cake" style="display: inline-block; padding: 10px 25px; background: linear-gradient(135deg, #f06292, #ec407a); color: white; text-decoration: none; border-radius: 50px; font-weight: 700; transition: all 0.3s;">Lihat Semua →</a>
+                        <h3 style="color: #6d4c41; font-size: 24px; margin-bottom: 10px; font-weight: 800;">CAKE</h3>
+                        <p style="color: #8d6e63; margin-bottom: 20px;">Brownis, Cheesecake, Birthday Tart, dan berbagai pilihan kue lezat lainnya.</p>
+                        <a href="{{ url('/menu') }}#cake" style="display: inline-block; padding: 10px 25px; background: linear-gradient(135deg, #f06292, #ec407a); color: white; text-decoration: none; border-radius: 50px; font-weight: 700; transition: all 0.3s;">Lihat Semua →</a>
                     </div>
                 </div>
             </div>
@@ -488,13 +488,13 @@
             const kontenPreview = {
                 klasik: `
                     <div style="font-size: 60px; margin-bottom: 15px;">🍰</div>
-                    <h3 style="color: #6d4c41; font-size: 24px; margin-bottom: 10px; font-weight: 800;">Kue Klasik</h3>
-                    <p style="color: #8d6e63; margin-bottom: 20px;">Brownis, Cheesecake, Birthday Tart, dan berbagai pilihan kue klasik lainnya yang siap memanjakan lidah Anda.</p>
-                    <a href="{{ url('/menu') }}#birthday-cake" style="display: inline-block; padding: 10px 25px; background: linear-gradient(135deg, #f06292, #ec407a); color: white; text-decoration: none; border-radius: 50px; font-weight: 700; transition: all 0.3s;">Lihat Semua →</a>
+                    <h3 style="color: #6d4c41; font-size: 24px; margin-bottom: 10px; font-weight: 800;">Cake</h3>
+                    <p style="color: #8d6e63; margin-bottom: 20px;">Brownis, Cheesecake, Birthday Tart, dan berbagai pilihan kue lezat lainnya yang siap memanjakan lidah Anda.</p>
+                    <a href="{{ url('/menu') }}#cake" style="display: inline-block; padding: 10px 25px; background: linear-gradient(135deg, #f06292, #ec407a); color: white; text-decoration: none; border-radius: 50px; font-weight: 700; transition: all 0.3s;">Lihat Semua →</a>
                 `,
                 kuekering: `
                     <div style="font-size: 60px; margin-bottom: 15px;">🍪</div>
-                    <h3 style="color: #6d4c41; font-size: 24px; margin-bottom: 10px; font-weight: 800;">Kue Kering</h3>
+                    <h3 style="color: #6d4c41; font-size: 24px; margin-bottom: 10px; font-weight: 800;">Cookies</h3>
                     <p style="color: #8d6e63; margin-bottom: 20px;">Palm Cheese, Nutella Cookies, Florentine Cookies, dan aneka kue kering renyah untuk teman ngopi Anda.</p>
                     <a href="{{ url('/menu') }}#cookies" style="display: inline-block; padding: 10px 25px; background: linear-gradient(135deg, #f06292, #ec407a); color: white; text-decoration: none; border-radius: 50px; font-weight: 700; transition: all 0.3s;">Lihat Semua →</a>
                 `
