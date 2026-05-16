@@ -1,9 +1,6 @@
 @extends('user.layouts.app')
 
 @section('content')
-    <!-- Midtrans Snap JS -->
-    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('services.midtrans.client_key') }}"></script>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Menu Header dengan efek partikel dan parallax 3D -->
     <section class="menu-header" style="background: linear-gradient(135deg, rgba(252,228,236,0.92), rgba(248,187,208,0.92)), url('https://i.pinimg.com/1200x/61/43/a2/6143a2c8975f04a2ed426936e99fb025.jpg'); background-size: cover; background-position: center; background-attachment: fixed; padding: 100px 20px; text-align: center; position: relative; overflow: hidden;">
         <!-- Efek partikel animasi -->
@@ -30,167 +27,17 @@
 
     @php
         // Inisialisasi koleksi produk dari database
-        if(!isset($produks) || $produks->isEmpty()) {
-            $produks = collect([
-            (object) [
-            'id' => 3,
-            'nama_produk' => 'Brownis Almond',
-            'deskripsi' => 'Brownis dengan taburan almond renyah.',
-            'harga' => 35000,
-            'gambar' => 'Kue/Brownis_3.png',
-            'kategori' => (object) ['nama_kategori' => 'Cake'],
-            'options' => [
-                (object) ['type' => 'radio', 'label' => 'Varian', 'key' => 'variant', 'choices' => ['Original Almond', 'Dark Chocolate Almond', 'Caramel Almond']],
-                (object) ['type' => 'radio', 'label' => 'Ukuran', 'key' => 'size', 'choices' => ['Regular (250g)', 'Jumbo (500g) +15k', 'Family (1kg) +35k']]
-            ],
-            'variant_images' => [
-                'Original Almond' => 'Kue/Brownis_1.png',
-                'Dark Chocolate Almond' => 'Kue/Brownis_2.png',
-                'Caramel Almond' => 'Kue/Brownis_4.png'
-            ]
-        ],
-        
-        // Cheesecake Coklat
-        (object) [
-            'id' => 5,
-            'nama_produk' => 'Cheesecake Coklat',
-            'deskripsi' => 'Cheesecake lembut dengan lapisan coklat.',
-            'harga' => 55000,
-            'gambar' => 'Kue/Cheesecake_coklat.png',
-            'kategori' => (object) ['nama_kategori' => 'Cake'],
-            'options' => [
-                (object) ['type' => 'radio', 'label' => 'Topping', 'key' => 'topping', 'choices' => ['Classic Coklat', 'Matcha Coklat', 'Berry Burst']],
-                (object) ['type' => 'radio', 'label' => 'Porsi', 'key' => 'portion', 'choices' => ['Slice (1 potong)', 'Whole Cake (6-8 potong) +70k', 'Mini Set (3 pcs) +30k']]
-            ],
-             'variant_images' => [
-                'cheesecake Almond' => 'Kue/almond_original.png',
-                'Dark Chocolate ' => 'Kue/cheesecake_dark.png',
-                'Caramel Almond' => 'Kue/cheesecake_caramel.png'
-            ]
-        ],
-        
-        
-        // Cheesecake Lotus
-        (object) [
-            'id' => 6,
-            'nama_produk' => 'Cheesecake Lotus',
-            'deskripsi' => 'Cheesecake dengan biskuit lotus biscoff.',
-            'harga' => 75000,
-            'gambar' => 'Kue/Cheesecake_lotus.png',
-            'kategori' => (object) ['nama_kategori' => 'Cake'],
-            'options' => [
-                (object) ['type' => 'radio', 'label' => 'Varian Lotus', 'key' => 'lotusVar', 'choices' => ['Lotus Biscoff Original', 'Lotus Caramel Swirl', 'Lotus White Choco']],
-                (object) ['type' => 'radio', 'label' => 'Level Keju', 'key' => 'cheeseLevel', 'choices' => ['Regular Creamy', 'Extra Cheesy +12k', 'Super Premium +25k']]
-            ]
-        ],
-        
-        // Birthday Tart
-        (object) [
-            'id' => 7,
-            'nama_produk' => 'Birthday Tart',
-            'deskripsi' => 'Tart spesial dengan topping buah segar.',
-            'harga' => 175000,
-            'gambar' => 'Kue/birthday_tart.png',
-            'kategori' => (object) ['nama_kategori' => 'Cake'],
-            'options' => [
-                (object) ['type' => 'radio', 'label' => 'Ukuran', 'key' => 'size', 'choices' => ['Regular (20cm)', 'Large (25cm) +50k', 'Jumbo (30cm) +100k']],
-                (object) ['type' => 'radio', 'label' => 'Topping Tambahan', 'key' => 'extraTopping', 'choices' => ['Standar', 'Extra Fruit +15k', 'Extra Coklat +10k']]
-            ]
-        ],
-        
-        // Chocolate Cake 
-        (object) [
-            'id' => 8,
-            'nama_produk' => 'Chocolate Cake',
-            'deskripsi' => 'Kue cokelat premium dengan ganache lembut.',
-            'harga' => 150000,
-            'gambar' => 'Kue/chocolate_cake.png',
-            'kategori' => (object) ['nama_kategori' => 'Cake'],
-            'options' => [
-                (object) ['type' => 'radio', 'label' => 'Varian', 'key' => 'variant', 'choices' => ['Dark Chocolate', 'Milk Chocolate', 'White Chocolate']],
-                (object) ['type' => 'radio', 'label' => 'Ukuran', 'key' => 'size', 'choices' => ['Small (250g)', 'Medium (500g) +30k', 'Large (1kg) +80k']]
-            ],
-            'variant_images' => [
-                'Dark Chocolate' => 'Kue/chocolate_cake.png',
-                'Milk Chocolate' => 'Kue/chocolate_cake_milk.png',
-                'White Chocolate' => 'Kue/chocolate_cake_white.png'
-            ]
-        ],
-        
-        // Vanilla Chocolate
-        (object) [
-            'id' => 9,
-            'nama_produk' => 'Vanilla Chocolate',
-            'deskripsi' => 'Kue spesial dengan topping buah segar.',
-            'harga' => 175000,
-            'gambar' => 'Kue/vanilla_chocolate_cupcake.png',
-            'kategori' => (object) ['nama_kategori' => 'Cake'],
-            'options' => [
-                (object) ['type' => 'radio', 'label' => 'Topping', 'key' => 'topping', 'choices' => ['Sprinkles', 'Chocolate Chip +5k', 'Fruit +10k']]
-            ]
-        ],
-        
-        // Palm Cheese
-        (object) [
-            'id' => 11,
-            'nama_produk' => 'Palm Cheese',
-            'deskripsi' => 'Cookies dengan keju yang gurih.',
-            'harga' => 45000,
-            'gambar' => 'Cookies/Palm_cheese.png',
-            'kategori' => (object) ['nama_kategori' => 'Kue Kering'],
-            'options' => [
-                (object) ['type' => 'radio', 'label' => 'Kemasan', 'key' => 'packaging', 'choices' => ['Toples Kecil (250g)', 'Toples Besar (500g) +15k', 'Paket Hemat (750g) +25k']]
-            ]
-        ],
-        
-        // Nuttela Cookies
-        (object) [
-            'id' => 13,
-            'nama_produk' => 'Nuttela Cookies',
-            'deskripsi' => 'Cookies dengan Nutella filling.',
-            'harga' => 45000,
-            'gambar' => 'Cookies/Nutella_Cookies.png',
-            'kategori' => (object) ['nama_kategori' => 'Kue Kering'],
-            'options' => [
-                (object) ['type' => 'radio', 'label' => 'Kemasan', 'key' => 'packaging', 'choices' => ['Toples Kecil (250g)', 'Toples Besar (500g) +15k', 'Paket Hemat (750g) +25k']]
-            ]
-        ],
-        
-        
-        // Puding Cake
-        (object) [
-            'id' => 14,
-            'nama_produk' => 'Puding Cake',
-            'deskripsi' => 'Perpaduan puding dan cake yang lezat.',
-            'harga' => 25000,
-            'gambar' => 'Kue/Pudingcake_1.png',
-            'kategori' => (object) ['nama_kategori' => 'Cake'],
-            'options' => [
-                (object) ['type' => 'radio', 'label' => 'Rasa', 'key' => 'flavor', 'choices' => ['Coklat', 'Vanilla', 'Matcha +5k']]
-            ]
-        ],
-        
-        // Florentine Cookies
-        (object) [
-            'id' => 15,
-            'nama_produk' => 'Florentine Cookies',
-            'deskripsi' => 'Cookies aneka kacang.',
-            'harga' => 25000,
-            'gambar' => 'Cookies/Florentine_Cookies.png',
-            'kategori' => (object) ['nama_kategori' => 'Kue Kering'],
-            'options' => [
-                (object) ['type' => 'radio', 'label' => 'Kemasan', 'key' => 'packaging', 'choices' => ['Toples Kecil (250g)', 'Toples Besar (500g) +15k']]
-            ]
-        ],
-    ]);
-}
+        // Tidak ada inisialisasi hardcode, menggunakan $produks dari controller
 
         // Kategori:Cake
         $birthdayCakes = collect($produks)->filter(function ($produk) {
             $kategori = strtolower($produk->kategori->nama_kategori ?? '');
             $namaProduk = strtolower($produk->nama_produk ?? '');
             return str_contains($kategori, 'cake')
+                || str_contains($kategori, 'ulang tahun')
+                || str_contains($kategori, 'dessert')
                 || str_contains($namaProduk, 'tart')
+                || str_contains($namaProduk, 'cake')
                 || str_contains($namaProduk, 'puding');
         });
 
@@ -224,6 +71,7 @@
         $groupedMenus = [
             'Birthday Cake' => $birthdayCakes,
             'Cookies' => $cookies,
+            'Pastries' => $pastries,
             'Menu Lain' => $menuLain,
         ];
         
@@ -267,7 +115,11 @@
                             @foreach($items as $index => $produk)
                                 @php
                                     if($produk->gambar && !str_starts_with($produk->gambar, 'http')) {
-                                        $imageUrl = asset('assets/img_produk/' . ltrim($produk->gambar, '/'));
+                                        if (str_starts_with($produk->gambar, 'Kue/') || str_starts_with($produk->gambar, 'Cookies/')) {
+                                            $imageUrl = asset('assets/img_produk/' . ltrim($produk->gambar, '/'));
+                                        } else {
+                                            $imageUrl = asset('storage/' . $produk->gambar);
+                                        }
                                     } elseif($produk->gambar && str_starts_with($produk->gambar, 'http')) {
                                         $imageUrl = $produk->gambar;
                                     } else {
@@ -347,35 +199,7 @@
                 <!-- Dynamic options will be inserted here -->
             </div>
             
-            <!-- SECTION METODE PEMBAYARAN - UNTUK PESAN SEKARANG -->
-            <div id="paymentSection" class="payment-section" style="display: none; margin: 0 24px 24px 24px;">
-                <div class="payment-methods" style="padding: 22px; background: linear-gradient(135deg, #fff5f0, #fff0e8); border-radius: 32px;">
-                    <div class="payment-title" style="font-weight: 800; color: #6d4c41; margin-bottom: 16px; font-size: 16px; display: flex; align-items: center; gap: 10px;">
-                        <span>💳</span> Pilih Metode Pembayaran
-                    </div>
-                    <div class="payment-options" id="paymentOptions" style="display: flex; gap: 15px; flex-wrap: wrap;">
-                        <div class="payment-option selected" data-payment="bank" style="flex: 1; min-width: 110px; padding: 14px; border: 2px solid #f06292; border-radius: 20px; background: #fce4ec; cursor: pointer; text-align: center; transition: all 0.3s;">
-                            <span class="payment-icon" style="font-size: 32px; display: block; margin-bottom: 8px;">🏦</span>
-                            <span class="payment-name" style="font-size: 13px; font-weight: 800; color: #6d4c41;">Transfer Bank</span>
-                        </div>
-                        <div class="payment-option" data-payment="dana" style="flex: 1; min-width: 110px; padding: 14px; border: 2px solid #f0d0d0; border-radius: 20px; background: white; cursor: pointer; text-align: center; transition: all 0.3s;">
-                            <span class="payment-icon" style="font-size: 32px; display: block; margin-bottom: 8px;">💙</span>
-                            <span class="payment-name" style="font-size: 13px; font-weight: 800; color: #6d4c41;">DANA</span>
-                        </div>
-                        <div class="payment-option" data-payment="gopay" style="flex: 1; min-width: 110px; padding: 14px; border: 2px solid #f0d0d0; border-radius: 20px; background: white; cursor: pointer; text-align: center; transition: all 0.3s;">
-                            <span class="payment-icon" style="font-size: 32px; display: block; margin-bottom: 8px;">💚</span>
-                            <span class="payment-name" style="font-size: 13px; font-weight: 800; color: #6d4c41;">GoPay</span>
-                        </div>
-                    </div>
-                    <div id="paymentDetails" class="payment-details" style="margin-top: 18px; padding: 16px; background: white; border-radius: 24px; border: 1px solid #ffe0d0; font-size: 13px;">
-                        <p>📋 Transfer ke rekening berikut:</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 15px; font-weight: bold; color: #f06292;">🏦 Bank BCA</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 15px; font-weight: bold; color: #f06292;">🔢 1234567890</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 15px; font-weight: bold; color: #f06292;">👤 a.n. Sweet & Savory Seana</p>
-                        <p style="margin-top: 10px; font-size: 11px; color: #999;">⚠️ Konfirmasi pembayaran via WhatsApp setelah transfer</p>
-                    </div>
-                </div>
-            </div>
+            <!-- SECTION METODE PEMBAYARAN TELAH DIHAPUS (DIGANTIKAN OLEH MIDTRANS) -->
             
             <div class="modal-footer" style="padding: 24px 28px 28px; border-top: 1px solid #f0e0d0; background: rgba(255,248,240,0.95); border-radius: 0 0 48px 48px;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -715,22 +539,22 @@
 
     <script>
         // Nomor WhatsApp tujuan
-        const WA_PHONE_NUMBER = '6281234567890';
+        const WA_PHONE_NUMBER = '{{ $global_setting->wa_number ?? "6281234567890" }}';
         
         // Nomor rekening dan payment info
         const PAYMENT_INFO = {
             bank: {
-                name: 'Bank BCA',
-                accountNumber: '1234567890',
-                accountName: 'Sweet & Savory Seana'
+                name: '{{ $global_setting->bank_name ?? "Bank BCA" }}',
+                accountNumber: '{{ $global_setting->bank_account ?? "1234567890" }}',
+                accountName: '{{ $global_setting->bank_owner ?? "Sweet & Savory Seana" }}'
             },
             dana: {
-                number: '081234567890',
-                name: 'Sweet & Savory'
+                number: '{{ $global_setting->dana_number ?? "081234567890" }}',
+                name: '{{ $global_setting->dana_owner ?? "Sweet & Savory" }}'
             },
             gopay: {
-                number: '081234567890',
-                name: 'Sweet & Savory'
+                number: '{{ $global_setting->gopay_number ?? "081234567890" }}',
+                name: '{{ $global_setting->gopay_owner ?? "Sweet & Savory" }}'
             }
         };
         
@@ -805,36 +629,31 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
             
             // ========== CART FUNCTIONS ==========
             function addToCart(product, selections, quantity) {
-                const total_price = calculateTotalPrice(product, selections, quantity);
-                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+                const cartItem = {
+                    id: product.id,
+                    name: product.nama_produk,
+                    base_price: product.harga,
+                    selections: { ...selections },
+                    quantity: quantity,
+                    total_price: calculateTotalPrice(product, selections, quantity)
+                };
                 
-                fetch('/keranjang', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken,
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        produk_id: product.id,
-                        jumlah: quantity,
-                        opsi: selections,
-                        total_harga: total_price
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.redirect) {
-                        window.location.href = data.redirect;
-                        return;
-                    }
-                    if (data.success) {
-                        showToastMessage('🛒 Ditambahkan ke keranjang! ✨');
-                        loadCartFromDatabase();
-                        animateCart();
-                    }
-                })
-                .catch(err => console.log('Error add to cart', err));
+                const existingIndex = cart.findIndex(item => 
+                    item.id === cartItem.id && 
+                    JSON.stringify(item.selections) === JSON.stringify(cartItem.selections)
+                );
+                
+                if (existingIndex !== -1) {
+                    cart[existingIndex].quantity += quantity;
+                    cart[existingIndex].total_price = calculateTotalPrice(product, cart[existingIndex].selections, cart[existingIndex].quantity);
+                } else {
+                    cart.push(cartItem);
+                }
+                
+                localStorage.setItem('sweetSavoryCart', JSON.stringify(cart));
+                showToastMessage('🛒 Ditambahkan ke keranjang! ✨');
+                updateCartBadge();
+                animateCart();
             }
             
             function animateCart() {
@@ -891,11 +710,23 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 }
             }
             
+            let savedCustName = '{{ auth()->check() ? auth()->user()->name : '' }}';
+            let savedCustPhone = '{{ auth()->check() ? auth()->user()->no_wa : '' }}';
+            let savedCustAddress = '{{ auth()->check() ? auth()->user()->alamat : '' }}';
+
             function showCartModal() {
                 if (cart.length === 0) {
                     showToastMessage('✨ Keranjang belanja masih kosong');
                     return;
                 }
+                
+                // Preserve inputs if they exist
+                const custNameInput = document.getElementById('custName');
+                if (custNameInput) savedCustName = custNameInput.value;
+                const custPhoneInput = document.getElementById('custPhone');
+                if (custPhoneInput) savedCustPhone = custPhoneInput.value;
+                const custAddressInput = document.getElementById('custAddress');
+                if (custAddressInput) savedCustAddress = custAddressInput.value;
                 
                 let grandTotal = 0;
                 let cartHtml = `
@@ -934,52 +765,14 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 
                 cartHtml += `
                             </div>
-                            <div class="payment-methods" style="margin: 0 24px 24px 24px; padding: 22px; background: linear-gradient(135deg, #fff5f0, #fff0e8); border-radius: 32px;">
-                                <div class="payment-title" style="font-weight: 800; color: #6d4c41; margin-bottom: 16px; font-size: 16px; display: flex; align-items: center; gap: 10px;">
-                                    <span>💳</span> Pilih Metode Pembayaran
+                            <div class="customer-details" style="margin: 0 24px 24px 24px; padding: 22px; background: white; border-radius: 32px; border: 1px solid #ffe0d0;">
+                                <div style="font-weight: 800; color: #6d4c41; margin-bottom: 16px; font-size: 16px; display: flex; align-items: center; gap: 10px;">
+                                    <span>👤</span> Informasi Pengiriman
                                 </div>
-                                <div class="payment-options" id="cartPaymentOptions" style="display: flex; gap: 15px; flex-wrap: wrap;">
-                                    <div class="payment-option ${selectedPaymentMethod === 'bank' ? 'selected' : ''}" data-payment="bank" style="flex: 1; min-width: 110px; padding: 14px; border: 2px solid ${selectedPaymentMethod === 'bank' ? '#f06292' : '#f0d0d0'}; border-radius: 20px; background: ${selectedPaymentMethod === 'bank' ? '#fce4ec' : 'white'}; cursor: pointer; text-align: center; transition: all 0.3s;">
-                                        <span class="payment-icon" style="font-size: 32px; display: block; margin-bottom: 8px;">🏦</span>
-                                        <span class="payment-name" style="font-size: 13px; font-weight: 800; color: #6d4c41;">Transfer Bank</span>
-                                    </div>
-                                    <div class="payment-option ${selectedPaymentMethod === 'dana' ? 'selected' : ''}" data-payment="dana" style="flex: 1; min-width: 110px; padding: 14px; border: 2px solid ${selectedPaymentMethod === 'dana' ? '#f06292' : '#f0d0d0'}; border-radius: 20px; background: ${selectedPaymentMethod === 'dana' ? '#fce4ec' : 'white'}; cursor: pointer; text-align: center; transition: all 0.3s;">
-                                        <span class="payment-icon" style="font-size: 32px; display: block; margin-bottom: 8px;">💙</span>
-                                        <span class="payment-name" style="font-size: 13px; font-weight: 800; color: #6d4c41;">DANA</span>
-                                    </div>
-                                    <div class="payment-option ${selectedPaymentMethod === 'gopay' ? 'selected' : ''}" data-payment="gopay" style="flex: 1; min-width: 110px; padding: 14px; border: 2px solid ${selectedPaymentMethod === 'gopay' ? '#f06292' : '#f0d0d0'}; border-radius: 20px; background: ${selectedPaymentMethod === 'gopay' ? '#fce4ec' : 'white'}; cursor: pointer; text-align: center; transition: all 0.3s;">
-                                        <span class="payment-icon" style="font-size: 32px; display: block; margin-bottom: 8px;">💚</span>
-                                        <span class="payment-name" style="font-size: 13px; font-weight: 800; color: #6d4c41;">GoPay</span>
-                                    </div>
-                                </div>
-                                <div id="cartPaymentDetails" class="payment-details" style="margin-top: 18px; padding: 16px; background: white; border-radius: 24px; border: 1px solid #ffe0d0; font-size: 13px;">
-                `;
-                
-                if (selectedPaymentMethod === 'bank') {
-                    cartHtml += `
-                        <p>📋 Transfer ke rekening berikut:</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 15px; font-weight: bold; color: #f06292;">🏦 ${PAYMENT_INFO.bank.name}</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 15px; font-weight: bold; color: #f06292;">🔢 ${PAYMENT_INFO.bank.accountNumber}</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 15px; font-weight: bold; color: #f06292;">👤 a.n. ${PAYMENT_INFO.bank.accountName}</p>
-                        <p style="margin-top: 10px; font-size: 11px; color: #999;">⚠️ Konfirmasi pembayaran via WhatsApp setelah transfer</p>
-                    `;
-                } else if (selectedPaymentMethod === 'dana') {
-                    cartHtml += `
-                        <p>📱 Kirim ke nomor DANA:</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 15px; font-weight; bold; color: #f06292;">💙 ${PAYMENT_INFO.dana.number}</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 15px; font-weight: bold; color: #f06292;">👤 a.n. ${PAYMENT_INFO.dana.name}</p>
-                        <p style="margin-top: 10px; font-size: 11px; color: #999;">⚠️ Konfirmasi pembayaran via WhatsApp setelah transfer</p>
-                    `;
-                } else if (selectedPaymentMethod === 'gopay') {
-                    cartHtml += `
-                        <p>📱 Kirim ke nomor GoPay:</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 15px; font-weight: bold; color: #f06292;">💚 ${PAYMENT_INFO.gopay.number}</p>
-                        <p class="bank-account" style="font-family: monospace; font-size: 15px; font-weight: bold; color: #f06292;">👤 a.n. ${PAYMENT_INFO.gopay.name}</p>
-                        <p style="margin-top: 10px; font-size: 11px; color: #999;">⚠️ Konfirmasi pembayaran via WhatsApp setelah transfer</p>
-                    `;
-                }
-                
-                cartHtml += `
+                                <div style="display: flex; flex-direction: column; gap: 12px;">
+                                    <input type="text" id="custName" value="${savedCustName}" placeholder="Nama Lengkap" style="padding: 12px 16px; border-radius: 12px; border: 1px solid #f0d0d0; outline: none; font-family: inherit;">
+                                    <input type="text" id="custPhone" value="${savedCustPhone}" placeholder="Nomor WhatsApp (Contoh: 0812...)" style="padding: 12px 16px; border-radius: 12px; border: 1px solid #f0d0d0; outline: none; font-family: inherit;">
+                                    <textarea id="custAddress" placeholder="Alamat Pengiriman Lengkap" rows="3" style="padding: 12px 16px; border-radius: 12px; border: 1px solid #f0d0d0; outline: none; font-family: inherit; resize: none;">${savedCustAddress}</textarea>
                                 </div>
                             </div>
                             <div class="modal-footer" style="padding: 24px 28px 28px; border-top: 1px solid #ffe0d0; background: rgba(255,248,240,0.95); border-radius: 0 0 48px 48px;">
@@ -1007,47 +800,7 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 const clearBtn = document.getElementById('clearCartBtn');
                 const checkoutBtn = document.getElementById('checkoutCartBtn');
                 
-                const cartPaymentOptions = document.querySelectorAll('#cartPaymentOptions .payment-option');
-                cartPaymentOptions.forEach(option => {
-                    option.addEventListener('click', () => {
-                        const paymentMethod = option.dataset.payment;
-                        selectedPaymentMethod = paymentMethod;
-                        
-                        cartPaymentOptions.forEach(opt => {
-                            opt.style.borderColor = '#f0d0d0';
-                            opt.style.background = 'white';
-                        });
-                        option.style.borderColor = '#f06292';
-                        option.style.background = '#fce4ec';
-                        
-                        const paymentDetailsDiv = document.getElementById('cartPaymentDetails');
-                        if (paymentDetailsDiv) {
-                            if (selectedPaymentMethod === 'bank') {
-                                paymentDetailsDiv.innerHTML = `
-                                    <p>📋 Transfer ke rekening berikut:</p>
-                                    <p class="bank-account" style="font-family: monospace; font-size: 15px; font-weight: bold; color: #f06292;">🏦 ${PAYMENT_INFO.bank.name}</p>
-                                    <p class="bank-account" style="font-family: monospace; font-size: 15px; font-weight: bold; color: #f06292;">🔢 ${PAYMENT_INFO.bank.accountNumber}</p>
-                                    <p class="bank-account" style="font-family: monospace; font-size: 15px; font-weight: bold; color: #f06292;">👤 a.n. ${PAYMENT_INFO.bank.accountName}</p>
-                                    <p style="margin-top: 10px; font-size: 11px; color: #999;">⚠️ Konfirmasi pembayaran via WhatsApp setelah transfer</p>
-                                `;
-                            } else if (selectedPaymentMethod === 'dana') {
-                                paymentDetailsDiv.innerHTML = `
-                                    <p>📱 Kirim ke nomor DANA:</p>
-                                    <p class="bank-account" style="font-family: monospace; font-size: 15px; font-weight: bold; color: #f06292;">💙 ${PAYMENT_INFO.dana.number}</p>
-                                    <p class="bank-account" style="font-family: monospace; font-size: 15px; font-weight: bold; color: #f06292;">👤 a.n. ${PAYMENT_INFO.dana.name}</p>
-                                    <p style="margin-top: 10px; font-size: 11px; color: #999;">⚠️ Konfirmasi pembayaran via WhatsApp setelah transfer</p>
-                                `;
-                            } else if (selectedPaymentMethod === 'gopay') {
-                                paymentDetailsDiv.innerHTML = `
-                                    <p>📱 Kirim ke nomor GoPay:</p>
-                                    <p class="bank-account" style="font-family: monospace; font-size: 15px; font-weight: bold; color: #f06292;">💚 ${PAYMENT_INFO.gopay.number}</p>
-                                    <p class="bank-account" style="font-family: monospace; font-size: 15px; font-weight: bold; color: #f06292;">👤 a.n. ${PAYMENT_INFO.gopay.name}</p>
-                                    <p style="margin-top: 10px; font-size: 11px; color: #999;">⚠️ Konfirmasi pembayaran via WhatsApp setelah transfer</p>
-                                `;
-                            }
-                        }
-                    });
-                });
+                // Metode pembayaran manual telah dihapus, jadi tidak ada listener yang ditambahkan
                 
                 closeBtn.addEventListener('click', () => {
                     cartModal.remove();
@@ -1055,7 +808,12 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 });
                 
                 clearBtn.addEventListener('click', () => {
-                    clearCartDatabase();
+                    cart = [];
+                    localStorage.removeItem('sweetSavoryCart');
+                    updateCartBadge();
+                    cartModal.remove();
+                    document.body.style.overflow = '';
+                    showToastMessage('🗑️ Keranjang telah dikosongkan');
                 });
                 
                 checkoutBtn.addEventListener('click', () => {
@@ -1068,11 +826,22 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                     btn.addEventListener('click', (e) => {
                         const index = parseInt(btn.dataset.index);
                         if (cart[index].quantity > 1) {
-                            const newQty = cart[index].quantity - 1;
-                            const newTotal = calculateTotalPriceForCartItem({...cart[index], quantity: newQty});
-                            updateCartItem(cart[index].cart_id, newQty, newTotal);
+                            cart[index].quantity--;
+                            cart[index].total_price = calculateTotalPriceForCartItem(cart[index]);
+                            localStorage.setItem('sweetSavoryCart', JSON.stringify(cart));
+                            updateCartBadge();
+                            showCartModal();
                         } else {
-                            removeCartItem(cart[index].cart_id);
+                            cart.splice(index, 1);
+                            localStorage.setItem('sweetSavoryCart', JSON.stringify(cart));
+                            updateCartBadge();
+                            if (cart.length === 0) {
+                                cartModal.remove();
+                                document.body.style.overflow = '';
+                                showToastMessage('✨ Keranjang kosong');
+                            } else {
+                                showCartModal();
+                            }
                         }
                     });
                 });
@@ -1080,16 +849,27 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 document.querySelectorAll('.cart-qty-plus').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         const index = parseInt(btn.dataset.index);
-                        const newQty = cart[index].quantity + 1;
-                        const newTotal = calculateTotalPriceForCartItem({...cart[index], quantity: newQty});
-                        updateCartItem(cart[index].cart_id, newQty, newTotal);
+                        cart[index].quantity++;
+                        cart[index].total_price = calculateTotalPriceForCartItem(cart[index]);
+                        localStorage.setItem('sweetSavoryCart', JSON.stringify(cart));
+                        updateCartBadge();
+                        showCartModal();
                     });
                 });
                 
                 document.querySelectorAll('.cart-remove').forEach(btn => {
                     btn.addEventListener('click', (e) => {
                         const index = parseInt(btn.dataset.index);
-                        removeCartItem(cart[index].cart_id);
+                        cart.splice(index, 1);
+                        localStorage.setItem('sweetSavoryCart', JSON.stringify(cart));
+                        updateCartBadge();
+                        if (cart.length === 0) {
+                            cartModal.remove();
+                            document.body.style.overflow = '';
+                            showToastMessage('✨ Keranjang kosong');
+                        } else {
+                            showCartModal();
+                        }
                     });
                 });
                 
@@ -1132,126 +912,120 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 }
             }
             
-            function sendCartToWhatsAppWithPayment() {
+            async function sendCartToWhatsAppWithPayment() {
                 if (cart.length === 0) {
                     showToastMessage('Keranjang kosong');
                     return;
                 }
                 
-                let message = '🍰 *SWEET & SAVORY* 🍰%0A%0A';
-                message += 'Halo Dear Seana,%0A%0A';
-                message += '*📋 DETAIL PESANAN:*%0A';
-                message += '━━━━━━━━━━━━━━━%0A%0A';
+                const custNameInput = document.getElementById('custName');
+                const custPhoneInput = document.getElementById('custPhone');
+                const custAddressInput = document.getElementById('custAddress');
+                
+                if (!custNameInput || !custNameInput.value.trim()) {
+                    alert('Mohon isi Nama Lengkap Anda.');
+                    return;
+                }
+                if (!custPhoneInput || !custPhoneInput.value.trim()) {
+                    alert('Mohon isi Nomor WhatsApp Anda.');
+                    return;
+                }
+                if (!custAddressInput || !custAddressInput.value.trim()) {
+                    alert('Mohon isi Alamat Pengiriman Anda.');
+                    return;
+                }
+                
+                const namaPelanggan = custNameInput.value.trim();
+                const noWaPelanggan = custPhoneInput.value.trim();
+                const alamatPelanggan = custAddressInput.value.trim();
+                
                 let grandTotal = 0;
-                let itemsList = [];
+                cart.forEach((item) => grandTotal += item.total_price);
                 
-                cart.forEach((item, idx) => {
-                    let selectionsText = '';
-                    for (const [key, value] of Object.entries(item.selections)) {
-                        selectionsText += `   • ${key}: ${value}\n`;
-                    }
-                    message += `*${idx+1}. ${item.name}*%0A`;
-                    message += `   📦 Jumlah: ${item.quantity}%0A`;
-                    if (selectionsText) {
-                        message += `   📋 Pilihan:%0A${selectionsText}`;
-                    }
-                    message += `   💰 Subtotal: ${formatRupiah(item.total_price)}%0A%0A`;
-                    grandTotal += item.total_price;
-                    
-                    itemsList.push({
-                        id: item.id,
-                        price: item.total_price / item.quantity,
-                        quantity: item.quantity,
-                        name: item.name
+                const payload = {
+                    nama_pelanggan: namaPelanggan,
+                    no_wa: noWaPelanggan,
+                    alamat: alamatPelanggan,
+                    metode_pembayaran: selectedPaymentMethod,
+                    items: JSON.stringify(cart),
+                    total_harga: grandTotal
+                };
+                
+                try {
+                    const response = await fetch("{{ route('user.checkout') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify(payload)
                     });
-                });
-                
-                message += `━━━━━━━━━━━━━━━%0A`;
-                message += `*💰 TOTAL: ${formatRupiah(grandTotal)}*%0A%0A`;
-                message += `✨ Terima kasih telah berbelanja di Sweet & Savory! ✨`;
-                
-                checkoutMidtrans(itemsList, grandTotal, message);
+                    
+                    const result = await response.json();
+                    if (!result.success) {
+                        alert("Gagal memproses pesanan ke database: " + result.message);
+                        return;
+                    }
+
+                    // Menjalankan Snap Midtrans
+                    window.snap.pay(result.snap_token, {
+                        onSuccess: function(snapResult){
+                            fetch('{{ route("user.checkout.success_local") }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                },
+                                body: JSON.stringify({ snap_token: result.snap_token })
+                            }).then(() => {
+                                showToastMessage('✅ Pembayaran berhasil diproses!');
+                                // Kosongkan keranjang
+                                cart = [];
+                                localStorage.removeItem('sweetSavoryCart');
+                                savedCustName = '';
+                                savedCustPhone = '';
+                                savedCustAddress = '';
+                                updateCartBadge();
+                                setTimeout(() => window.location.href = "{{ route('pesanan_saya') }}", 2000);
+                            });
+                        },
+                        onPending: function(snapResult){
+                            showToastMessage('⏳ Silakan selesaikan pembayaran Anda.');
+                            // Kosongkan keranjang
+                            cart = [];
+                            localStorage.removeItem('sweetSavoryCart');
+                            savedCustName = '';
+                            savedCustPhone = '';
+                            savedCustAddress = '';
+                            updateCartBadge();
+                        },
+                        onError: function(snapResult){
+                            alert("Pembayaran gagal! Silakan coba lagi.");
+                        },
+                        onClose: function(){
+                            showToastMessage('⚠️ Anda menutup popup pembayaran.');
+                        }
+                    });
+                    
+                } catch(e) {
+                    alert("Terjadi kesalahan jaringan saat menyimpan pesanan.");
+                    return;
+                }
             }
             
             function formatRupiah(angka) {
                 return 'Rp ' + new Intl.NumberFormat('id-ID').format(angka);
             }
             
-            function loadCartFromDatabase() {
-                return fetch('/keranjang', {
-                    headers: { 'Accept': 'application/json' }
-                })
-                .then(response => {
-                    if (response.status === 401) {
-                        return [];
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if(!data || data.error) {
-                        cart = [];
-                        return;
-                    }
-                    cart = data.map(item => ({
-                        id: item.produk_id,
-                        cart_id: item.id,
-                        name: item.produk.nama_produk,
-                        base_price: item.produk.harga,
-                        selections: item.opsi || {},
-                        quantity: item.jumlah,
-                        total_price: item.total_harga
-                    }));
+            function loadCartFromStorage() {
+                const savedCart = localStorage.getItem('sweetSavoryCart');
+                if (savedCart) {
+                    cart = JSON.parse(savedCart);
                     updateCartBadge();
-                })
-                .catch(err => console.log('Error loading cart', err));
-            }
-
-            function updateCartItem(id, jumlah, total_harga) {
-                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                fetch('/keranjang/' + id, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
-                    body: JSON.stringify({ jumlah: jumlah, total_harga: total_harga })
-                }).then(() => {
-                    loadCartFromDatabase().then(() => showCartModal());
-                });
-            }
-
-            function removeCartItem(id) {
-                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                fetch('/keranjang/' + id, {
-                    method: 'DELETE',
-                    headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' }
-                }).then(() => {
-                    loadCartFromDatabase().then(() => {
-                        if (cart.length === 0) {
-                            const cartModal = document.getElementById('cartModal');
-                            if (cartModal) cartModal.remove();
-                            document.body.style.overflow = '';
-                            showToastMessage('✨ Keranjang kosong');
-                        } else {
-                            showCartModal();
-                        }
-                    });
-                });
-            }
-
-            function clearCartDatabase() {
-                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                fetch('/keranjang/clear', {
-                    method: 'DELETE',
-                    headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' }
-                }).then(() => {
-                    cart = [];
-                    updateCartBadge();
-                    const cartModal = document.getElementById('cartModal');
-                    if(cartModal) cartModal.remove();
-                    document.body.style.overflow = '';
-                    showToastMessage('🗑️ Keranjang telah dikosongkan');
-                });
+                }
             }
             
-            loadCartFromDatabase();
+            loadCartFromStorage();
             
             const floatingCart = document.querySelector('.floating-cart');
             if (floatingCart) {
@@ -1518,7 +1292,7 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 currentQuantity = 1;
             }
             
-            function sendToWhatsAppWithPayment() {
+            async function sendToWhatsAppWithPayment() {
                 if (!currentProduct) return;
                 
                 const total = calculateTotal();
@@ -1532,67 +1306,69 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                     }
                 }
                 
-                let itemsList = [{
+                // Pura-pura nama dan alamat karena modal Pesan Sekarang tidak minta input nama
+                // Idealnya kita minta input nama di modal Pesan Sekarang juga, tapi untuk saat ini:
+                const custNameInput = document.getElementById('custName') ? document.getElementById('custName').value : (savedCustName || 'Pelanggan');
+                const custPhoneInput = document.getElementById('custPhone') ? document.getElementById('custPhone').value : (savedCustPhone || '080000000000');
+                const custAddressInput = document.getElementById('custAddress') ? document.getElementById('custAddress').value : (savedCustAddress || '-');
+                
+                // Buat item format yang sesuai dengan cart
+                const singleItem = [{
                     id: currentProduct.id,
-                    price: total / currentQuantity,
+                    name: currentProduct.nama_produk,
                     quantity: currentQuantity,
-                    name: productName
+                    price: currentProduct.harga,
+                    total_price: total,
+                    selections: currentSelections
                 }];
-                
-                const messageWA = `🍰 *SWEET & SAVORY* 🍰%0A%0AHalo Dear Seana,%0A%0A*PESANAN BARU*%0A%0A✨ *${productName}*%0A📦 Jumlah: ${currentQuantity}%0A${selectionsText}%0A💰 *Total: ${formatRupiah(total)}*%0A%0ATerima kasih! 🙏`;
-                
-                checkoutMidtrans(itemsList, total, messageWA);
-                closeModal();
-            }
 
-            function checkoutMidtrans(items, total, messageWA) {
-                const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-                showToastMessage('⏳ Sedang memproses pembayaran...');
+                const payload = {
+                    nama_pelanggan: custNameInput || 'Pelanggan',
+                    no_wa: custPhoneInput || '08000000000',
+                    alamat: custAddressInput || '-',
+                    metode_pembayaran: selectedPaymentMethod || 'bank',
+                    items: JSON.stringify(singleItem),
+                    total_harga: total
+                };
                 
-                fetch('/checkout', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    body: JSON.stringify({
-                        items: items,
-                        total: total
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.snapToken) {
-                        window.snap.pay(data.snapToken, {
-                            onSuccess: function(result) {
-                                showToastMessage('✅ Pembayaran berhasil!');
-                                // Bersihkan keranjang di database
-                                clearCartDatabase();
-                                
-                                const waLink = `https://api.whatsapp.com/send/?phone=${WA_PHONE_NUMBER}&text=${messageWA}&type=phone_number&app_absent=0`;
-                                window.open(waLink, '_blank');
-                            },
-                            onPending: function(result) {
-                                showToastMessage('⏳ Menunggu pembayaran...');
-                                const waLink = `https://api.whatsapp.com/send/?phone=${WA_PHONE_NUMBER}&text=${messageWA}&type=phone_number&app_absent=0`;
-                                window.open(waLink, '_blank');
-                            },
-                            onError: function(result) {
-                                showToastMessage('❌ Pembayaran gagal.');
-                            },
-                            onClose: function() {
-                                showToastMessage('ℹ️ Anda menutup popup pembayaran.');
-                            }
-                        });
-                    } else {
-                        showToastMessage('❌ Gagal mendapatkan token pembayaran.');
-                        console.error(data);
+                try {
+                    const response = await fetch("{{ route('user.checkout') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify(payload)
+                    });
+                    
+                    const result = await response.json();
+                    if (!result.success) {
+                        alert("Gagal memproses pesanan ke database: " + result.message);
+                        return;
                     }
-                })
-                .catch(err => {
-                    showToastMessage('❌ Terjadi kesalahan koneksi.');
-                    console.error(err);
-                });
+
+                    closeModal(); // tutup modal produk
+
+                    // Menjalankan Snap Midtrans
+                    window.snap.pay(result.snap_token, {
+                        onSuccess: function(snapResult){
+                            showToastMessage('✅ Pembayaran berhasil diproses!');
+                        },
+                        onPending: function(snapResult){
+                            showToastMessage('⏳ Silakan selesaikan pembayaran Anda.');
+                        },
+                        onError: function(snapResult){
+                            alert("Pembayaran gagal! Silakan coba lagi.");
+                        },
+                        onClose: function(){
+                            showToastMessage('⚠️ Anda menutup popup pembayaran.');
+                        }
+                    });
+                    
+                } catch(e) {
+                    alert("Terjadi kesalahan jaringan saat menyimpan pesanan.");
+                    return;
+                }
             }
             
             // Tombol Masukkan Keranjang
