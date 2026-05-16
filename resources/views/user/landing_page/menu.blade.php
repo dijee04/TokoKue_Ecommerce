@@ -29,39 +29,34 @@
         // Inisialisasi koleksi produk dari database
         // Tidak ada inisialisasi hardcode, menggunakan $produks dari controller
 
-        // Kategori:Cake
-        $birthdayCakes = collect($produks)->filter(function ($produk) {
+        // Kategori: Cake (Gabungan Birthday Cake dan Pastries)
+        $cakes = collect($produks)->filter(function ($produk) {
             $kategori = strtolower($produk->kategori->nama_kategori ?? '');
             $namaProduk = strtolower($produk->nama_produk ?? '');
             return str_contains($kategori, 'cake')
                 || str_contains($kategori, 'ulang tahun')
+                || str_contains($kategori, 'basah')
+                || str_contains($kategori, 'pastry')
                 || str_contains($kategori, 'dessert')
                 || str_contains($namaProduk, 'tart')
                 || str_contains($namaProduk, 'cake')
-                || str_contains($namaProduk, 'puding');
+                || str_contains($namaProduk, 'puding')
+                || str_contains($namaProduk, 'brownis')
+                || str_contains($namaProduk, 'cheesecake');
         });
 
         $cookies = collect($produks)->filter(function ($produk) {
             $kategori = strtolower($produk->kategori->nama_kategori ?? '');
             $namaProduk = strtolower($produk->nama_produk ?? '');
-            return str_contains($kategori, 'kering')
+            return str_contains($kategori, 'cookies')
+                || str_contains($kategori, 'kering')
                 || str_contains($kategori, 'cookie')
                 || str_contains($namaProduk, 'cookie')
                 || str_contains($namaProduk, 'cookies');
         });
 
-        $pastries = collect($produks)->filter(function ($produk) {
-            $kategori = strtolower($produk->kategori->nama_kategori ?? '');
-            $namaProduk = strtolower($produk->nama_produk ?? '');
-            return str_contains($kategori, 'basah')
-                || str_contains($kategori, 'pastry')
-                || str_contains($namaProduk, 'brownis')
-                || str_contains($namaProduk, 'cheesecake');
-        });
-
-        $assignedIds = $birthdayCakes->pluck('id')
+        $assignedIds = $cakes->pluck('id')
             ->merge($cookies->pluck('id'))
-            ->merge($pastries->pluck('id'))
             ->unique();
 
         $menuLain = collect($produks)->filter(function ($produk) use ($assignedIds) {
@@ -69,9 +64,8 @@
         });
 
         $groupedMenus = [
-            'Cake' => $birthdayCakes,
+            'Cake' => $cakes,
             'Cookies' => $cookies,
-            'Pastries' => $pastries,
             'Menu Lain' => $menuLain,
         ];
         
