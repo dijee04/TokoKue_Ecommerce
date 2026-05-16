@@ -1041,7 +1041,6 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
             const cancelBtn = document.getElementById('cancelOrderBtn');
             const confirmBtn = document.getElementById('confirmOrderBtn');
             const closeModalBtn = document.querySelector('.modal-close');
-            const paymentSection = document.getElementById('paymentSection');
             const toast = document.getElementById('toastNotification');
             
             let currentProduct = null;
@@ -1159,10 +1158,8 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 modalDesc.textContent = product.deskripsi || 'Nikmati kelezatan produk ini';
                 
                 if (actionType === 'order') {
-                    paymentSection.style.display = 'block';
                     confirmBtn.innerHTML = '💬 Pesan Sekarang via WA';
                 } else {
-                    paymentSection.style.display = 'none';
                     confirmBtn.innerHTML = '🛒 Tambah ke Keranjang';
                 }
                 
