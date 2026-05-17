@@ -140,11 +140,11 @@
                                     ]);
                                 @endphp
 
-                                <div class="menu-card" data-aos="fade-up" data-aos-delay="{{ $index * 50 }}" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(5px); border-radius: 28px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.08); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); position: relative; border: 1px solid rgba(255,255,255,0.6);">
+                                <div class="menu-card" data-aos="fade-up" data-aos-delay="{{ $index * 50 }}" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(5px); border-radius: 28px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.08); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); position: relative; border: 1px solid rgba(255,255,255,0.6); display: flex; flex-direction: column; height: 100%;">
                                     <!-- Efek glow saat hover -->
                                     <div class="card-glow" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 50% 0%, rgba(240,98,146,0.15), transparent 70%); opacity: 0; transition: opacity 0.5s; pointer-events: none; z-index: 1;"></div>
                                     
-                                    <div style="position: relative; overflow: hidden; height: 230px; background: linear-gradient(135deg, #fce4ec, #f8bbd0);">
+                                    <div style="position: relative; overflow: hidden; height: 230px; background: linear-gradient(135deg, #fce4ec, #f8bbd0); flex-shrink: 0;">
                                         <img src="{{ $imageUrl }}" alt="{{ $produk->nama_produk }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);" onerror="this.src='https://picsum.photos/300/200'">
                                         <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(240,98,146,0.2), rgba(236,64,122,0.2)); opacity: 0; transition: opacity 0.5s;"></div>
                                         <div class="discount-badge" style="position: absolute; top: 15px; right: 15px; background: linear-gradient(135deg, #f06292, #ec407a); color: white; padding: 6px 14px; border-radius: 40px; font-size: 11px; font-weight: 800; box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 2;">
@@ -152,15 +152,31 @@
                                         </div>
                                         <div class="quick-view" style="position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%) translateY(50px); background: rgba(255,255,255,0.9); backdrop-filter: blur(8px); padding: 8px 16px; border-radius: 40px; font-size: 12px; font-weight: 600; color: #f06292; opacity: 0; transition: all 0.3s; cursor: pointer; z-index: 2;">👁️ Quick View</div>
                                     </div>
-                                    <div class="menu-info" style="padding: 22px 20px 24px; text-align: center; position: relative; z-index: 2;">
+                                    <div class="menu-info" style="padding: 22px 20px 24px; text-align: center; position: relative; z-index: 2; display: flex; flex-direction: column; flex: 1;">
                                         <h3 style="font-size: 19px; color: #6d4c41; margin-bottom: 10px; font-weight: 900;">{{ $produk->nama_produk }}</h3>
-                                        <p style="font-size: 13px; color: #a1887f; margin-bottom: 16px; min-height: 42px; line-height: 1.5;">{{ $produk->deskripsi ?: '✨ Nikmati kelezatan produk ini' }}</p>
-                                        <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+                                        <p style="font-size: 13px; color: #a1887f; margin-bottom: 16px; min-height: 42px; line-height: 1.5; flex: 1; display: flex; flex-direction: column; justify-content: flex-start;">{{ $produk->deskripsi ?: '✨ Nikmati kelezatan produk ini' }}</p>
+                                        <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 20px; flex-shrink: 0;">
                                             <span class="price" style="font-size: 24px; font-weight: 900; color: #f06292;">Rp {{ number_format($produk->harga, 0, ',', '.') }}</span>
                                         </div>
-                                        <div style="display: flex; gap: 12px; justify-content: center;">
-                                            <button class="btn-add-to-cart" data-produk='{{ $produkJson }}' style="background: linear-gradient(135deg, #e0f2f1, #b2dfdb); color: #00695c; padding: 12px 18px; border-radius: 50px; border: none; font-weight: 800; font-size: 12px; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,105,92,0.15);">🛒 Tambah</button>
-                                            <button class="btn-order-now" data-produk='{{ $produkJson }}' style="background: linear-gradient(135deg, #fce4ec, #f8bbd0); color: #f06292; padding: 12px 24px; border-radius: 50px; border: none; font-weight: 800; font-size: 12px; cursor: pointer; transition: all 0.3s; display: inline-block; box-shadow: 0 4px 12px rgba(240,98,146,0.15);">💬 Pesan</button>
+                                        <div style="display: flex; gap: 12px; justify-content: center; flex-shrink: 0;">
+                                            <button class="btn-add-to-cart" data-produk="{{ json_encode([
+                                                'id' => $produk->id,
+                                                'nama_produk' => $produk->nama_produk,
+                                                'deskripsi' => $produk->deskripsi,
+                                                'harga' => $produk->harga,
+                                                'options' => $produk->options ?? [],
+                                                'gambar' => $imageUrl,
+                                                'variant_images' => $variantImages
+                                            ]) }}" style="background: linear-gradient(135deg, #e0f2f1, #b2dfdb); color: #00695c; padding: 12px 18px; border-radius: 50px; border: none; font-weight: 800; font-size: 12px; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,105,92,0.15);">🛒 Tambah</button>
+                                            <button class="btn-order-now" data-produk="{{ json_encode([
+                                                'id' => $produk->id,
+                                                'nama_produk' => $produk->nama_produk,
+                                                'deskripsi' => $produk->deskripsi,
+                                                'harga' => $produk->harga,
+                                                'options' => $produk->options ?? [],
+                                                'gambar' => $imageUrl,
+                                                'variant_images' => $variantImages
+                                            ]) }}" style="background: linear-gradient(135deg, #fce4ec, #f8bbd0); color: #f06292; padding: 12px 24px; border-radius: 50px; border: none; font-weight: 800; font-size: 12px; cursor: pointer; transition: all 0.3s; display: inline-block; box-shadow: 0 4px 12px rgba(240,98,146,0.15);">💬 Pesan</button>
                                         </div>
                                     </div>
                                 </div>
@@ -817,7 +833,7 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 });
                 
                 checkoutBtn.addEventListener('click', () => {
-                    sendCartToWhatsAppWithPayment();
+                    sendCartToMidtransWithPayment();
                     cartModal.remove();
                     document.body.style.overflow = '';
                 });
@@ -912,7 +928,7 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 }
             }
             
-            async function sendCartToWhatsAppWithPayment() {
+            async function sendCartToMidtransWithPayment() {
                 if (cart.length === 0) {
                     showToastMessage('Keranjang kosong');
                     return;
@@ -1159,10 +1175,10 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 modalDesc.textContent = product.deskripsi || 'Nikmati kelezatan produk ini';
                 
                 if (actionType === 'order') {
-                    paymentSection.style.display = 'block';
-                    confirmBtn.innerHTML = '💬 Pesan Sekarang via WA';
+                    if (paymentSection) paymentSection.style.display = 'block';
+                    confirmBtn.innerHTML = '💳 Lanjut ke Pembayaran';
                 } else {
-                    paymentSection.style.display = 'none';
+                    if (paymentSection) paymentSection.style.display = 'none';
                     confirmBtn.innerHTML = '🛒 Tambah ke Keranjang';
                 }
                 
@@ -1292,7 +1308,7 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 currentQuantity = 1;
             }
             
-            async function sendToWhatsAppWithPayment() {
+            async function sendToMidtransWithPayment() {
                 if (!currentProduct) return;
                 
                 const total = calculateTotal();
@@ -1402,7 +1418,7 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                         closeModal();
                     }
                 } else {
-                    sendToWhatsAppWithPayment();
+                    sendToMidtransWithPayment();
                 }
             });
             

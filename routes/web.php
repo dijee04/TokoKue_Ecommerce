@@ -32,6 +32,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/checkout', [\App\Http\Controllers\User\CheckoutController::class, 'store'])->name('user.checkout');
     Route::post('/checkout/success-local', [\App\Http\Controllers\User\CheckoutController::class, 'successLocal'])->name('user.checkout.success_local');
     Route::get('/pesanan-saya', [\App\Http\Controllers\User\UserOrderController::class, 'index'])->name('pesanan_saya');
+    Route::get('/pesanan/{order}/nota', [\App\Http\Controllers\User\UserOrderController::class, 'nota'])->name('user.order.nota');
+    Route::post('/pesanan/{order}/review', [\App\Http\Controllers\User\UserOrderController::class, 'storeReview'])->name('user.order.review');
     
     Route::get('/profil', [\App\Http\Controllers\User\UserProfileController::class, 'index'])->name('profil.index');
     Route::post('/profil', [\App\Http\Controllers\User\UserProfileController::class, 'update'])->name('profil.update');

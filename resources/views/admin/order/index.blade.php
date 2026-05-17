@@ -55,7 +55,8 @@
                                 @php
                                     $badgeClass = '';
                                     if($order->status == 'baru') $badgeClass = 'badge-info';
-                                    elseif($order->status == 'diproses') $badgeClass = 'badge-warning';
+                                    elseif($order->status == 'disiapkan') $badgeClass = 'badge-warning';
+                                    elseif($order->status == 'dikirim') $badgeClass = 'badge-secondary';
                                     elseif($order->status == 'selesai') $badgeClass = 'badge-success';
                                     elseif($order->status == 'dibatalkan') $badgeClass = 'badge-danger';
                                 @endphp
@@ -71,7 +72,8 @@
                                         @method('PATCH')
                                         <select name="status" onchange="this.form.submit()" class="form-control" style="padding: 4px 8px; border-radius: 4px; font-size: 13px; width: auto; height: 32px; min-width: 100px;">
                                             <option value="baru" {{ $order->status == 'baru' ? 'selected' : '' }}>Baru</option>
-                                            <option value="diproses" {{ $order->status == 'diproses' ? 'selected' : '' }}>Diproses</option>
+                                            <option value="disiapkan" {{ $order->status == 'disiapkan' ? 'selected' : '' }}>Disiapkan</option>
+                                            <option value="dikirim" {{ $order->status == 'dikirim' ? 'selected' : '' }}>Dikirim</option>
                                             <option value="selesai" {{ $order->status == 'selesai' ? 'selected' : '' }}>Selesai</option>
                                             <option value="dibatalkan" {{ $order->status == 'dibatalkan' ? 'selected' : '' }}>Batal</option>
                                         </select>
