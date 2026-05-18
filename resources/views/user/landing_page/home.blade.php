@@ -6,7 +6,7 @@
         <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 40px;">
             <div class="hero-text" style="flex: 1; min-width: 280px;">
                 <h2 style="font-size: 48px; color: #6d4c41; margin-bottom: 20px; font-weight: 800; line-height: 1.2;">Nikmatnya Setiap Momen</h2>
-                <p style="font-size: 18px; color: #8d6e63; margin-bottom: 30px; line-height: 1.6;">Hadirkan senyuman di momen berharga Anda bersama mahakarya rasa dari Anis Bakery.</p>
+                <p style="font-size: 18px; color: #8d6e63; margin-bottom: 30px; line-height: 1.6;">Hadirkan senyuman di momen berharga Anda bersama mahakarya rasa dari Dear Seana.</p>
                 <div class="hero-action">
                     <a href="{{ url('/menu') }}" class="hero-btn" style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #f06292, #ec407a); color: white; text-decoration: none; border-radius: 50px; font-weight: 700; transition: all 0.3s; box-shadow: 0 4px 15px rgba(240,98,146,0.3);">Jelajahi Menu</a>
                 </div>
@@ -16,10 +16,10 @@
                     <img src="{{ asset('assets/img_produk/Kue/chocolate_cake.png') }}" alt="Kue Premium" style="width: 100%; max-width: 350px; border-radius: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.15);">
                 </div>
                 <div class="small-image float-1" style="position: absolute; top: -20px; right: 20px; z-index: 1; animation: float1 3s ease-in-out infinite;">
-                    <img src="{{ asset('assets/img_produk/Kue/vanilla_chocolate_cupcake.png') }}" alt="Cupcake" style="width: 100px; height: 100px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); object-fit: cover;">
+                    <img src="{{ asset('assets/img_produk/Kue/vanilla_chocolate_cupcake.png') }}" alt="Cupcake" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
                 </div>
                 <div class="small-image float-2" style="position: absolute; bottom: -20px; left: 20px; z-index: 1; animation: float2 4s ease-in-out infinite;">
-                    <img src="{{ asset('assets/img_produk/Kue/melted_brownie.png') }}" alt="Brownies" style="width: 100px; height: 100px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); object-fit: cover;">
+                    <img src="{{ asset('assets/img_produk/Kue/melted_brownie.png') }}" alt="Brownies" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
                 </div>
             </div>
         </div>

@@ -7,6 +7,7 @@
         <section class="journey-section fade-in-on-scroll">
             <div class="container journey-grid">
                 <div class="journey-img-box">
+                    <img src="{{ asset('assets/img_produk/Kue/chocolate_cake.png') }}" alt="Tentang Kami - Dear Seana" style="width: 100%; height: 100%; object-fit: cover; border-radius: 30px;">
                 </div>
                 <div class="journey-text">
                     <h2>Tentang Kami</h2>
@@ -23,6 +24,7 @@
                     <p style="font-style: italic; font-size: 1.3rem;">“ Menjadi toko kue dan roti terdepan yang membawa kebahagiaan dan kelezatan ke setiap rumah, menyempurnakan setiap momen dengan cita rasa terbaik. ”</p>
                 </div>
                 <div class="journey-img-box">
+                    <img src="{{ asset('assets/img_produk/Kue/Cheesecake_coklat.png') }}" alt="Visi Dear Seana" style="width: 100%; height: 100%; object-fit: cover; border-radius: 30px;">
                 </div>
             </div>
         </section>
@@ -31,6 +33,7 @@
         <section class="journey-section fade-in-on-scroll">
             <div class="container journey-grid">
                 <div class="journey-img-box">
+                    <img src="{{ asset('assets/img_produk/Cookies/Dubai_cheewy.png') }}" alt="Misi Dear Seana" style="width: 100%; height: 100%; object-fit: cover; border-radius: 30px;">
                 </div>
                 <div class="journey-text">
                     <h2>Misi</h2>

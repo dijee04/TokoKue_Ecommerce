@@ -994,6 +994,7 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                                 },
                                 body: JSON.stringify({ snap_token: result.snap_token })
                             }).then(() => {
+                                sessionStorage.setItem('payment_success_confetti', 'true');
                                 showToastMessage('✅ Pembayaran berhasil diproses!');
                                 // Kosongkan keranjang
                                 cart = [];
@@ -1368,10 +1369,34 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                     // Menjalankan Snap Midtrans
                     window.snap.pay(result.snap_token, {
                         onSuccess: function(snapResult){
-                            showToastMessage('✅ Pembayaran berhasil diproses!');
+                            fetch('{{ route("user.checkout.success_local") }}', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                },
+                                body: JSON.stringify({ snap_token: result.snap_token })
+                            }).then(() => {
+                                sessionStorage.setItem('payment_success_confetti', 'true');
+                                showToastMessage('✅ Pembayaran berhasil diproses!');
+                                cart = [];
+                                localStorage.removeItem('sweetSavoryCart');
+                                savedCustName = '';
+                                savedCustPhone = '';
+                                savedCustAddress = '';
+                                updateCartBadge();
+                                setTimeout(() => window.location.href = "{{ route('pesanan_saya') }}", 2000);
+                            });
                         },
                         onPending: function(snapResult){
                             showToastMessage('⏳ Silakan selesaikan pembayaran Anda.');
+                            cart = [];
+                            localStorage.removeItem('sweetSavoryCart');
+                            savedCustName = '';
+                            savedCustPhone = '';
+                            savedCustAddress = '';
+                            updateCartBadge();
+                            setTimeout(() => window.location.href = "{{ route('pesanan_saya') }}", 2000);
                         },
                         onError: function(snapResult){
                             alert("Pembayaran gagal! Silakan coba lagi.");

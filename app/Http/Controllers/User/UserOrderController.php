@@ -8,14 +8,77 @@ use App\Models\Order;
 
 class UserOrderController extends Controller
 {
+    public function notifikasi()
+    {
+        $latest_orders = Order::where('user_id', auth()->id())
+            ->with(['items.produk'])
+            ->orderBy('updated_at', 'desc')
+            ->take(10)
+            ->get();
+            
+        return view('user.notifikasi', compact('latest_orders'));
+    }
+
     public function index()
     {
-        $orders = Order::where('user_id', auth()->id())
+        // Pesanan Aktif: status baru, disiapkan, dikirim, ATAU selesai tapi belum diulas
+        $active_orders = Order::where('user_id', auth()->id())
+            ->where(function($query) {
+                $query->whereIn('status', ['baru', 'disiapkan', 'dikirim'])
+                      ->orWhere(function($q) {
+                          $q->where('status', 'selesai')
+                            ->doesntHave('reviews');
+                      });
+            })
+            ->with(['items.produk', 'reviews'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Riwayat Pembelian: status dibatalkan, ATAU selesai yang sudah diulas
+        $completed_orders = Order::where('user_id', auth()->id())
+            ->where(function($query) {
+                $query->where('status', 'dibatalkan')
+                      ->orWhere(function($q) {
+                          $q->where('status', 'selesai')
+                            ->has('reviews');
+                      });
+            })
             ->with(['items.produk', 'reviews'])
             ->orderBy('created_at', 'desc')
             ->get();
             
-        return view('user.pesanan_saya', compact('orders'));
+        return view('user.pesanan_saya', compact('active_orders', 'completed_orders'));
+    }
+
+    public function riwayat()
+    {
+        return redirect()->route('pesanan_saya', ['tab' => 'riwayat']);
+    }
+
+    public function completeOrder(Order $order)
+    {
+        if ($order->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        if ($order->status !== 'dikirim') {
+            return back()->with('error', 'Pesanan hanya dapat diselesaikan jika sudah dikirim.');
+        }
+
+        $order->update([
+            'status' => 'selesai'
+        ]);
+
+        return redirect()->route('pesanan_saya', ['tab' => 'aktif'])->with('success', 'Pesanan telah diselesaikan! Silakan berikan ulasan Anda di bawah.');
+    }
+
+    public function checkStatus()
+    {
+        $orders = Order::where('user_id', auth()->id())
+            ->select('id', 'status')
+            ->get();
+            
+        return response()->json($orders);
     }
 
     public function nota(Order $order)
@@ -47,6 +110,6 @@ class UserOrderController extends Controller
             'ulasan' => $request->ulasan
         ]);
 
-        return back()->with('success', 'Terima kasih atas ulasan Anda!');
+        return redirect()->route('pesanan_saya', ['tab' => 'riwayat'])->with('success', 'Terima kasih atas ulasan Anda!');
     }
 }

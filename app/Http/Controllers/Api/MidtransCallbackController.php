@@ -26,8 +26,9 @@ class MidtransCallbackController extends Controller
         $order_id = $notification->order_id;
         $fraud = $notification->fraud_status;
 
-        // Cari transaksi berdasarkan ID, catatan: order_id dari midtrans biasanya format 'ORDER-123', kita filter angkanya saja
-        $orderIdDb = str_replace('ORDER-', '', $order_id);
+        // Cari transaksi berdasarkan ID. Catatan: order_id dari Midtrans kita format sebagai '{id}-{timestamp}'
+        $parts = explode('-', $order_id);
+        $orderIdDb = $parts[0];
         $order = Order::find($orderIdDb);
 
         if (!$order) {

@@ -32,8 +32,12 @@ Route::middleware('auth')->group(function () {
     Route::post('/checkout', [\App\Http\Controllers\User\CheckoutController::class, 'store'])->name('user.checkout');
     Route::post('/checkout/success-local', [\App\Http\Controllers\User\CheckoutController::class, 'successLocal'])->name('user.checkout.success_local');
     Route::get('/pesanan-saya', [\App\Http\Controllers\User\UserOrderController::class, 'index'])->name('pesanan_saya');
+    Route::get('/riwayat-pembelian', [\App\Http\Controllers\User\UserOrderController::class, 'riwayat'])->name('riwayat_pembelian');
+    Route::get('/order-status-check', [\App\Http\Controllers\User\UserOrderController::class, 'checkStatus'])->name('order_status_check');
+    Route::get('/notifikasi', [\App\Http\Controllers\User\UserOrderController::class, 'notifikasi'])->name('notifikasi');
     Route::get('/pesanan/{order}/nota', [\App\Http\Controllers\User\UserOrderController::class, 'nota'])->name('user.order.nota');
     Route::post('/pesanan/{order}/review', [\App\Http\Controllers\User\UserOrderController::class, 'storeReview'])->name('user.order.review');
+    Route::post('/pesanan/{order}/complete', [\App\Http\Controllers\User\UserOrderController::class, 'completeOrder'])->name('user.order.complete');
     
     Route::get('/profil', [\App\Http\Controllers\User\UserProfileController::class, 'index'])->name('profil.index');
     Route::post('/profil', [\App\Http\Controllers\User\UserProfileController::class, 'update'])->name('profil.update');
