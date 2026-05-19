@@ -122,4 +122,52 @@
             </table>
         </div>
     </div>
+
+    @if($order->reviews->isNotEmpty())
+    <div class="card" style="border-top: 4px solid #ffb300; margin-top: 30px;">
+        <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-star" style="color: #ffb300;"></i> Ulasan & Rating dari Pelanggan
+        </h3>
+        
+        @foreach($order->reviews as $review)
+        <div style="background: #fffdf9; border: 1px solid #ffe8d6; padding: 20px; border-radius: 16px; margin-bottom: 15px; display: flex; gap: 20px; flex-wrap: wrap;">
+            <!-- Avatar / Inisial User -->
+            <div style="width: 55px; height: 55px; border-radius: 50%; background: #ffe8d6; color: #a0522d; font-weight: 800; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 1px solid rgba(0,0,0,0.05); flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                {{ strtoupper(substr($review->user->name ?? 'P', 0, 1)) }}
+            </div>
+            
+            <div style="flex: 1; min-width: 250px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <strong style="color: #5c3a21; font-size: 16.5px;">{{ $review->user->name ?? 'Pelanggan Setia' }}</strong>
+                        <div style="color: #ffb300; font-size: 14px; margin-top: 5px;">
+                            @for($i=1; $i<=5; $i++)
+                                <i class="fas fa-star" style="color: {{ $i <= $review->rating ? '#ffb300' : '#e0e0e0' }}; font-size: 15px;"></i>
+                            @endfor
+                            <span style="color: #666; font-size: 12.5px; font-weight: bold; margin-left: 5px;">({{ $review->rating }} / 5)</span>
+                        </div>
+                    </div>
+                    <span style="font-size: 12.5px; color: #a1887f; font-weight: 600;">
+                        {{ $review->created_at->format('d M Y, H:i') }}
+                    </span>
+                </div>
+                
+                <p style="font-style: italic; color: #5c3a21; font-size: 14.5px; line-height: 1.6; background: white; padding: 12px 18px; border-radius: 12px; border-left: 4px solid #ffb300; margin-bottom: 18px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.01);">
+                    "{{ $review->ulasan ?: 'Tidak memberikan komentar ulasan.' }}"
+                </p>
+                
+                @if($review->foto)
+                    <div>
+                        <strong style="display: block; font-size: 13.5px; color: #6d4c41; margin-bottom: 8px;"><i class="fas fa-image"></i> Foto Kue dari Pelanggan:</strong>
+                        <a href="{{ asset($review->foto) }}" target="_blank">
+                            <img src="{{ asset($review->foto) }}" style="width: 140px; height: 140px; object-fit: cover; border-radius: 14px; border: 2px solid white; box-shadow: 0 4px 15px rgba(0,0,0,0.08); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.03)'" onmouseout="this.style.transform='scale(1)'">
+                        </a>
+                    </div>
+                @endif
+            </div>
+        </div>
+        @endforeach
+    </div>
+    @endif
 @endsection
+

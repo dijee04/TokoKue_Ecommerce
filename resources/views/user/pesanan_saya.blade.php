@@ -196,6 +196,15 @@
                                     </button>
                                 @endif
 
+                                @if($order->status == 'baru')
+                                    <form id="cancelForm-{{ $order->id }}" action="{{ route('user.order.cancel', $order->id) }}" method="POST" style="display: inline;">
+                                        @csrf
+                                        <button type="button" onclick="confirmCancellation('{{ $order->id }}')" style="background: white; color: #e57373; border: 2px solid #ffcdd2; padding: 11px 24px; border-radius: 50px; font-weight: 800; cursor: pointer; transition: all 0.3s; font-size: 14px;" onmouseover="this.style.background='#ffebee'; this.style.borderColor='#e57373';" onmouseout="this.style.background='white'; this.style.borderColor='#ffcdd2';">
+                                            ❌ Batalkan Pesanan
+                                        </button>
+                                    </form>
+                                @endif
+
                                 <!-- Tombol Selesaikan Pesanan (Khas Shopee) -->
                                 @if($order->status == 'dikirim')
                                     <form id="completeForm-{{ $order->id }}" action="{{ route('user.order.complete', $order->id) }}" method="POST" style="display: inline;">
@@ -211,9 +220,21 @@
                         <!-- Bagian Input Ulasan (DIPINDAHKAN KE SINI! Hanya jika status = selesai dan belum diulas) -->
                         @if($order->status == 'selesai')
                             <div style="margin-top: 25px; padding-top: 20px; border-top: 1px dashed #ddd;">
+                                @if($order->bukti_pengiriman)
+                                    <div style="margin-bottom: 20px; background: #f0f4c3; padding: 15px; border-radius: 16px; border-left: 4px solid #8bc34a; display: flex; flex-direction: column; gap: 8px;">
+                                        <div style="font-weight: 800; color: #33691e; display: flex; align-items: center; gap: 6px; font-size: 14.5px;">
+                                            📸 Bukti Pengiriman Kurir
+                                        </div>
+                                        <div style="font-size: 13px; color: #558b2f; font-weight: 600; margin-top: -4px;">Pesanan Anda telah diantarkan oleh kurir kami:</div>
+                                        <a href="{{ asset($order->bukti_pengiriman) }}" target="_blank" style="align-self: flex-start;">
+                                            <img src="{{ asset($order->bukti_pengiriman) }}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 12px; border: 3px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                        </a>
+                                    </div>
+                                @endif
+
                                 @if($order->reviews->isEmpty())
                                     <h4 style="color: #6d4c41; margin-bottom: 15px; font-weight: 800;">Bagikan Pengalaman Anda</h4>
-                                    <form action="{{ route('user.order.review', $order->id) }}" method="POST" onsubmit="sessionStorage.setItem('payment_success_confetti', 'true');">
+                                    <form action="{{ route('user.order.review', $order->id) }}" method="POST" enctype="multipart/form-data" onsubmit="sessionStorage.setItem('payment_success_confetti', 'true');">
                                         @csrf
                                         <div style="margin-bottom: 15px;">
                                             <label style="display: block; font-size: 14.5px; color: #6d4c41; margin-bottom: 8px; font-weight: 800;">Berikan Rating Anda:</label>
@@ -230,6 +251,19 @@
                                         <div style="margin-bottom: 15px;">
                                             <label style="display: block; font-size: 14px; color: #666; margin-bottom: 8px; font-weight: 600;">Ulasan (Opsional):</label>
                                             <textarea name="ulasan" rows="3" style="width: 100%; padding: 12px; border-radius: 12px; border: 1px solid #ddd; outline: none; transition: border-color 0.3s;" placeholder="Ceritakan pendapat Anda tentang kue kami..." onfocus="this.style.borderColor='#f06292'" onblur="this.style.borderColor='#ddd'"></textarea>
+                                        </div>
+                                        <div style="margin-bottom: 20px;">
+                                            <label style="display: block; font-size: 14px; color: #666; margin-bottom: 8px; font-weight: 600;">Tambahkan Foto Kue (Opsional):</label>
+                                            <div style="position: relative; display: flex; align-items: center; gap: 15px;">
+                                                <label for="fotoInput-{{ $order->id }}" style="background: #fff; color: #f06292; border: 2px dashed #f8bbd0; padding: 12px 20px; border-radius: 16px; font-weight: 700; font-size: 13.5px; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all 0.3s;" onmouseover="this.style.background='#fdf5f7'; this.style.borderColor='#f06292';" onmouseout="this.style.background='#fff'; this.style.borderColor='#f8bbd0';">
+                                                    📸 Pilih Foto Menarik
+                                                </label>
+                                                <input type="file" name="foto" id="fotoInput-{{ $order->id }}" accept="image/*" style="display: none;" onchange="previewReviewImage(this, '{{ $order->id }}')">
+                                                <div id="previewContainer-{{ $order->id }}" style="display: none; position: relative;">
+                                                    <img id="previewImg-{{ $order->id }}" src="" style="width: 60px; height: 60px; object-fit: cover; border-radius: 12px; border: 2px solid #f06292; box-shadow: 0 4px 10px rgba(240,98,146,0.15);">
+                                                    <button type="button" onclick="removeReviewImage('{{ $order->id }}')" style="position: absolute; top: -8px; right: -8px; background: #e57373; color: white; border: none; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.15);">&times;</button>
+                                                </div>
+                                            </div>
                                         </div>
                                         <button type="submit" style="background: #f06292; color: white; border: none; padding: 10px 22px; border-radius: 50px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 10px rgba(240,98,146,0.2); transition: all 0.3s;">Kirim Ulasan</button>
                                     </form>
@@ -310,12 +344,33 @@
                         <!-- Ulasan Read-Only yang Sudah Dibuat -->
                         @if($order->status == 'selesai' && !$order->reviews->isEmpty())
                             <div style="margin-top: 25px; padding-top: 20px; border-top: 1px dashed #ddd;">
+                                @if($order->bukti_pengiriman)
+                                    <div style="margin-bottom: 20px; background: #f0f4c3; padding: 15px; border-radius: 16px; border-left: 4px solid #8bc34a; display: flex; flex-direction: column; gap: 8px;">
+                                        <div style="font-weight: 800; color: #33691e; display: flex; align-items: center; gap: 6px; font-size: 14.5px;">
+                                            📸 Bukti Pengiriman Kurir
+                                        </div>
+                                        <div style="font-size: 13px; color: #558b2f; font-weight: 600; margin-top: -4px;">Pesanan Anda telah diantarkan oleh kurir kami:</div>
+                                        <a href="{{ asset($order->bukti_pengiriman) }}" target="_blank" style="align-self: flex-start;">
+                                            <img src="{{ asset($order->bukti_pengiriman) }}" style="width: 150px; height: 150px; object-fit: cover; border-radius: 12px; border: 3px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.15); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                        </a>
+                                    </div>
+                                @endif
+
                                 <div style="background: #fdf5f7; padding: 15px; border-radius: 15px; border: 1px solid rgba(240,98,146,0.1);">
                                     <div style="font-weight: 700; color: #6d4c41; margin-bottom: 5px;">Ulasan Anda:</div>
                                     <div style="color: #fbc02d; font-size: 16px; margin-bottom: 8px;">
                                         @for($i=0; $i<$order->reviews->first()->rating; $i++) ⭐ @endfor
                                     </div>
-                                    <div style="font-style: italic; color: #8d6e63; font-size: 14px; background: white; padding: 10px; border-radius: 8px; border-left: 4px solid #f06292;">"{{ $order->reviews->first()->ulasan }}"</div>
+                                    <div style="display: flex; gap: 15px; align-items: flex-start; flex-wrap: wrap;">
+                                        @if($order->reviews->first()->foto)
+                                            <a href="{{ asset($order->reviews->first()->foto) }}" target="_blank">
+                                                <img src="{{ asset($order->reviews->first()->foto) }}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 12px; border: 2px solid white; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+                                            </a>
+                                        @endif
+                                        <div style="flex: 1; font-style: italic; color: #8d6e63; font-size: 14px; background: white; padding: 10px; border-radius: 8px; border-left: 4px solid #f06292; min-height: 40px; display: flex; align-items: center;">
+                                            "{{ $order->reviews->first()->ulasan ?: 'Anda memberikan rating & foto untuk pesanan ini.' }}"
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         @endif
@@ -515,6 +570,55 @@
                 // Tidak perlu alert jika menutup popup
             }
         });
+    }
+
+    // SweetAlert2 custom confirmation modal for cancellation
+    function confirmCancellation(orderId) {
+        Swal.fire({
+            title: 'Batalkan Pesanan? ❌',
+            text: 'Apakah Anda yakin ingin membatalkan pesanan kue manis ini?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e57373', // Theme Soft Red
+            cancelButtonColor: '#6d4c41', // Theme Brown
+            confirmButtonText: 'Ya, Batalkan! 😭',
+            cancelButtonText: 'Tidak Jadi',
+            background: '#fff',
+            borderRadius: '24px',
+            customClass: {
+                popup: 'premium-swal-popup'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Submit the specific form
+                document.getElementById('cancelForm-' + orderId).submit();
+            }
+        });
+    }
+
+    // Interactive review image preview & delete functions
+    function previewReviewImage(input, orderId) {
+        const previewContainer = document.getElementById('previewContainer-' + orderId);
+        const previewImg = document.getElementById('previewImg-' + orderId);
+        
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImg.src = e.target.result;
+                previewContainer.style.display = 'block';
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+    
+    function removeReviewImage(orderId) {
+        const input = document.getElementById('fotoInput-' + orderId);
+        const previewContainer = document.getElementById('previewContainer-' + orderId);
+        const previewImg = document.getElementById('previewImg-' + orderId);
+        
+        input.value = "";
+        previewImg.src = "";
+        previewContainer.style.display = 'none';
     }
 </script>
 @endpush

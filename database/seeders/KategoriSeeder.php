@@ -7,9 +7,7 @@ class KategoriSeeder extends Seeder
 {
     public function run(): void
     {
-        Kategori::create(['nama_kategori' => 'Kue Kering']);
-        Kategori::create(['nama_kategori' => 'Kue Basah']);
-        Kategori::create(['nama_kategori' => 'Dessert']);
-        Kategori::create(['nama_kategori' => 'Kue Ulang Tahun']);
+        Kategori::create(['nama_kategori' => 'Cake']);
+        Kategori::create(['nama_kategori' => 'Cookies']);
     }
 }

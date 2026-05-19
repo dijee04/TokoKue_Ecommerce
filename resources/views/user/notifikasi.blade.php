@@ -119,6 +119,16 @@
                                     </button>
                                 @endif
 
+                                @if($order->status == 'baru')
+                                    <!-- Tombol Batalkan Pesanan -->
+                                    <form id="cancelNotifForm-{{ $order->id }}" action="{{ route('user.order.cancel', $order->id) }}" method="POST" style="display: inline;">
+                                        @csrf
+                                        <button type="button" onclick="confirmNotifCancellation('{{ $order->id }}')" style="background: white; color: #e57373; border: 1.5px solid #ffcdd2; padding: 8px 18px; border-radius: 50px; font-weight: 800; font-size: 12px; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; gap: 4px;" onmouseover="this.style.background='#ffebee'; this.style.borderColor='#e57373';" onmouseout="this.style.background='white'; this.style.borderColor='#ffcdd2';">
+                                            ❌ Batalkan
+                                        </button>
+                                    </form>
+                                @endif
+
                                 @if($order->status == 'selesai')
                                     <!-- Tombol Lihat Nota -->
                                     <a href="{{ route('user.order.nota', $order->id) }}" target="_blank" style="background: #6d4c41; color: white; padding: 8px 18px; border-radius: 50px; text-decoration: none; font-weight: 700; font-size: 12px; box-shadow: 0 4px 10px rgba(109,76,65,0.15); transition: all 0.3s; display: flex; align-items: center; gap: 5px;">
@@ -164,6 +174,8 @@
 @endsection
 
 @push('scripts')
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     function payNotifNow(snapToken) {
         if(!snapToken) {
@@ -196,6 +208,26 @@
             },
             onClose: function(){
                 // user menutup popup
+            }
+        });
+    }
+
+    // SweetAlert2 custom confirmation modal for cancellation
+    function confirmNotifCancellation(orderId) {
+        Swal.fire({
+            title: 'Batalkan Pesanan? ❌',
+            text: 'Apakah Anda yakin ingin membatalkan pesanan kue manis ini?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#e57373',
+            cancelButtonColor: '#6d4c41',
+            confirmButtonText: 'Ya, Batalkan! 😭',
+            cancelButtonText: 'Tidak Jadi',
+            background: '#fff',
+            borderRadius: '24px',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('cancelNotifForm-' + orderId).submit();
             }
         });
     }

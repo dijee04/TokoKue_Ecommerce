@@ -144,16 +144,20 @@
                                     <!-- Efek glow saat hover -->
                                     <div class="card-glow" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 50% 0%, rgba(240,98,146,0.15), transparent 70%); opacity: 0; transition: opacity 0.5s; pointer-events: none; z-index: 1;"></div>
                                     
-                                    <div style="position: relative; overflow: hidden; height: 230px; background: linear-gradient(135deg, #fce4ec, #f8bbd0); flex-shrink: 0;">
-                                        <img src="{{ $imageUrl }}" alt="{{ $produk->nama_produk }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);" onerror="this.src='https://picsum.photos/300/200'">
-                                        <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(240,98,146,0.2), rgba(236,64,122,0.2)); opacity: 0; transition: opacity 0.5s;"></div>
-                                        <div class="discount-badge" style="position: absolute; top: 15px; right: 15px; background: linear-gradient(135deg, #f06292, #ec407a); color: white; padding: 6px 14px; border-radius: 40px; font-size: 11px; font-weight: 800; box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 2;">
-                                            🔥 Best Seller
+                                    <a href="{{ route('menu.show', $produk->id) }}" style="text-decoration: none; color: inherit; display: block; overflow: hidden; border-radius: 28px 28px 0 0; position: relative; height: 230px; flex-shrink: 0; z-index: 2;">
+                                        <div style="position: relative; overflow: hidden; height: 100%; background: linear-gradient(135deg, #fce4ec, #f8bbd0);">
+                                            <img src="{{ $imageUrl }}" alt="{{ $produk->nama_produk }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);" onerror="this.src='https://picsum.photos/300/200'">
+                                            <div style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(135deg, rgba(240,98,146,0.2), rgba(236,64,122,0.2)); opacity: 0; transition: opacity 0.5s;"></div>
+                                            <div class="discount-badge" style="position: absolute; top: 15px; right: 15px; background: linear-gradient(135deg, #f06292, #ec407a); color: white; padding: 6px 14px; border-radius: 40px; font-size: 11px; font-weight: 800; box-shadow: 0 4px 10px rgba(0,0,0,0.1); z-index: 2;">
+                                                🔥 Best Seller
+                                            </div>
+                                            <div class="quick-view" style="position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%) translateY(50px); background: rgba(255,255,255,0.9); backdrop-filter: blur(8px); padding: 8px 16px; border-radius: 40px; font-size: 12px; font-weight: 600; color: #f06292; opacity: 0; transition: all 0.3s; cursor: pointer; z-index: 2;">👁️ Quick View</div>
                                         </div>
-                                        <div class="quick-view" style="position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%) translateY(50px); background: rgba(255,255,255,0.9); backdrop-filter: blur(8px); padding: 8px 16px; border-radius: 40px; font-size: 12px; font-weight: 600; color: #f06292; opacity: 0; transition: all 0.3s; cursor: pointer; z-index: 2;">👁️ Quick View</div>
-                                    </div>
+                                    </a>
                                     <div class="menu-info" style="padding: 22px 20px 24px; text-align: center; position: relative; z-index: 2; display: flex; flex-direction: column; flex: 1;">
-                                        <h3 style="font-size: 19px; color: #6d4c41; margin-bottom: 10px; font-weight: 900;">{{ $produk->nama_produk }}</h3>
+                                        <a href="{{ route('menu.show', $produk->id) }}" style="text-decoration: none; color: inherit; display: block; margin-bottom: 10px;">
+                                            <h3 style="font-size: 19px; color: #6d4c41; margin-bottom: 0; font-weight: 900;">{{ $produk->nama_produk }}</h3>
+                                        </a>
                                         <p style="font-size: 13px; color: #a1887f; margin-bottom: 16px; min-height: 42px; line-height: 1.5; flex: 1; display: flex; flex-direction: column; justify-content: flex-start;">{{ $produk->deskripsi ?: '✨ Nikmati kelezatan produk ini' }}</p>
                                         <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 20px; flex-shrink: 0;">
                                             <span class="price" style="font-size: 24px; font-weight: 900; color: #f06292;">Rp {{ number_format($produk->harga, 0, ',', '.') }}</span>

@@ -17,6 +17,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware('auth')->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('beranda');
     Route::get('/menu', [HomeController::class, 'menu'])->name('menu');
+    Route::get('/menu/{id}', [HomeController::class, 'show'])->name('menu.show');
     Route::get('/our-story', [HomeController::class, 'ourStory'])->name('our_story');
     Route::get('/katering', [HomeController::class, 'katering'])->name('katering');
     
@@ -38,6 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/pesanan/{order}/nota', [\App\Http\Controllers\User\UserOrderController::class, 'nota'])->name('user.order.nota');
     Route::post('/pesanan/{order}/review', [\App\Http\Controllers\User\UserOrderController::class, 'storeReview'])->name('user.order.review');
     Route::post('/pesanan/{order}/complete', [\App\Http\Controllers\User\UserOrderController::class, 'completeOrder'])->name('user.order.complete');
+    Route::post('/pesanan/{order}/cancel', [\App\Http\Controllers\User\UserOrderController::class, 'cancelOrder'])->name('user.order.cancel');
     
     Route::get('/profil', [\App\Http\Controllers\User\UserProfileController::class, 'index'])->name('profil.index');
     Route::post('/profil', [\App\Http\Controllers\User\UserProfileController::class, 'update'])->name('profil.update');
@@ -60,6 +62,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::patch('order/{order}/status', [\App\Http\Controllers\Admin\OrderController::class, 'updateStatus'])->name('order.update_status');
         
         Route::get('/setting', [\App\Http\Controllers\Admin\SettingController::class, 'index'])->name('setting.index');
-        Route::put('/setting', [\App\Http\Controllers\Admin\SettingController::class, 'update'])->name('setting.update');
     });
+});
+
+// Route Kurir Public
+Route::get('/kurir/login', [\App\Http\Controllers\Kurir\AuthController::class, 'showLoginForm'])->name('kurir.login');
+Route::post('/kurir/login', [\App\Http\Controllers\Kurir\AuthController::class, 'login'])->name('kurir.login.submit');
+
+// Route Kurir Protected
+Route::middleware(['auth', 'is_kurir'])->prefix('kurir')->name('kurir.')->group(function () {
+    Route::get('/dashboard', [\App\Http\Controllers\Kurir\DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/order/{order}/complete', [\App\Http\Controllers\Kurir\DashboardController::class, 'completeDelivery'])->name('complete');
+    Route::post('/logout', [\App\Http\Controllers\Kurir\AuthController::class, 'logout'])->name('logout');
 });

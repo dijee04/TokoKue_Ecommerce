@@ -100,16 +100,48 @@ class UserOrderController extends Controller
 
         $request->validate([
             'rating' => 'required|integer|min:1|max:5',
-            'ulasan' => 'nullable|string'
+            'ulasan' => 'nullable|string',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048'
         ]);
+
+        $fotoPath = null;
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+            if (!file_exists(public_path('uploads/reviews'))) {
+                mkdir(public_path('uploads/reviews'), 0777, true);
+            }
+            $file->move(public_path('uploads/reviews'), $filename);
+            $fotoPath = 'uploads/reviews/' . $filename;
+        }
 
         \App\Models\Review::create([
             'user_id' => auth()->id(),
             'order_id' => $order->id,
             'rating' => $request->rating,
-            'ulasan' => $request->ulasan
+            'ulasan' => $request->ulasan,
+            'foto' => $fotoPath
         ]);
 
         return redirect()->route('pesanan_saya', ['tab' => 'riwayat'])->with('success', 'Terima kasih atas ulasan Anda!');
+    }
+
+    public function cancelOrder(Order $order)
+    {
+        if ($order->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        // Batal pesanan hanya jika status masih 'baru' (belum disiapkan/dikirim)
+        if ($order->status !== 'baru') {
+            return back()->with('error', 'Pesanan tidak dapat dibatalkan karena sedang diproses atau sudah dikirim.');
+        }
+
+        $order->update([
+            'status' => 'dibatalkan',
+            'payment_status' => 'failed'
+        ]);
+
+        return redirect()->route('pesanan_saya', ['tab' => 'riwayat'])->with('success', 'Pesanan Anda telah berhasil dibatalkan.');
     }
 }
