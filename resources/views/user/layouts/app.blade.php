@@ -158,6 +158,14 @@
                     @else
                         <li><a href="{{ route('pesanan_saya') }}" style="color: #f06292; font-weight: 700;"><i class="fas fa-shopping-bag"></i> Pesanan Saya</a></li>
                     @endif
+                    <li style="margin-left: 10px; padding-left: 10px; border-left: 1px solid #eee;">
+                        <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" style="color: #c45b74 !important; font-weight: 700;">
+                            <i class="fas fa-sign-out-alt"></i> Keluar
+                        </a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                    </li>
                 @endauth
             </ul>
             <div style="display: flex; align-items: center; gap: 15px;">
@@ -219,8 +227,6 @@
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     
     @auth
@@ -327,6 +333,10 @@
                     .catch(err => console.log('Checking status error:', err));
             }
 
+            // Poller to check status changes
+            checkOrderStatuses();
+            setInterval(checkOrderStatuses, 12000);
+
             function triggerToastNotification(orderId, status) {
                 playChimeSound(); // Bunyikan lonceng manis!
                 
@@ -414,15 +424,10 @@
                     setTimeout(() => toast.remove(), 600);
                 }, 8000);
             }
-
-            // Jalankan poller pemeriksaan pertama kali dan ulangi setiap 12 detik
-            checkOrderStatuses();
-            setInterval(checkOrderStatuses, 12000);
         });
     </script>
     @endauth
 
     @stack('scripts')
 </body>
-
 </html>

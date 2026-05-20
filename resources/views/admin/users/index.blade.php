@@ -59,7 +59,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                            <td colspan="5" style="text-align: center; padding: 40px; color: var(--text-muted);">
                                 <i class="fas fa-users-slash" style="font-size: 48px; margin-bottom: 15px; opacity: 0.5; display: block;"></i>
                                 Belum ada user yang terdaftar
                             </td>
