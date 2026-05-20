@@ -778,13 +778,16 @@
                 return extra;
             }
 
-            function calculateCurrentSubtotal() {
+            window.calculateCurrentSubtotal = function() {
                 let base = currentProduct.harga;
                 let extra = 0;
                 for (let [k, val] of Object.entries(currentSelections)) {
                     extra += parsePriceModifier(val);
                 }
                 return (base + extra) * currentQuantity;
+            };
+            function calculateCurrentSubtotal() {
+                return window.calculateCurrentSubtotal();
             }
 
             function updateTotalPrice() {
@@ -882,8 +885,7 @@
             });
 
             document.getElementById('detailOrderNowBtn').addEventListener('click', function() {
-                // Instantly open snap checkout for this single item
-                initiateInstantCheckout();
+                showBuyNowModal();
             });
 
             // ========== INSTANT DIRECT CHECKOUT (MIDTRANS) ==========
@@ -891,8 +893,9 @@
             let savedCustPhone = {!! json_encode(auth()->check() ? auth()->user()->no_wa : '') !!};
             let savedCustAddress = {!! json_encode(auth()->check() ? auth()->user()->alamat : '') !!};
 
-            async function initiateInstantCheckout() {
-                const total = calculateCurrentSubtotal();
+            async function initiateInstantCheckout(ongkir = 0) {
+                const subtotal = calculateCurrentSubtotal();
+                const total = subtotal + ongkir;
                 
                 // Buat item tunggal format keranjang
                 const singleItem = [{
@@ -966,6 +969,120 @@
                     alert("Terjadi kesalahan jaringan saat menyimpan pesanan.");
                     return;
                 }
+            }
+
+            // ========== MODAL BELI SEKARANG (DENGAN PETA) ==========
+            function showBuyNowModal() {
+                const total = calculateCurrentSubtotal();
+                let buyNowHtml = `
+                    <div id="buyNowModal" class="order-modal" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(15px); z-index: 10001; align-items: center; justify-content: center; font-family: 'Outfit', sans-serif;">
+                        <div class="modal-content" style="background: linear-gradient(145deg, #FFF8F0, #FFF5EE); border-radius: 48px; max-width: 680px; width: 90%; max-height: 85vh; overflow-y: auto; box-shadow: 0 35px 70px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.7); animation: fadeIn 0.4s ease;">
+                            <div class="modal-header" style="background: linear-gradient(135deg, #fce4ec, #f8bbd0); padding: 28px; border-radius: 48px 48px 0 0; position: relative;">
+                                <h3 style="color: #6d4c41; margin: 0; font-size: 26px; font-weight: 900;">⚡ Beli Sekarang</h3>
+                                <button class="buy-modal-close" style="position: absolute; right: 28px; top: 24px; background: rgba(255,255,255,0.95); border: none; font-size: 28px; cursor: pointer; color: #6d4c41; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s;">&times;</button>
+                            </div>
+                            <div class="modal-body" style="padding: 28px;">
+                                <div style="display: flex; align-items: center; gap: 16px; padding: 18px; border-bottom: 1px solid #ffe0d0; margin-bottom: 15px; background: white; border-radius: 28px; border: 1px solid rgba(0,0,0,0.03);">
+                                    <div style="flex: 1;">
+                                        <div style="font-weight: 900; color: #6d4c41; font-size: 17px;">${currentProduct.nama_produk}</div>
+                                        <div style="font-size: 14px; color: #f06292; margin-top: 10px; font-weight: 800;">${formatRupiah(total / currentQuantity)} × ${currentQuantity} = ${formatRupiah(total)}</div>
+                                    </div>
+                                </div>
+                                <div class="customer-details" style="margin: 0 0 24px 0; padding: 22px; background: white; border-radius: 32px; border: 1px solid #ffe0d0;">
+                                    <div style="font-weight: 800; color: #6d4c41; margin-bottom: 16px; font-size: 16px; display: flex; align-items: center; gap: 10px;">
+                                        <span>📍</span> Informasi Pengiriman
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                                        <input type="text" id="buyName" value="${savedCustName || ''}" placeholder="Nama Lengkap" style="padding: 12px 16px; border-radius: 12px; border: 1px solid #f0d0d0; outline: none; font-family: inherit;">
+                                        <input type="text" id="buyPhone" value="${savedCustPhone || ''}" placeholder="Nomor WhatsApp (Contoh: 0812...)" style="padding: 12px 16px; border-radius: 12px; border: 1px solid #f0d0d0; outline: none; font-family: inherit;">
+                                        <textarea id="buyAddress" placeholder="Alamat Pengiriman Lengkap" rows="3" style="padding: 12px 16px; border-radius: 12px; border: 1px solid #f0d0d0; outline: none; font-family: inherit; resize: none;">${savedCustAddress || ''}</textarea>
+                                    </div>
+                                    
+                                    <div style="margin-top: 20px; padding: 18px; border-radius: 16px; background: #fafafa; border: 1px solid #eee;">
+                                        <div style="display: flex; gap: 12px; margin-bottom: 15px; position: relative;">
+                                            <div style="display: flex; flex-direction: column; align-items: center; margin-top: 5px;">
+                                                <div style="width: 12px; height: 12px; border-radius: 50%; background: #4caf50; box-shadow: 0 2px 5px rgba(76,175,80,0.4);"></div>
+                                                <div style="width: 2px; height: 40px; background: #ddd; margin: 4px 0;"></div>
+                                                <div style="width: 12px; height: 12px; border-radius: 50%; background: #f44336; box-shadow: 0 2px 5px rgba(244,67,54,0.4);"></div>
+                                            </div>
+                                            <div style="flex: 1;">
+                                                <div style="margin-bottom: 18px;">
+                                                    <div style="font-size: 11px; font-weight: 800; color: #9e9e9e; letter-spacing: 0.5px; margin-bottom: 2px;">RESTORAN</div>
+                                                    <div style="font-size: 14px; font-weight: 700; color: #424242;">Sweet & Savory Seana</div>
+                                                </div>
+                                                <div>
+                                                    <div style="font-size: 11px; font-weight: 800; color: #9e9e9e; letter-spacing: 0.5px; margin-bottom: 2px;">TUJUAN</div>
+                                                    <div id="routing-tujuan-text" style="font-size: 14px; font-weight: 700; color: #424242; line-height: 1.4;">Pilih lokasi pada peta</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div style="display: flex; gap: 24px; padding-top: 15px; border-top: 1px solid #eee; font-size: 14px; font-weight: 700; color: #616161;">
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <i class="fas fa-route" style="color: #9e9e9e;"></i> <span id="routing-distance">0 km</span>
+                                            </div>
+                                            <div style="display: flex; align-items: center; gap: 8px;">
+                                                <i class="far fa-clock" style="color: #9e9e9e;"></i> <span id="routing-time">~0 menit</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div id="map-container" style="margin-top: 15px; border-radius: 12px; overflow: hidden; border: 1px solid #f0d0d0; position: relative;">
+                                        <div id="map" style="height: 250px; width: 100%; z-index: 1;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer" style="padding: 24px 28px 28px; border-top: 1px solid #ffe0d0; background: rgba(255,248,240,0.95); border-radius: 0 0 48px 48px;">
+                                <div style="margin-bottom: 20px;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                        <span style="color: #8d6e63; font-weight: 700; font-size: 15px;">Subtotal Barang:</span>
+                                        <span style="font-weight: 800; color: #6d4c41; font-size: 15px;">${formatRupiah(total)}</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed #f0d0d0;">
+                                        <span style="color: #8d6e63; font-weight: 700; font-size: 15px;">Ongkos Kirim:</span>
+                                        <span id="ongkir-display" style="font-weight: 800; color: #f06292; font-size: 15px;">Rp 0 (Pilih Lokasi)</span>
+                                    </div>
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <span style="font-weight: 900; color: #6d4c41; font-size: 18px;">Total Pembayaran:</span>
+                                        <span id="grand-total-display" style="font-size: 32px; font-weight: 900; color: #f06292;">${formatRupiah(total)}</span>
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 16px;">
+                                    <button id="processBuyBtn" style="flex: 1; padding: 16px; border-radius: 60px; border: none; background: linear-gradient(135deg, #25D366, #128C7E); color: white; font-weight: 800; cursor: pointer; transition: all 0.3s; box-shadow: 0 6px 20px rgba(37,211,102,0.35); font-size: 14px;">📱 Proses Pembayaran</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                document.body.insertAdjacentHTML('beforeend', buyNowHtml);
+                document.body.style.overflow = 'hidden';
+                
+                const buyModal = document.getElementById('buyNowModal');
+                
+                // Initialize Map
+                window.currentOngkir = 0;
+                initMap();
+                
+                buyModal.querySelector('.buy-modal-close').addEventListener('click', () => {
+                    buyModal.remove();
+                    document.body.style.overflow = '';
+                });
+                
+                document.getElementById('processBuyBtn').addEventListener('click', () => {
+                    savedCustName = document.getElementById('buyName').value;
+                    savedCustPhone = document.getElementById('buyPhone').value;
+                    savedCustAddress = document.getElementById('buyAddress').value;
+                    
+                    if (!savedCustName || !savedCustPhone || !savedCustAddress) {
+                        alert("Harap lengkapi informasi pengiriman!");
+                        return;
+                    }
+                    
+                    initiateInstantCheckout(window.currentOngkir);
+                    buyModal.remove();
+                    document.body.style.overflow = '';
+                });
             }
 
             // ========== REUSE THE BEAUTIFUL CART MODAL POPUP FROM MENU.BLADE.PHP ==========
@@ -1242,5 +1359,141 @@
                 floatingCartBtn.addEventListener('click', showCartModal);
             }
         });
+    </script>
+    
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+    
+    <script>
+        let mapInstance = null;
+        let routingControl = null;
+        const RESTO_LAT = -7.7956;
+        const RESTO_LNG = 110.3695;
+
+        function initMap() {
+            setTimeout(() => {
+                if (mapInstance) {
+                    mapInstance.remove();
+                }
+                
+                const mapContainer = document.getElementById('map');
+                if (!mapContainer) return;
+
+                mapInstance = L.map('map').setView([RESTO_LAT, RESTO_LNG], 13);
+                
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '© OpenStreetMap'
+                }).addTo(mapInstance);
+
+                routingControl = L.Routing.control({
+                    waypoints: [
+                        L.latLng(RESTO_LAT, RESTO_LNG),
+                        L.latLng(RESTO_LAT, RESTO_LNG)
+                    ],
+                    routeWhileDragging: true,
+                    showAlternatives: false,
+                    fitSelectedRoutes: true,
+                    show: false,
+                    createMarker: function(i, wp, nWps) {
+                        if (i === 0) {
+                            return L.marker(wp.latLng, {
+                                draggable: false,
+                                icon: L.icon({
+                                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+                                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                                    iconSize: [25, 41],
+                                    iconAnchor: [12, 41],
+                                    popupAnchor: [1, -34],
+                                    shadowSize: [41, 41]
+                                })
+                            }).bindPopup("Restoran: Sweet & Savory Seana");
+                        } else {
+                            return L.marker(wp.latLng, {
+                                draggable: true,
+                                icon: L.icon({
+                                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                                    iconSize: [25, 41],
+                                    iconAnchor: [12, 41],
+                                    popupAnchor: [1, -34],
+                                    shadowSize: [41, 41]
+                                })
+                            }).bindPopup("Lokasi Tujuan");
+                        }
+                    },
+                    lineOptions: {
+                        styles: [{color: '#4caf50', opacity: 0.8, weight: 6}]
+                    }
+                }).addTo(mapInstance);
+
+                routingControl.on('routesfound', function(e) {
+                    const routes = e.routes;
+                    const summary = routes[0].summary;
+                    
+                    const distanceKm = (summary.totalDistance / 1000);
+                    const timeMinutes = Math.round(summary.totalTime / 60);
+                    
+                    const distEl = document.getElementById('routing-distance');
+                    const timeEl = document.getElementById('routing-time');
+                    if (distEl) distEl.textContent = distanceKm.toFixed(1) + ' km';
+                    if (timeEl) timeEl.textContent = '~' + timeMinutes + ' menit';
+                    
+                    let ongkir = Math.ceil(distanceKm) * 2000;
+                    if (ongkir < 5000) ongkir = 5000;
+                    
+                    window.currentOngkir = ongkir;
+                    
+                    const ongkirDisplay = document.getElementById('ongkir-display');
+                    if (ongkirDisplay) {
+                        ongkirDisplay.textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(ongkir);
+                    }
+                    
+                    // Kita perlu memanggil calculateCurrentSubtotal dari luar scope ini
+                    // namun karena calculateCurrentSubtotal ada di block script sebelumnya, 
+                    // fungsi tersebut bisa dipanggil (bersifat global di halaman ini).
+                    let subtotal = 0;
+                    if (typeof window.calculateCurrentSubtotal === 'function') {
+                        subtotal = window.calculateCurrentSubtotal();
+                    }
+                    
+                    const grandTotalDisplay = document.getElementById('grand-total-display');
+                    if (grandTotalDisplay) {
+                        grandTotalDisplay.textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(subtotal + ongkir);
+                    }
+                    
+                    const destLatLng = routes[0].waypoints[1].latLng;
+                    updateAddressFromMarker(destLatLng.lat, destLatLng.lng);
+                });
+
+                if ("geolocation" in navigator) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        routingControl.spliceWaypoints(1, 1, L.latLng(lat, lng));
+                    });
+                }
+
+                mapInstance.on('click', function(e) {
+                    routingControl.spliceWaypoints(1, 1, e.latlng);
+                });
+            }, 400);
+        }
+
+        function updateAddressFromMarker(lat, lng) {
+            const destText = document.getElementById('routing-tujuan-text');
+            if(destText) destText.textContent = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+            
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.display_name) {
+                        const addressInput = document.getElementById('buyAddress');
+                        if (addressInput) addressInput.value = data.display_name;
+                        if (destText) destText.textContent = data.display_name;
+                    }
+                });
+        }
     </script>
 @endpush
