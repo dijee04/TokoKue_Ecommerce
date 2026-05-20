@@ -158,7 +158,22 @@
                                         <a href="{{ route('menu.show', $produk->id) }}" style="text-decoration: none; color: inherit; display: block; margin-bottom: 10px;">
                                             <h3 style="font-size: 19px; color: #6d4c41; margin-bottom: 0; font-weight: 900;">{{ $produk->nama_produk }}</h3>
                                         </a>
-                                        <p style="font-size: 13px; color: #a1887f; margin-bottom: 16px; min-height: 42px; line-height: 1.5; flex: 1; display: flex; flex-direction: column; justify-content: flex-start;">{{ $produk->deskripsi ?: '✨ Nikmati kelezatan produk ini' }}</p>
+                                        <p style="font-size: 13px; color: #a1887f; margin-bottom: 12px; min-height: 42px; line-height: 1.5; flex: 1; display: flex; flex-direction: column; justify-content: flex-start;">{{ $produk->deskripsi ?: '✨ Nikmati kelezatan produk ini' }}</p>
+                                        
+                                        @php
+                                            // Mock data agar konsisten per produk
+                                            $rating = 4.6 + ($produk->id % 4) / 10; 
+                                            $sold = 50 + ($produk->id * 23 % 450);
+                                            $reviews = floor($sold * 0.35);
+                                        @endphp
+                                        <div style="display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11px; color: #8d6e63; margin-bottom: 15px; background: linear-gradient(135deg, #fff5f8, #fff0f5); padding: 5px 12px; border-radius: 50px; border: 1px solid rgba(240,98,146,0.15); width: fit-content; margin-left: auto; margin-right: auto; box-shadow: 0 2px 5px rgba(240,98,146,0.05);">
+                                            <span style="color: #ffb300; font-weight: 900;"><i class="fas fa-star" style="margin-right: 2px;"></i>{{ number_format($rating, 1) }}</span>
+                                            <span style="color: #f0c0d0;">•</span>
+                                            <span style="font-weight: 800; color: #6d4c41;">{{ $sold }}+ <span style="font-weight: 600; color: #8d6e63;">terjual</span></span>
+                                            <span style="color: #f0c0d0;">•</span>
+                                            <span style="font-weight: 800; color: #6d4c41;">{{ $reviews }} <span style="font-weight: 600; color: #8d6e63;">penilaian</span></span>
+                                        </div>
+
                                         <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 20px; flex-shrink: 0;">
                                             <span class="price" style="font-size: 24px; font-weight: 900; color: #f06292;">Rp {{ number_format($produk->harga, 0, ',', '.') }}</span>
                                         </div>
@@ -784,15 +799,14 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 });
                 
                 cartHtml += `
-                            </div>
                             <div class="customer-details" style="margin: 0 24px 24px 24px; padding: 22px; background: white; border-radius: 32px; border: 1px solid #ffe0d0;">
                                 <div style="font-weight: 800; color: #6d4c41; margin-bottom: 16px; font-size: 16px; display: flex; align-items: center; gap: 10px;">
                                     <span>👤</span> Informasi Pengiriman
                                 </div>
                                 <div style="display: flex; flex-direction: column; gap: 12px;">
-                                    <input type="text" id="custName" value="${savedCustName}" placeholder="Nama Lengkap" style="padding: 12px 16px; border-radius: 12px; border: 1px solid #f0d0d0; outline: none; font-family: inherit;">
-                                    <input type="text" id="custPhone" value="${savedCustPhone}" placeholder="Nomor WhatsApp (Contoh: 0812...)" style="padding: 12px 16px; border-radius: 12px; border: 1px solid #f0d0d0; outline: none; font-family: inherit;">
-                                    <textarea id="custAddress" placeholder="Alamat Pengiriman Lengkap" rows="3" style="padding: 12px 16px; border-radius: 12px; border: 1px solid #f0d0d0; outline: none; font-family: inherit; resize: none;">${savedCustAddress}</textarea>
+                                    <input type="text" id="custName" value="${savedCustName || ''}" placeholder="Nama Lengkap" style="padding: 12px 16px; border-radius: 12px; border: 1px solid #f0d0d0; outline: none; font-family: inherit;">
+                                    <input type="text" id="custPhone" value="${savedCustPhone || ''}" placeholder="Nomor WhatsApp (Contoh: 0812...)" style="padding: 12px 16px; border-radius: 12px; border: 1px solid #f0d0d0; outline: none; font-family: inherit;">
+                                    <textarea id="custAddress" placeholder="Alamat Pengiriman Lengkap" rows="3" style="padding: 12px 16px; border-radius: 12px; border: 1px solid #f0d0d0; outline: none; font-family: inherit; resize: none;">${savedCustAddress || ''}</textarea>
                                 </div>
                             </div>
                             <div class="modal-footer" style="padding: 24px 28px 28px; border-top: 1px solid #ffe0d0; background: rgba(255,248,240,0.95); border-radius: 0 0 48px 48px;">
@@ -1181,7 +1195,7 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 
                 if (actionType === 'order') {
                     if (paymentSection) paymentSection.style.display = 'block';
-                    confirmBtn.innerHTML = '💳 Lanjut ke Pembayaran';
+                    confirmBtn.innerHTML = '📱 Proses Pembayaran';
                 } else {
                     if (paymentSection) paymentSection.style.display = 'none';
                     confirmBtn.innerHTML = '🛒 Tambah ke Keranjang';
@@ -1240,6 +1254,69 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                         </div>
                     </div>
                 `;
+
+                if (actionType === 'order') {
+                    let savedName = {!! json_encode(auth()->check() ? auth()->user()->name : '') !!};
+                    let savedPhone = {!! json_encode(auth()->check() ? auth()->user()->no_wa : '') !!};
+                    let savedAddress = {!! json_encode(auth()->check() ? auth()->user()->alamat : '') !!};
+                    
+                    html += `
+                        <div class="customer-details" style="margin: 0 0 24px 0; padding: 22px; background: white; border-radius: 32px; border: 1px solid #ffe0d0;">
+                            <div style="font-weight: 800; color: #6d4c41; margin-bottom: 16px; font-size: 16px; display: flex; align-items: center; gap: 10px;">
+                                <span>📍</span> Informasi Pengiriman
+                            </div>
+                            <div style="display: flex; flex-direction: column; gap: 12px;">
+                                <input type="text" id="custName" value="${savedCustName || ''}" placeholder="Nama Lengkap" style="padding: 12px 16px; border-radius: 12px; border: 1px solid #f0d0d0; outline: none; font-family: inherit;">
+                                <input type="text" id="custPhone" value="${savedCustPhone || ''}" placeholder="Nomor WhatsApp (Contoh: 0812...)" style="padding: 12px 16px; border-radius: 12px; border: 1px solid #f0d0d0; outline: none; font-family: inherit;">
+                                <textarea id="custAddress" placeholder="Alamat Pengiriman Lengkap" rows="3" style="padding: 12px 16px; border-radius: 12px; border: 1px solid #f0d0d0; outline: none; font-family: inherit; resize: none;">${savedAddress}</textarea>
+                            </div>
+                            
+                            <div style="margin-top: 20px; padding: 18px; border-radius: 16px; background: #fafafa; border: 1px solid #eee;">
+                                <div style="display: flex; gap: 12px; margin-bottom: 15px; position: relative;">
+                                    <div style="display: flex; flex-direction: column; align-items: center; margin-top: 5px;">
+                                        <div style="width: 12px; height: 12px; border-radius: 50%; background: #4caf50; box-shadow: 0 2px 5px rgba(76,175,80,0.4);"></div>
+                                        <div style="width: 2px; height: 40px; background: #ddd; margin: 4px 0;"></div>
+                                        <div style="width: 12px; height: 12px; border-radius: 50%; background: #f44336; box-shadow: 0 2px 5px rgba(244,67,54,0.4);"></div>
+                                    </div>
+                                    <div style="flex: 1;">
+                                        <div style="margin-bottom: 18px;">
+                                            <div style="font-size: 11px; font-weight: 800; color: #9e9e9e; letter-spacing: 0.5px; margin-bottom: 2px;">RESTORAN</div>
+                                            <div style="font-size: 14px; font-weight: 700; color: #424242;">Sweet & Savory Seana</div>
+                                        </div>
+                                        <div>
+                                            <div style="font-size: 11px; font-weight: 800; color: #9e9e9e; letter-spacing: 0.5px; margin-bottom: 2px;">TUJUAN</div>
+                                            <div id="routing-tujuan-text" style="font-size: 14px; font-weight: 700; color: #424242; line-height: 1.4;">Pilih lokasi pada peta</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div style="display: flex; gap: 24px; padding-top: 15px; border-top: 1px solid #eee; font-size: 14px; font-weight: 700; color: #616161;">
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <i class="fas fa-route" style="color: #9e9e9e;"></i> <span id="routing-distance">0 km</span>
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <i class="far fa-clock" style="color: #9e9e9e;"></i> <span id="routing-time">~0 menit</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="map-container" style="margin-top: 15px; border-radius: 12px; overflow: hidden; border: 1px solid #f0d0d0; position: relative;">
+                                <div id="map" style="height: 250px; width: 100%; z-index: 1;"></div>
+                            </div>
+                            
+                            <div style="margin-top: 20px;">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                    <span style="color: #8d6e63; font-weight: 700; font-size: 15px;">Subtotal Barang:</span>
+                                    <span id="subtotal-display" style="font-weight: 800; color: #6d4c41; font-size: 15px;">Rp 0</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed #f0d0d0;">
+                                    <span style="color: #8d6e63; font-weight: 700; font-size: 15px;">Ongkos Kirim:</span>
+                                    <span id="ongkir-display" style="font-weight: 800; color: #f06292; font-size: 15px;">Rp 0 (Pilih Lokasi)</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
                 
                 modalBody.innerHTML = html;
                 
@@ -1293,7 +1370,20 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                     qtyPlus.onclick = () => updateQty(1);
                 }
                 
-                updateModalTotal();
+            window.updateModalTotal = function() {
+                const subtotal = calculateTotal();
+                const ongkir = window.currentOngkir || 0;
+                const grandTotal = subtotal + ongkir;
+                
+                const subtotalDisplay = document.getElementById('subtotal-display');
+                if (subtotalDisplay) {
+                    subtotalDisplay.textContent = formatRupiah(subtotal);
+                }
+                
+                modalTotalPrice.textContent = formatRupiah(grandTotal);
+            };
+            function updateModalTotal() {
+                return window.updateModalTotal();
             }
             
             function openModal(product, actionType = 'order') {
@@ -1302,6 +1392,8 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 document.body.style.overflow = 'hidden';
                 if (actionType === 'order') {
                     setTimeout(initOrderPaymentHandlers, 50);
+                    window.currentOngkir = 0;
+                    initMap();
                 }
             }
             
@@ -1329,27 +1421,36 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 
                 // Pura-pura nama dan alamat karena modal Pesan Sekarang tidak minta input nama
                 // Idealnya kita minta input nama di modal Pesan Sekarang juga, tapi untuk saat ini:
-                const custNameInput = document.getElementById('custName') ? document.getElementById('custName').value : (savedCustName || 'Pelanggan');
-                const custPhoneInput = document.getElementById('custPhone') ? document.getElementById('custPhone').value : (savedCustPhone || '080000000000');
-                const custAddressInput = document.getElementById('custAddress') ? document.getElementById('custAddress').value : (savedCustAddress || '-');
+                const custNameInput = document.getElementById('custName') ? document.getElementById('custName').value : 'Pelanggan';
+                const custPhoneInput = document.getElementById('custPhone') ? document.getElementById('custPhone').value : '080000000000';
+                const custAddressInput = document.getElementById('custAddress') ? document.getElementById('custAddress').value : '-';
                 
+                if (currentAction === 'order' && (!custNameInput || !custPhoneInput || !custAddressInput)) {
+                    alert("Harap lengkapi informasi pengiriman!");
+                    return;
+                }
+                
+                const subtotal = calculateTotal();
+                const ongkir = window.currentOngkir || 0;
+                const grandTotal = subtotal + ongkir;
+
                 // Buat item format yang sesuai dengan cart
                 const singleItem = [{
                     id: currentProduct.id,
                     name: currentProduct.nama_produk,
                     quantity: currentQuantity,
                     price: currentProduct.harga,
-                    total_price: total,
+                    total_price: subtotal,
                     selections: currentSelections
                 }];
 
                 const payload = {
-                    nama_pelanggan: custNameInput || 'Pelanggan',
-                    no_wa: custPhoneInput || '08000000000',
-                    alamat: custAddressInput || '-',
+                    nama_pelanggan: custNameInput,
+                    no_wa: custPhoneInput,
+                    alamat: custAddressInput,
                     metode_pembayaran: selectedPaymentMethod || 'bank',
                     items: JSON.stringify(singleItem),
-                    total_harga: total
+                    total_harga: grandTotal
                 };
                 
                 try {
@@ -1465,5 +1566,132 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 }
             });
         });
+    </script>
+    
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+    
+    <script>
+        let mapInstance = null;
+        let routingControl = null;
+        const RESTO_LAT = -7.7956;
+        const RESTO_LNG = 110.3695;
+
+        function initMap() {
+            setTimeout(() => {
+                if (mapInstance) {
+                    mapInstance.remove();
+                }
+                
+                const mapContainer = document.getElementById('map');
+                if (!mapContainer) return;
+
+                mapInstance = L.map('map').setView([RESTO_LAT, RESTO_LNG], 13);
+                
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    maxZoom: 19,
+                    attribution: '© OpenStreetMap'
+                }).addTo(mapInstance);
+
+                routingControl = L.Routing.control({
+                    waypoints: [
+                        L.latLng(RESTO_LAT, RESTO_LNG),
+                        L.latLng(RESTO_LAT, RESTO_LNG)
+                    ],
+                    routeWhileDragging: true,
+                    showAlternatives: false,
+                    fitSelectedRoutes: true,
+                    show: false,
+                    createMarker: function(i, wp, nWps) {
+                        if (i === 0) {
+                            return L.marker(wp.latLng, {
+                                draggable: false,
+                                icon: L.icon({
+                                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+                                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                                    iconSize: [25, 41],
+                                    iconAnchor: [12, 41],
+                                    popupAnchor: [1, -34],
+                                    shadowSize: [41, 41]
+                                })
+                            }).bindPopup("Restoran: Sweet & Savory Seana");
+                        } else {
+                            return L.marker(wp.latLng, {
+                                draggable: true,
+                                icon: L.icon({
+                                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                                    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                                    iconSize: [25, 41],
+                                    iconAnchor: [12, 41],
+                                    popupAnchor: [1, -34],
+                                    shadowSize: [41, 41]
+                                })
+                            }).bindPopup("Lokasi Tujuan");
+                        }
+                    },
+                    lineOptions: {
+                        styles: [{color: '#4caf50', opacity: 0.8, weight: 6}]
+                    }
+                }).addTo(mapInstance);
+
+                routingControl.on('routesfound', function(e) {
+                    const routes = e.routes;
+                    const summary = routes[0].summary;
+                    
+                    const distanceKm = (summary.totalDistance / 1000);
+                    const timeMinutes = Math.round(summary.totalTime / 60);
+                    
+                    const distEl = document.getElementById('routing-distance');
+                    const timeEl = document.getElementById('routing-time');
+                    if (distEl) distEl.textContent = distanceKm.toFixed(1) + ' km';
+                    if (timeEl) timeEl.textContent = '~' + timeMinutes + ' menit';
+                    
+                    let ongkir = Math.ceil(distanceKm) * 2000;
+                    if (ongkir < 5000) ongkir = 5000;
+                    
+                    window.currentOngkir = ongkir;
+                    
+                    const ongkirDisplay = document.getElementById('ongkir-display');
+                    if (ongkirDisplay) {
+                        ongkirDisplay.textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(ongkir);
+                    }
+                    
+                    if (typeof updateModalTotal === 'function') {
+                        updateModalTotal();
+                    }
+                    
+                    const destLatLng = routes[0].waypoints[1].latLng;
+                    updateAddressFromMarker(destLatLng.lat, destLatLng.lng);
+                });
+
+                if ("geolocation" in navigator) {
+                    navigator.geolocation.getCurrentPosition(function(position) {
+                        const lat = position.coords.latitude;
+                        const lng = position.coords.longitude;
+                        routingControl.spliceWaypoints(1, 1, L.latLng(lat, lng));
+                    });
+                }
+
+                mapInstance.on('click', function(e) {
+                    routingControl.spliceWaypoints(1, 1, e.latlng);
+                });
+            }, 400);
+        }
+
+        function updateAddressFromMarker(lat, lng) {
+            const destText = document.getElementById('routing-tujuan-text');
+            if(destText) destText.textContent = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+            
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.display_name) {
+                        const addressInput = document.getElementById('custAddress');
+                        if (addressInput) addressInput.value = data.display_name;
+                        if (destText) destText.textContent = data.display_name;
+                    }
+                });
+        }
     </script>
 @endsection
