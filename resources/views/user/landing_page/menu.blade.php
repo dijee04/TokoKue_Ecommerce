@@ -140,7 +140,7 @@
                                     ]);
                                 @endphp
 
-                                <div class="menu-card" data-aos="fade-up" data-aos-delay="{{ $index * 50 }}" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(5px); border-radius: 28px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.08); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); position: relative; border: 1px solid rgba(255,255,255,0.6); display: flex; flex-direction: column; height: 100%;">
+                                <div class="menu-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(5px); border-radius: 28px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.08); transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1); position: relative; border: 1px solid rgba(255,255,255,0.6); display: flex; flex-direction: column; height: 100%;">
                                     <!-- Efek glow saat hover -->
                                     <div class="card-glow" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: radial-gradient(circle at 50% 0%, rgba(240,98,146,0.15), transparent 70%); opacity: 0; transition: opacity 0.5s; pointer-events: none; z-index: 1;"></div>
                                     
@@ -973,8 +973,10 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 const noWaPelanggan = custPhoneInput.value.trim();
                 const alamatPelanggan = custAddressInput.value.trim();
                 
-                let grandTotal = 0;
-                cart.forEach((item) => grandTotal += item.total_price);
+                let subtotal = 0;
+                cart.forEach((item) => subtotal += item.total_price);
+                const ongkir = window.currentOngkir || 0;
+                let grandTotal = subtotal + ongkir;
                 
                 const payload = {
                     nama_pelanggan: namaPelanggan,
@@ -982,7 +984,8 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                     alamat: alamatPelanggan,
                     metode_pembayaran: selectedPaymentMethod,
                     items: JSON.stringify(cart),
-                    total_harga: grandTotal
+                    total_harga: grandTotal,
+                    ongkir: ongkir
                 };
                 
                 try {
@@ -1256,10 +1259,6 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                 `;
 
                 if (actionType === 'order') {
-                    let savedName = {!! json_encode(auth()->check() ? auth()->user()->name : '') !!};
-                    let savedPhone = {!! json_encode(auth()->check() ? auth()->user()->no_wa : '') !!};
-                    let savedAddress = {!! json_encode(auth()->check() ? auth()->user()->alamat : '') !!};
-                    
                     html += `
                         <div class="customer-details" style="margin: 0 0 24px 0; padding: 22px; background: white; border-radius: 32px; border: 1px solid #ffe0d0;">
                             <div style="font-weight: 800; color: #6d4c41; margin-bottom: 16px; font-size: 16px; display: flex; align-items: center; gap: 10px;">
@@ -1268,7 +1267,7 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                             <div style="display: flex; flex-direction: column; gap: 12px;">
                                 <input type="text" id="custName" value="${savedCustName || ''}" placeholder="Nama Lengkap" style="padding: 12px 16px; border-radius: 12px; border: 1px solid #f0d0d0; outline: none; font-family: inherit;">
                                 <input type="text" id="custPhone" value="${savedCustPhone || ''}" placeholder="Nomor WhatsApp (Contoh: 0812...)" style="padding: 12px 16px; border-radius: 12px; border: 1px solid #f0d0d0; outline: none; font-family: inherit;">
-                                <textarea id="custAddress" placeholder="Alamat Pengiriman Lengkap" rows="3" style="padding: 12px 16px; border-radius: 12px; border: 1px solid #f0d0d0; outline: none; font-family: inherit; resize: none;">${savedAddress}</textarea>
+                                <textarea id="custAddress" placeholder="Alamat Pengiriman Lengkap" rows="3" style="padding: 12px 16px; border-radius: 12px; border: 1px solid #f0d0d0; outline: none; font-family: inherit; resize: none;">${savedCustAddress || ''}</textarea>
                             </div>
                             
                             <div style="margin-top: 20px; padding: 18px; border-radius: 16px; background: #fafafa; border: 1px solid #eee;">
@@ -1369,6 +1368,7 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
                     qtyMinus.onclick = () => updateQty(-1);
                     qtyPlus.onclick = () => updateQty(1);
                 }
+            }
                 
             window.updateModalTotal = function() {
                 const subtotal = calculateTotal();
@@ -1575,8 +1575,8 @@ if (hash === '#birthday-cake' || hash === '#cookies') {
     <script>
         let mapInstance = null;
         let routingControl = null;
-        const RESTO_LAT = -7.7956;
-        const RESTO_LNG = 110.3695;
+        const RESTO_LAT = -6.1872;
+        const RESTO_LNG = 106.8491;
 
         function initMap() {
             setTimeout(() => {

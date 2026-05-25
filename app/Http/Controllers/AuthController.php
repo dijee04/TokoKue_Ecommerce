@@ -22,12 +22,21 @@ class AuthController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-        if (Auth::attempt($credentials)) {
-            if (Auth::user()->role === 'admin') {
+        $user = User::where('email', $credentials['email'])->first();
+
+        if ($user && Hash::check($credentials['password'], $user->password)) {
+            if ($user->role === 'admin') {
+                Auth::guard('admin')->login($user);
+                $request->session()->regenerate();
                 return redirect()->route('admin.dashboard');
-            } elseif (Auth::user()->role === 'kurir') {
+            } elseif ($user->role === 'kurir') {
+                Auth::guard('kurir')->login($user);
+                $request->session()->regenerate();
                 return redirect()->route('kurir.dashboard');
             }
+            
+            Auth::guard('web')->login($user);
+            $request->session()->regenerate();
             return redirect('/');
         }
 
@@ -85,7 +94,13 @@ class AuthController extends Controller
                         'google_id' => $googleUser->getId()
                     ]);
                 }
-                Auth::login($user);
+                if ($user->role === 'admin') {
+                    Auth::guard('admin')->login($user);
+                } elseif ($user->role === 'kurir') {
+                    Auth::guard('kurir')->login($user);
+                } else {
+                    Auth::guard('web')->login($user);
+                }
             } else {
                 // If user doesn't exist, create a new one
                 $user = User::create([
@@ -95,7 +110,13 @@ class AuthController extends Controller
                     'password' => Hash::make(Str::random(24)) // Generate random password
                 ]);
 
-                Auth::login($user);
+                Auth::guard('web')->login($user);
+            }
+
+            if ($user->role === 'admin') {
+                return redirect()->route('admin.dashboard');
+            } elseif ($user->role === 'kurir') {
+                return redirect()->route('kurir.dashboard');
             }
 
             return redirect('/');

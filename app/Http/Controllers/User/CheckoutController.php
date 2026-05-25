@@ -19,7 +19,8 @@ class CheckoutController extends Controller
             'no_wa' => 'required|string|max:20',
             'alamat' => 'required|string',
             'items' => 'required|json',
-            'total_harga' => 'required|numeric'
+            'total_harga' => 'required|numeric',
+            'ongkir' => 'nullable|numeric'
         ]);
 
         $items = json_decode($request->items, true);
@@ -36,6 +37,7 @@ class CheckoutController extends Controller
                 'no_wa' => $request->no_wa,
                 'alamat' => $request->alamat,
                 'metode_pembayaran' => 'Midtrans',
+                'ongkir' => $request->ongkir ?? 0,
                 'total_harga' => $request->total_harga,
                 'status' => 'baru'
             ]);

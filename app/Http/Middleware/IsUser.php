@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 
-class IsKurir
+class IsUser
 {
     /**
      * Handle an incoming request.
@@ -16,10 +16,14 @@ class IsKurir
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::guard('kurir')->check() && Auth::guard('kurir')->user()->role === 'kurir') {
-            return $next($request);
+        if (Auth::check()) {
+            if (Auth::user()->role === 'admin') {
+                return redirect()->route('admin.dashboard');
+            } elseif (Auth::user()->role === 'kurir') {
+                return redirect()->route('kurir.dashboard');
+            }
         }
 
-        return redirect('/kurir/login')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
+        return $next($request);
     }
 }

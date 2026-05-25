@@ -65,11 +65,13 @@
                         @php
                             $badgeClass = '';
                             if($order->status == 'baru') $badgeClass = 'badge-info';
-                            elseif($order->status == 'diproses') $badgeClass = 'badge-warning';
+                            elseif($order->status == 'disiapkan') $badgeClass = 'badge-warning';
+                            elseif($order->status == 'menunggu_kurir') $badgeClass = 'badge-primary';
+                            elseif($order->status == 'dikirim') $badgeClass = 'badge-secondary';
                             elseif($order->status == 'selesai') $badgeClass = 'badge-success';
                             elseif($order->status == 'dibatalkan') $badgeClass = 'badge-danger';
                         @endphp
-                        <span class="badge {{ $badgeClass }}">{{ ucfirst($order->status) }}</span>
+                        <span class="badge {{ $badgeClass }}">{{ ucfirst(str_replace('_', ' ', $order->status)) }}</span>
                     </td>
                 </tr>
                 <tr>
@@ -81,6 +83,78 @@
             </table>
         </div>
     </div>
+
+    {{-- Update Status Card --}}
+    <div class="card" style="border-top: 4px solid var(--primary-color); margin-top: 0;">
+        <h3 style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+            <i class="fas fa-edit" style="color: var(--primary-light);"></i> Ubah Status Pesanan
+        </h3>
+        <form action="{{ route('admin.order.update_status', $order->id) }}" method="POST" style="display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;">
+            @csrf
+            @method('PATCH')
+            <div>
+                <label style="font-size:13px; font-weight:700; color:#777; display:block; margin-bottom:5px;">Status</label>
+                <select name="status" id="statusSelect" onchange="toggleOngkirField(this.value)" class="form-control" style="max-width: 220px; height: 40px; border-radius: 8px; font-weight: 600;">
+                    <option value="baru"           {{ $order->status == 'baru'           ? 'selected' : '' }}>Baru</option>
+                    <option value="disiapkan"      {{ $order->status == 'disiapkan'      ? 'selected' : '' }}>Disiapkan</option>
+                    <option value="menunggu_kurir" {{ $order->status == 'menunggu_kurir' ? 'selected' : '' }}>Menunggu Kurir</option>
+                    <option value="dikirim"        {{ $order->status == 'dikirim'        ? 'selected' : '' }}>Dikirim</option>
+                    <option value="selesai"        {{ $order->status == 'selesai'        ? 'selected' : '' }}>Selesai</option>
+                    <option value="dibatalkan"     {{ $order->status == 'dibatalkan'     ? 'selected' : '' }}>Dibatalkan</option>
+                </select>
+            </div>
+
+            {{-- Ongkir input: tampil hanya saat pilih "menunggu_kurir" --}}
+            <div id="ongkirField" style="display: {{ $order->status == 'menunggu_kurir' ? 'block' : 'none' }};">
+                <label style="font-size:13px; font-weight:700; color:#777; display:block; margin-bottom:5px;">
+                    <i class="fas fa-motorcycle" style="color:#f06292;"></i> Ongkos Kirim (Rp)
+                </label>
+                <input type="number"
+                       name="ongkir"
+                       id="ongkirInput"
+                       value="{{ old('ongkir', $order->ongkir ?? '') }}"
+                       min="0"
+                       step="500"
+                       placeholder="cth: 10000"
+                       class="form-control"
+                       style="width: 180px; height: 40px; border-radius: 8px; font-weight: 600; border: 2px solid #f06292;">
+            </div>
+
+            <button type="submit" class="btn" style="background: var(--primary-color); color: white; height: 40px; padding: 0 20px; border-radius: 8px; font-weight: 700;">
+                <i class="fas fa-save"></i> Simpan Status
+            </button>
+        </form>
+
+        @if($order->ongkir)
+        <div style="margin-top: 15px; padding: 12px 18px; background: #e8f5e9; border-radius: 10px; display: flex; align-items: center; gap: 10px; border: 1px solid #c8e6c9;">
+            <i class="fas fa-truck" style="color: #2e7d32; font-size:18px;"></i>
+            <span style="font-weight: 700; color: #2e7d32;">Ongkir aktif: <strong>Rp {{ number_format($order->ongkir, 0, ',', '.') }}</strong> — akan ditagih kurir ke pelanggan secara tunai.</span>
+        </div>
+        @endif
+
+        @if($order->kurir)
+        <div style="margin-top: 10px; padding: 12px 18px; background: #fff3e0; border-radius: 10px; display: flex; align-items: center; gap: 10px; border: 1px solid #ffe0b2;">
+            <i class="fas fa-motorcycle" style="color: #e65100; font-size:18px;"></i>
+            <span style="font-weight: 700; color: #e65100;">Kurir: <strong>{{ $order->kurir->name }}</strong></span>
+        </div>
+        @endif
+    </div>
+
+    <script>
+        function toggleOngkirField(status) {
+            const field = document.getElementById('ongkirField');
+            const input = document.getElementById('ongkirInput');
+            if (status === 'menunggu_kurir') {
+                field.style.display = 'block';
+                input.required = true;
+            } else {
+                field.style.display = 'none';
+                input.required = false;
+            }
+        }
+        // Run on page load
+        toggleOngkirField(document.getElementById('statusSelect').value);
+    </script>
 
     <div class="card">
         <h3 style="margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
@@ -113,6 +187,18 @@
                 </tbody>
                 <tfoot>
                     <tr style="background: #fdfbf7;">
+                        <td colspan="3" style="padding: 10px 16px; text-align: right; font-weight: 600; font-size: 15px; color: var(--text-muted);">Subtotal Barang</td>
+                        <td style="padding: 10px 16px; text-align: right; font-weight: 700; font-size: 16px;">
+                            Rp {{ number_format($order->total_harga - ($order->ongkir ?? 0), 0, ',', '.') }}
+                        </td>
+                    </tr>
+                    <tr style="background: #fdfbf7;">
+                        <td colspan="3" style="padding: 10px 16px; text-align: right; font-weight: 600; font-size: 15px; color: var(--text-muted);">Ongkos Kirim</td>
+                        <td style="padding: 10px 16px; text-align: right; font-weight: 700; font-size: 16px;">
+                            Rp {{ number_format($order->ongkir ?? 0, 0, ',', '.') }}
+                        </td>
+                    </tr>
+                    <tr style="background: #fdfbf7; border-top: 2px solid #eee;">
                         <td colspan="3" style="padding: 20px 16px; text-align: right; font-weight: 700; font-size: 16px;">Grand Total</td>
                         <td style="padding: 20px 16px; text-align: right; font-weight: 800; font-size: 20px; color: var(--accent-color);">
                             Rp {{ number_format($order->total_harga, 0, ',', '.') }}

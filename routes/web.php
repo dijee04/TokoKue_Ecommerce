@@ -14,7 +14,7 @@ Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallbac
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Protected Frontend Routes
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'is_user'])->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('beranda');
     Route::get('/menu', [HomeController::class, 'menu'])->name('menu');
     Route::get('/menu/{id}', [HomeController::class, 'show'])->name('menu.show');
@@ -53,7 +53,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::post('/logout', [\App\Http\Controllers\Admin\AuthController::class, 'logout'])->name('logout');
 
     // Protected Routes
-    Route::middleware(['auth', 'is_admin'])->group(function () {
+    Route::middleware(['is_admin'])->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
         Route::resource('kategori', \App\Http\Controllers\Admin\KategoriController::class);
         Route::resource('produk', \App\Http\Controllers\Admin\ProdukController::class);
@@ -70,8 +70,12 @@ Route::get('/kurir/login', [\App\Http\Controllers\Kurir\AuthController::class, '
 Route::post('/kurir/login', [\App\Http\Controllers\Kurir\AuthController::class, 'login'])->name('kurir.login.submit');
 
 // Route Kurir Protected
-Route::middleware(['auth', 'is_kurir'])->prefix('kurir')->name('kurir.')->group(function () {
+Route::middleware(['is_kurir'])->prefix('kurir')->name('kurir.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Kurir\DashboardController::class, 'index'])->name('dashboard');
+    // New route to view pending orders for confirmation
+    Route::get('/orders/pending', [\App\Http\Controllers\Kurir\DashboardController::class, 'pendingOrders'])->name('orders.pending');
+    Route::get('/order/{order}/confirm', [\App\Http\Controllers\Kurir\DashboardController::class, 'showConfirm'])->name('order.confirm');
+    Route::post('/order/{order}/accept', [\App\Http\Controllers\Kurir\DashboardController::class, 'acceptOrder'])->name('order.accept');
     Route::post('/order/{order}/complete', [\App\Http\Controllers\Kurir\DashboardController::class, 'completeDelivery'])->name('complete');
     Route::post('/logout', [\App\Http\Controllers\Kurir\AuthController::class, 'logout'])->name('logout');
 });

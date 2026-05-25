@@ -157,11 +157,7 @@
                 <li><a href="{{ route('our_story') }}">Our Story</a></li>
                 <li><a href="{{ route('katering') }}">Katering</a></li>
                 @auth
-                    @if(Auth::user()->role === 'kurir')
-                        <li><a href="{{ route('kurir.dashboard') }}" style="color: #f06292; font-weight: 700;"><i class="fas fa-motorcycle"></i> Dashboard Kurir</a></li>
-                    @else
-                        <li><a href="{{ route('pesanan_saya') }}" style="color: #f06292; font-weight: 700;"><i class="fas fa-shopping-bag"></i> Pesanan Saya</a></li>
-                    @endif
+                    <li><a href="{{ route('pesanan_saya') }}" style="color: #f06292; font-weight: 700;"><i class="fas fa-shopping-bag"></i> Pesanan Saya</a></li>
                     <li style="margin-left: 10px; padding-left: 10px; border-left: 1px solid #eee;">
                         <a href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" style="color: #c45b74 !important; font-weight: 700;">
                             <i class="fas fa-sign-out-alt"></i> Keluar

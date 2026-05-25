@@ -56,11 +56,12 @@
                                     $badgeClass = '';
                                     if($order->status == 'baru') $badgeClass = 'badge-info';
                                     elseif($order->status == 'disiapkan') $badgeClass = 'badge-warning';
+                                    elseif($order->status == 'menunggu_kurir') $badgeClass = 'badge-primary';
                                     elseif($order->status == 'dikirim') $badgeClass = 'badge-secondary';
                                     elseif($order->status == 'selesai') $badgeClass = 'badge-success';
                                     elseif($order->status == 'dibatalkan') $badgeClass = 'badge-danger';
                                 @endphp
-                                <span class="badge {{ $badgeClass }}">{{ ucfirst($order->status) }}</span>
+                                <span class="badge {{ $badgeClass }}">{{ ucfirst(str_replace('_', ' ', $order->status)) }}</span>
                             </td>
                             <td style="text-align: center;">
                                 <div style="display: flex; gap: 8px; justify-content: center; align-items: center;">
@@ -73,6 +74,7 @@
                                         <select name="status" onchange="this.form.submit()" class="form-control" style="padding: 4px 8px; border-radius: 4px; font-size: 13px; width: auto; height: 32px; min-width: 100px;">
                                             <option value="baru" {{ $order->status == 'baru' ? 'selected' : '' }}>Baru</option>
                                             <option value="disiapkan" {{ $order->status == 'disiapkan' ? 'selected' : '' }}>Disiapkan</option>
+                                            <option value="menunggu_kurir" {{ $order->status == 'menunggu_kurir' ? 'selected' : '' }}>Menunggu Kurir</option>
                                             <option value="dikirim" {{ $order->status == 'dikirim' ? 'selected' : '' }}>Dikirim</option>
                                             <option value="selesai" {{ $order->status == 'selesai' ? 'selected' : '' }}>Selesai</option>
                                             <option value="dibatalkan" {{ $order->status == 'dibatalkan' ? 'selected' : '' }}>Batal</option>

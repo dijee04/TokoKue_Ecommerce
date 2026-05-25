@@ -20,15 +20,15 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
 
-        if (Auth::attempt($credentials)) {
+        if (Auth::guard('admin')->attempt($credentials)) {
             $request->session()->regenerate();
 
-            if (Auth::user()->role === 'admin') {
+            if (Auth::guard('admin')->user()->role === 'admin') {
                 return redirect()->intended(route('admin.dashboard'));
             }
 
             // Jika bukan admin
-            Auth::logout();
+            Auth::guard('admin')->logout();
             return back()->withErrors([
                 'email' => 'Anda bukan admin.',
             ]);
@@ -41,7 +41,7 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::logout();
+        Auth::guard('admin')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 

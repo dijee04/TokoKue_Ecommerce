@@ -1368,8 +1368,8 @@
     <script>
         let mapInstance = null;
         let routingControl = null;
-        const RESTO_LAT = -7.7956;
-        const RESTO_LNG = 110.3695;
+        const RESTO_LAT = -6.1872;
+        const RESTO_LNG = 106.8491;
 
         function initMap() {
             setTimeout(() => {

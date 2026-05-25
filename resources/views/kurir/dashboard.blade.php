@@ -324,6 +324,84 @@
             filter: brightness(1.05);
         }
 
+        /* Pending Orders Banner */
+        .pending-banner {
+            background: linear-gradient(135deg, #ff7043, #e64a19);
+            border-radius: 20px;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 6px 20px rgba(230,74,25,0.3);
+            flex-wrap: wrap;
+            gap: 15px;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .pending-banner:hover {
+            filter: brightness(1.05);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(230,74,25,0.4);
+        }
+
+        .pending-banner-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .pending-icon {
+            font-size: 32px;
+            background: rgba(255,255,255,0.2);
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pending-text h3 {
+            color: white;
+            font-size: 17px;
+            font-weight: 800;
+            margin-bottom: 3px;
+        }
+
+        .pending-text p {
+            color: rgba(255,255,255,0.85);
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .pending-count {
+            background: white;
+            color: #e64a19;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-weight: 900;
+            font-size: 15px;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background: #e64a19;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
         /* Empty State */
         .empty-state {
             text-align: center;
@@ -396,7 +474,7 @@
                 <span>Dear Seana <span class="logo-small">Kurir</span></span>
             </a>
             <div class="user-menu">
-                <span style="font-weight: 700; font-size: 14px;"><i class="fas fa-user-circle"></i> {{ Auth::user()->name }}</span>
+                <span style="font-weight: 700; font-size: 14px;"><i class="fas fa-user-circle"></i> {{ Auth::guard('kurir')->user()->name }}</span>
                 <form action="{{ route('kurir.logout') }}" method="POST" style="display: inline;">
                     @csrf
                     <button type="submit" class="btn-logout">
@@ -423,16 +501,60 @@
             </div>
         @endif
 
+        @if($errors->any())
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle"></i>
+                <div style="margin-left: 10px;">
+                    <ul style="margin: 0; padding-left: 15px;">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        @endif
+
         <!-- Welcome Banner -->
         <div class="welcome-section">
             <div class="welcome-title">
-                <h1>Halo, {{ Auth::user()->name }}! 👋</h1>
+                <h1>Halo, {{ Auth::guard('kurir')->user()->name }}! 👋</h1>
                 <p>Silakan antarkan pesanan kue lezat dan unggah bukti pengirimannya.</p>
             </div>
             <div class="badge-count">
                 🛵 {{ $orders->count() }} Tugas Pengantaran
             </div>
         </div>
+
+        <!-- Pending Orders Banner -->
+        @php $pendingCount = \App\Models\Order::where('status', 'menunggu_kurir')->count(); @endphp
+        @if($pendingCount > 0)
+        <a href="{{ route('kurir.orders.pending') }}" class="pending-banner">
+            <div class="pending-banner-info">
+                <div class="pending-icon">📦</div>
+                <div class="pending-text">
+                    <h3>Ada Pesanan Baru Menunggu!</h3>
+                    <p>Klik untuk melihat detail dan menerima pesanan pengantaran.</p>
+                </div>
+            </div>
+            <div class="pending-count">
+                <span class="pulse-dot"></span>
+                {{ $pendingCount }} Pesanan Baru
+            </div>
+        </a>
+        @else
+        <a href="{{ route('kurir.orders.pending') }}" class="pending-banner" style="background: linear-gradient(135deg, #8d6e63, #6d4c41);">
+            <div class="pending-banner-info">
+                <div class="pending-icon">📋</div>
+                <div class="pending-text">
+                    <h3>Pesanan Tersedia</h3>
+                    <p>Cek pesanan yang menunggu konfirmasi kurir.</p>
+                </div>
+            </div>
+            <div class="pending-count" style="color: #6d4c41;">
+                Lihat Semua
+            </div>
+        </a>
+        @endif
 
         <!-- Task List -->
         <div class="task-list">
@@ -467,6 +589,12 @@
                                     </a>
                                 </div>
                             </div>
+                            @if($order->ongkir)
+                            <div class="info-row">
+                                <div class="info-label"><i class="fas fa-truck"></i> Ongkos Kirim</div>
+                                <div class="info-value" style="color: #2e7d32; font-weight: 800;">Rp {{ number_format($order->ongkir, 0, ',', '.') }}</div>
+                            </div>
+                            @endif
                         </div>
 
                         <!-- Form Completion -->

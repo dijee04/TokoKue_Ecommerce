@@ -11,7 +11,7 @@ class UserController extends Controller
     public function index()
     {
         // Ambil semua user kecuali admin yang sedang login
-        $users = User::where('id', '!=', auth()->id())->latest()->get();
+        $users = User::where('id', '!=', auth()->guard('admin')->id())->latest()->get();
         return view('admin.users.index', compact('users'));
     }
 

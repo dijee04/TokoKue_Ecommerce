@@ -11,7 +11,7 @@ class AuthController extends Controller
     public function showLoginForm()
     {
         // If already logged in as courier, go straight to dashboard
-        if (Auth::check() && Auth::user()->role === 'kurir') {
+        if (Auth::guard('kurir')->check() && Auth::guard('kurir')->user()->role === 'kurir') {
             return redirect()->route('kurir.dashboard');
         }
         return view('kurir.auth.login');
@@ -24,14 +24,14 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
 
-        if (Auth::attempt($credentials)) {
-            if (Auth::user()->role === 'kurir') {
+        if (Auth::guard('kurir')->attempt($credentials)) {
+            if (Auth::guard('kurir')->user()->role === 'kurir') {
                 $request->session()->regenerate();
                 return redirect()->route('kurir.dashboard');
             }
 
             // Not a courier: log out immediately and show error
-            Auth::logout();
+            Auth::guard('kurir')->logout();
             return back()->withErrors([
                 'email' => 'Anda bukan kurir.',
             ])->withInput($request->only('email'));
@@ -44,7 +44,7 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        Auth::logout();
+        Auth::guard('kurir')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
