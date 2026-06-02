@@ -913,7 +913,8 @@
                     alamat: savedCustAddress || '-',
                     metode_pembayaran: 'Midtrans',
                     items: JSON.stringify(singleItem),
-                    total_harga: total
+                    total_harga: total,
+                    ongkir: ongkir
                 };
                 
                 try {
@@ -1277,16 +1278,51 @@
                 const noWaPelanggan = custPhoneInput.value.trim();
                 const alamatPelanggan = custAddressInput.value.trim();
                 
-                let grandTotal = 0;
-                cart.forEach((item) => grandTotal += item.total_price);
-                
+                let subtotal = 0;
+                cart.forEach((item) => subtotal += item.total_price);
+
+                // Hitung ongkir via geocoding jika belum diset dari peta
+                let ongkir = window.currentOngkir || 0;
+                if (!ongkir) {
+                    try {
+                        showToastMessage('⏳ Menghitung ongkos kirim...');
+                        const CALC_RESTO_LAT = -6.1872;
+                        const CALC_RESTO_LNG = 106.8491;
+                        const geoRes = await fetch(
+                            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(alamatPelanggan)}&limit=1`
+                        );
+                        const geoData = await geoRes.json();
+                        if (geoData && geoData.length > 0) {
+                            const destLat = parseFloat(geoData[0].lat);
+                            const destLng = parseFloat(geoData[0].lon);
+                            const R = 6371;
+                            const dLat = (destLat - CALC_RESTO_LAT) * Math.PI / 180;
+                            const dLng = (destLng - CALC_RESTO_LNG) * Math.PI / 180;
+                            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                                      Math.cos(CALC_RESTO_LAT * Math.PI / 180) * Math.cos(destLat * Math.PI / 180) *
+                                      Math.sin(dLng/2) * Math.sin(dLng/2);
+                            const distanceKm = R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                            ongkir = Math.ceil(distanceKm) * 2000;
+                            if (ongkir < 5000) ongkir = 5000;
+                            window.currentOngkir = ongkir;
+                        }
+                    } catch(e) {
+                        console.warn('Geocoding ongkir gagal:', e);
+                        ongkir = 5000;
+                        window.currentOngkir = ongkir;
+                    }
+                }
+
+                let grandTotal = subtotal + ongkir;
+
                 const payload = {
                     nama_pelanggan: namaPelanggan,
                     no_wa: noWaPelanggan,
                     alamat: alamatPelanggan,
                     metode_pembayaran: 'Midtrans',
                     items: JSON.stringify(cart),
-                    total_harga: grandTotal
+                    total_harga: grandTotal,
+                    ongkir: ongkir
                 };
                 
                 try {
@@ -1467,6 +1503,45 @@
                     updateAddressFromMarker(destLatLng.lat, destLatLng.lng);
                 });
 
+                routingControl.on('waypointschanged', function(e) {
+                    const waypoints = e.waypoints;
+                    if (waypoints && waypoints.length > 1 && waypoints[1].latLng) {
+                        const destLatLng = waypoints[1].latLng;
+                        // Langsung panggil update address saat titik berubah, tidak perlu nunggu rute
+                        updateAddressFromMarker(destLatLng.lat, destLatLng.lng);
+                        
+                        // Fallback perhitungan jarak jika server routing lambat/error
+                        const restoLatLng = L.latLng(RESTO_LAT, RESTO_LNG);
+                        const directDistance = restoLatLng.distanceTo(destLatLng);
+                        const distanceKm = directDistance / 1000;
+                        
+                        const distEl = document.getElementById('routing-distance');
+                        if (distEl && (distEl.textContent === '0 km' || distEl.textContent.includes('Garis lurus'))) {
+                            distEl.textContent = distanceKm.toFixed(1) + ' km (Garis lurus)';
+                            
+                            let ongkir = Math.ceil(distanceKm) * 2000;
+                            if (ongkir < 5000) ongkir = 5000;
+                            
+                            window.currentOngkir = ongkir;
+                            
+                            const ongkirDisplay = document.getElementById('ongkir-display');
+                            if (ongkirDisplay) {
+                                ongkirDisplay.textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(ongkir);
+                            }
+                            
+                            let subtotal = 0;
+                            if (typeof window.calculateCurrentSubtotal === 'function') {
+                                subtotal = window.calculateCurrentSubtotal();
+                            }
+                            
+                            const grandTotalDisplay = document.getElementById('grand-total-display');
+                            if (grandTotalDisplay) {
+                                grandTotalDisplay.textContent = 'Rp ' + new Intl.NumberFormat('id-ID').format(subtotal + ongkir);
+                            }
+                        }
+                    }
+                });
+
                 if ("geolocation" in navigator) {
                     navigator.geolocation.getCurrentPosition(function(position) {
                         const lat = position.coords.latitude;
@@ -1485,7 +1560,7 @@
             const destText = document.getElementById('routing-tujuan-text');
             if(destText) destText.textContent = `${lat.toFixed(5)}, ${lng.toFixed(5)}`;
             
-            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=id`)
                 .then(response => response.json())
                 .then(data => {
                     if (data && data.display_name) {

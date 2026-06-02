@@ -89,4 +89,17 @@ class DashboardController extends Controller
 
         return back()->with('error', 'Gagal mengunggah foto bukti pengiriman.');
     }
+
+    /**
+     * Tampilkan riwayat pengiriman kurir.
+     */
+    public function history()
+    {
+        $orders = Order::where('status', 'selesai')
+            ->where('kurir_id', auth()->guard('kurir')->id())
+            ->orderBy('updated_at', 'desc')
+            ->get();
+
+        return view('kurir.riwayat_pengiriman', compact('orders'));
+    }
 }

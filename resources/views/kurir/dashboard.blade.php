@@ -65,6 +65,43 @@
             color: #fff5f5;
         }
 
+        .nav-menu {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .profile-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        .profile-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
         .user-menu {
             display: flex;
             align-items: center;
@@ -469,12 +506,20 @@
     <!-- Header -->
     <header>
         <div class="header-container">
-            <a href="#" class="logo">
+            <a href="{{ route('kurir.dashboard') }}" class="logo">
                 <i class="fas fa-motorcycle"></i>
                 <span>Dear Seana <span class="logo-small">Kurir</span></span>
             </a>
+            
+            <div class="nav-menu">
+                <a href="{{ route('kurir.dashboard') }}" class="nav-link active"><i class="fas fa-home"></i> Beranda</a>
+                <a href="{{ route('kurir.history') }}" class="nav-link"><i class="fas fa-history"></i> Riwayat</a>
+            </div>
+
             <div class="user-menu">
-                <span style="font-weight: 700; font-size: 14px;"><i class="fas fa-user-circle"></i> {{ Auth::guard('kurir')->user()->name }}</span>
+                <a href="{{ route('kurir.profil.index') }}" class="profile-link">
+                    <i class="fas fa-user-circle"></i> {{ Auth::guard('kurir')->user()->name }}
+                </a>
                 <form action="{{ route('kurir.logout') }}" method="POST" style="display: inline;">
                     @csrf
                     <button type="submit" class="btn-logout">
@@ -514,6 +559,8 @@
             </div>
         @endif
 
+        @php $pendingCount = \App\Models\Order::where('status', 'menunggu_kurir')->count(); @endphp
+
         <!-- Welcome Banner -->
         <div class="welcome-section">
             <div class="welcome-title">
@@ -521,12 +568,14 @@
                 <p>Silakan antarkan pesanan kue lezat dan unggah bukti pengirimannya.</p>
             </div>
             <div class="badge-count">
-                🛵 {{ $orders->count() }} Tugas Pengantaran
+                <i class="fas fa-motorcycle"></i> {{ $orders->count() }} Sedang Dikirim
+                @if($pendingCount > 0)
+                    | {{ $pendingCount }} Menunggu
+                @endif
             </div>
         </div>
 
         <!-- Pending Orders Banner -->
-        @php $pendingCount = \App\Models\Order::where('status', 'menunggu_kurir')->count(); @endphp
         @if($pendingCount > 0)
         <a href="{{ route('kurir.orders.pending') }}" class="pending-banner">
             <div class="pending-banner-info">
@@ -560,9 +609,15 @@
         <div class="task-list">
             @if($orders->isEmpty())
                 <div class="empty-state">
-                    <div class="empty-icon">🎉</div>
-                    <h3>Semua Tugas Selesai!</h3>
-                    <p>Tidak ada pesanan aktif yang perlu dikirim saat ini.</p>
+                    @if($pendingCount > 0)
+                        <div class="empty-icon">📦</div>
+                        <h3>Belum Ada Tugas Aktif</h3>
+                        <p>Ada {{ $pendingCount }} pesanan baru yang masih menunggu konfirmasi kurir.</p>
+                    @else
+                        <div class="empty-icon">🎉</div>
+                        <h3>Semua Tugas Selesai!</h3>
+                        <p>Tidak ada pesanan aktif yang perlu dikirim saat ini.</p>
+                    @endif
                 </div>
             @else
                 @foreach($orders as $order)

@@ -31,13 +31,29 @@ class CheckoutController extends Controller
         try {
             DB::beginTransaction();
 
+            $subtotalBarang = collect($items)->sum(function ($item) {
+                if (isset($item['total_price'])) {
+                    return (float) $item['total_price'];
+                }
+
+                $quantity = (int) ($item['quantity'] ?? 1);
+                $unitPrice = $item['price'] ?? $item['base_price'] ?? 0;
+
+                return (float) $unitPrice * max(1, $quantity);
+            });
+
+            $ongkir = (float) ($request->ongkir ?? 0);
+            if ($ongkir <= 0 && (float) $request->total_harga > $subtotalBarang) {
+                $ongkir = (float) $request->total_harga - $subtotalBarang;
+            }
+
             $order = Order::create([
                 'user_id' => auth()->id(),
                 'nama_pelanggan' => $request->nama_pelanggan,
                 'no_wa' => $request->no_wa,
                 'alamat' => $request->alamat,
                 'metode_pembayaran' => 'Midtrans',
-                'ongkir' => $request->ongkir ?? 0,
+                'ongkir' => $ongkir,
                 'total_harga' => $request->total_harga,
                 'status' => 'baru'
             ]);

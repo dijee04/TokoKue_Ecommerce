@@ -77,5 +77,11 @@ Route::middleware(['is_kurir'])->prefix('kurir')->name('kurir.')->group(function
     Route::get('/order/{order}/confirm', [\App\Http\Controllers\Kurir\DashboardController::class, 'showConfirm'])->name('order.confirm');
     Route::post('/order/{order}/accept', [\App\Http\Controllers\Kurir\DashboardController::class, 'acceptOrder'])->name('order.accept');
     Route::post('/order/{order}/complete', [\App\Http\Controllers\Kurir\DashboardController::class, 'completeDelivery'])->name('complete');
+    
+    // History & Profile
+    Route::get('/riwayat', [\App\Http\Controllers\Kurir\DashboardController::class, 'history'])->name('history');
+    Route::get('/profil', [\App\Http\Controllers\Kurir\ProfileController::class, 'index'])->name('profil.index');
+    Route::post('/profil', [\App\Http\Controllers\Kurir\ProfileController::class, 'update'])->name('profil.update');
+
     Route::post('/logout', [\App\Http\Controllers\Kurir\AuthController::class, 'logout'])->name('logout');
 });

@@ -66,6 +66,49 @@
             color: #fff5f5;
         }
 
+        .nav-menu {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .profile-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+
+        .profile-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
         .btn-back {
             background: rgba(255,255,255,0.2);
             color: white;
@@ -331,9 +374,20 @@
                 <i class="fas fa-motorcycle"></i>
                 <span>Dear Seana <span class="logo-small">Kurir</span></span>
             </a>
-            <a href="{{ route('kurir.dashboard') }}" class="btn-back">
-                <i class="fas fa-arrow-left"></i> Kembali
-            </a>
+            
+            <div class="nav-menu">
+                <a href="{{ route('kurir.dashboard') }}" class="nav-link"><i class="fas fa-home"></i> Beranda</a>
+                <a href="{{ route('kurir.history') }}" class="nav-link"><i class="fas fa-history"></i> Riwayat</a>
+            </div>
+
+            <div class="user-menu">
+                <a href="{{ route('kurir.profil.index') }}" class="profile-link">
+                    <i class="fas fa-user-circle"></i> {{ Auth::guard('kurir')->user()->name }}
+                </a>
+                <a href="{{ route('kurir.dashboard') }}" class="btn-back">
+                    <i class="fas fa-arrow-left"></i> Kembali
+                </a>
+            </div>
         </div>
     </header>
 

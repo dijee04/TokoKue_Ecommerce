@@ -22,8 +22,18 @@ class OrderController extends Controller
 
     public function updateStatus(Request $request, Order $order)
     {
-        $request->validate(['status' => 'required|in:baru,disiapkan,menunggu_kurir,dikirim,selesai,dibatalkan']);
-        $order->update(['status' => $request->status]);
+        $validated = $request->validate([
+            'status' => 'required|in:baru,disiapkan,menunggu_kurir,dikirim,selesai,dibatalkan',
+            'ongkir' => 'nullable|numeric|min:0',
+        ]);
+
+        $data = ['status' => $validated['status']];
+
+        if ($request->has('ongkir')) {
+            $data['ongkir'] = $validated['ongkir'] ?? 0;
+        }
+
+        $order->update($data);
         return back()->with('success', 'Status pesanan berhasil diperbarui!');
     }
 }

@@ -6,6 +6,9 @@
     <title>Konfirmasi Pesanan - Dear Seana Kurir</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
     <style>
         :root {
             --primary: #f06292;
@@ -384,8 +387,13 @@
                 <div class="info-section-title">
                     <i class="fas fa-map-marker-alt"></i> Alamat Pengantaran
                 </div>
-                <div style="background: #f8f4f2; border-radius: 12px; padding: 15px 18px; font-size:15px; font-weight:600; color:var(--text-main); line-height:1.6;">
+                <div style="background: #f8f4f2; border-radius: 12px; padding: 15px 18px; font-size:15px; font-weight:600; color:var(--text-main); line-height:1.6; margin-bottom: 15px;">
                     {{ $order->alamat }}
+                </div>
+                
+                <!-- Map Container -->
+                <div id="map-container" style="border-radius: 12px; overflow: hidden; border: 1px solid #fce4ec; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+                    <div id="map" style="height: 250px; width: 100%; z-index: 1;"></div>
                 </div>
             </div>
 
@@ -398,7 +406,7 @@
 
                 <div class="ongkir-box">
                     <span class="label"><i class="fas fa-truck"></i> Ongkos Kirim (untukmu)</span>
-                    <span class="amount">Rp {{ number_format($order->ongkir ?? 0, 0, ',', '.') }}</span>
+                    <span class="amount" id="ongkir-amount">Rp {{ number_format($order->ongkir ?? 0, 0, ',', '.') }}</span>
                 </div>
 
                 <div class="total-box">
@@ -431,5 +439,78 @@
         &copy; 2026 Dear Seana Kurir Panel. Keajaiban Rasa Dalam Setiap Sematan.
     </footer>
 
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+    
+    <script>
+        const RESTO_LAT = -6.1872;
+        const RESTO_LNG = 106.8491;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const mapContainer = document.getElementById('map');
+            if (!mapContainer) return;
+
+            const mapInstance = L.map('map').setView([RESTO_LAT, RESTO_LNG], 13);
+
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '© OpenStreetMap'
+            }).addTo(mapInstance);
+
+            const alamat = {!! json_encode($order->alamat) !!};
+
+            // Forward Geocoding via Nominatim
+            fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(alamat)}&limit=1`)
+                .then(response => response.json())
+                .then(data => {
+                    let destLat = RESTO_LAT;
+                    let destLng = RESTO_LNG;
+
+                    if (data && data.length > 0) {
+                        destLat = parseFloat(data[0].lat);
+                        destLng = parseFloat(data[0].lon);
+                    }
+
+                    L.Routing.control({
+                        waypoints: [
+                            L.latLng(RESTO_LAT, RESTO_LNG),
+                            L.latLng(destLat, destLng)
+                        ],
+                        routeWhileDragging: false,
+                        showAlternatives: false,
+                        fitSelectedRoutes: true,
+                        show: false,
+                        createMarker: function(i, wp) {
+                            if (i === 0) {
+                                return L.marker(wp.latLng, {
+                                    draggable: false,
+                                    icon: L.icon({
+                                        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+                                        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                                        iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34]
+                                    })
+                                }).bindPopup("Toko: Sweet & Savory Seana");
+                            } else {
+                                return L.marker(wp.latLng, {
+                                    draggable: false,
+                                    icon: L.icon({
+                                        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                                        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                                        iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34]
+                                    })
+                                }).bindPopup("Tujuan Pengantaran");
+                            }
+                        },
+                        lineOptions: {
+                            styles: [{color: '#4caf50', opacity: 0.8, weight: 6}]
+                        }
+                    }).addTo(mapInstance);
+                })
+                .catch(err => {
+                    console.error("Geocoding failed", err);
+                });
+        });
+    </script>
 </body>
 </html>
